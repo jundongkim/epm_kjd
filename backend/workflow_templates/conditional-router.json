@@ -1,0 +1,226 @@
+{
+  "name": "조건부 라우팅 워크플로우",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "conditional-router",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "router-start",
+      "name": "라우터 시작",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "conditional-router"
+    },
+    {
+      "parameters": {
+        "functionCode": "// 입력 데이터 분석 및 라우팅 결정\nconst inputData = $input.all()[0].json;\n\n// 기본 데이터가 없으면 샘플 생성\nconst data = inputData.data || {\n  type: 'user',\n  priority: 'high',\n  value: 850,\n  category: 'premium'\n};\n\n// 라우팅 조건들\nconst conditions = {\n  isHighPriority: data.priority === 'high',\n  isLargeValue: data.value > 1000,\n  isPremium: data.category === 'premium',\n  isUser: data.type === 'user'\n};\n\n// 라우팅 결정 로직\nlet route = 'default';\nlet routeReason = 'Default processing';\n\nif (conditions.isHighPriority && conditions.isPremium) {\n  route = 'premium-priority';\n  routeReason = 'High priority premium customer';\n} else if (conditions.isLargeValue) {\n  route = 'high-value';\n  routeReason = 'High value transaction';\n} else if (conditions.isUser && conditions.isPremium) {\n  route = 'premium-user';\n  routeReason = 'Premium user processing';\n} else if (conditions.isHighPriority) {\n  route = 'priority';\n  routeReason = 'High priority processing';\n}\n\nreturn [{\n  json: {\n    originalData: data,\n    conditions: conditions,\n    selectedRoute: route,\n    routeReason: routeReason,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "analyze-input",
+      "name": "입력 분석",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.selectedRoute}}",
+              "operation": "equal",
+              "value2": "premium-priority"
+            }
+          ]
+        }
+      },
+      "id": "route-condition",
+      "name": "라우팅 분기",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 프리미엄 우선순위 처리\nconst data = $input.all()[0].json;\n\nconst result = {\n  route: 'premium-priority',\n  processing: {\n    priorityLevel: 'URGENT',\n    serviceLevel: 'PREMIUM',\n    estimatedTime: '< 5 minutes',\n    specialHandling: true,\n    assignedAgent: 'Senior Specialist',\n    benefits: ['Fast track', 'Dedicated support', 'Priority queue']\n  },\n  data: data.originalData,\n  processedAt: new Date().toISOString(),\n  status: 'PREMIUM_PROCESSED'\n};\n\nreturn [{ json: result }];"
+      },
+      "id": "premium-priority-handler",
+      "name": "프리미엄 우선 처리",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 150]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.selectedRoute}}",
+              "operation": "equal",
+              "value2": "high-value"
+            }
+          ]
+        }
+      },
+      "id": "secondary-condition",
+      "name": "2차 분기",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [900, 450]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 고액 거래 처리\nconst data = $input.all()[0].json;\n\nconst result = {\n  route: 'high-value',\n  processing: {\n    priorityLevel: 'HIGH',\n    serviceLevel: 'STANDARD',\n    estimatedTime: '10-15 minutes',\n    verificationRequired: true,\n    approvalNeeded: data.originalData.value > 5000,\n    riskAssessment: data.originalData.value > 10000 ? 'HIGH' : 'MEDIUM'\n  },\n  data: data.originalData,\n  processedAt: new Date().toISOString(),\n  status: 'HIGH_VALUE_PROCESSED'\n};\n\nreturn [{ json: result }];"
+      },
+      "id": "high-value-handler",
+      "name": "고액 거래 처리",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 350]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 일반 처리\nconst data = $input.all()[0].json;\n\nconst result = {\n  route: data.selectedRoute || 'default',\n  processing: {\n    priorityLevel: 'NORMAL',\n    serviceLevel: 'STANDARD',\n    estimatedTime: '15-30 minutes',\n    automaticProcessing: true,\n    queuePosition: Math.floor(Math.random() * 50) + 1\n  },\n  data: data.originalData,\n  processedAt: new Date().toISOString(),\n  status: 'STANDARD_PROCESSED'\n};\n\nreturn [{ json: result }];"
+      },
+      "id": "default-handler",
+      "name": "일반 처리",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 550]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 모든 처리 경로의 결과를 통합\nconst allInputs = $input.all();\nconst processedData = allInputs[0].json;\n\n// 라우팅 통계\nconst routingStats = {\n  totalRoutes: 4,\n  usedRoute: processedData.route,\n  processingTime: new Date().toISOString(),\n  efficiency: processedData.processing.priorityLevel === 'URGENT' ? '최고' : \n              processedData.processing.priorityLevel === 'HIGH' ? '높음' : '보통'\n};\n\n// 최종 결과\nconst finalResult = {\n  summary: {\n    route: processedData.route,\n    status: processedData.status,\n    efficiency: routingStats.efficiency,\n    completedAt: new Date().toISOString()\n  },\n  routing: routingStats,\n  processing: processedData.processing,\n  originalData: processedData.data,\n  systemInfo: {\n    workflowName: 'Conditional Router',\n    version: '1.0.0',\n    executionId: Math.random().toString(36).substr(2, 9)\n  }\n};\n\nreturn [{ json: finalResult }];"
+      },
+      "id": "merge-results",
+      "name": "결과 통합",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1340, 350]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "final-response",
+      "name": "최종 응답",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 350]
+    }
+  ],
+  "connections": {
+    "라우터 시작": {
+      "main": [
+        [
+          {
+            "node": "입력 분석",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "입력 분석": {
+      "main": [
+        [
+          {
+            "node": "라우팅 분기",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "라우팅 분기": {
+      "main": [
+        [
+          {
+            "node": "프리미엄 우선 처리",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "2차 분기",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "프리미엄 우선 처리": {
+      "main": [
+        [
+          {
+            "node": "결과 통합",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2차 분기": {
+      "main": [
+        [
+          {
+            "node": "고액 거래 처리",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "일반 처리",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "고액 거래 처리": {
+      "main": [
+        [
+          {
+            "node": "결과 통합",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "일반 처리": {
+      "main": [
+        [
+          {
+            "node": "결과 통합",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "결과 통합": {
+      "main": [
+        [
+          {
+            "node": "최종 응답",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "6",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

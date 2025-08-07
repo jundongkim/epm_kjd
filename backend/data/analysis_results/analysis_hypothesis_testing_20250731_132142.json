@@ -1,0 +1,68 @@
+{
+  "hypothesis_tests": [
+    {
+      "hypothesis": "온도와 순도 간에 유의미한 상관관계가 있다",
+      "test_type": "correlation_test",
+      "p_value": 0.001,
+      "significance_level": 0.05,
+      "result": "rejected_null",
+      "conclusion": "온도와 순도 간 유의미한 양의 상관관계 확인"
+    },
+    {
+      "hypothesis": "압력 변화가 수율에 영향을 미친다",
+      "test_type": "regression_analysis",
+      "p_value": 0.023,
+      "significance_level": 0.05,
+      "result": "rejected_null",
+      "conclusion": "압력이 수율에 유의미한 영향을 미침"
+    },
+    {
+      "hypothesis": "공정 변수들이 정상 분포를 따른다",
+      "test_type": "shapiro_wilk_test",
+      "p_value": 0.156,
+      "significance_level": 0.05,
+      "result": "failed_to_reject_null",
+      "conclusion": "대부분의 변수가 정상 분포를 따름"
+    }
+  ],
+  "statistical_summary": {
+    "total_tests": 3,
+    "significant_results": 2,
+    "confidence_level": 0.95
+  },
+  "alert_system": {
+    "rules_configured": 3,
+    "active_alerts": 1,
+    "notification_channels": [
+      "email",
+      "dashboard",
+      "mobile"
+    ]
+  },
+  "alert_rules": [
+    {
+      "rule_name": "temperature_outlier",
+      "condition": "temperature > 300 OR temperature < 270",
+      "severity": "high",
+      "action": "immediate_notification"
+    },
+    {
+      "rule_name": "purity_drop",
+      "condition": "purity < 93",
+      "severity": "medium",
+      "action": "quality_team_alert"
+    },
+    {
+      "rule_name": "yield_trend",
+      "condition": "yield_7day_avg < 85",
+      "severity": "low",
+      "action": "trend_monitoring"
+    }
+  ],
+  "recommendations": [
+    "온도 모니터링 시스템 강화 필요",
+    "압력 제어 로직 최적화 검토",
+    "실시간 품질 모니터링 대시보드 구축",
+    "예측 모델 개발을 통한 선제적 대응 시스템 구축"
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "name": "Teams 간단 테스트",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "teams-simple-test",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "simple-webhook",
+      "name": "간단 테스트 시작",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "teams-simple-test"
+    },
+    {
+      "parameters": {
+        "functionCode": "// 매우 간단한 테스트 데이터 생성\nconst simpleData = {\n  message: '🧪 Teams 연결 테스트',\n  timestamp: new Date().toISOString(),\n  lot_id: '20250128-TEST01',\n  status: 'success'\n};\n\nconsole.log('📝 간단 테스트 데이터:', simpleData);\nreturn [{ json: simpleData }];"
+      },
+      "id": "simple-data",
+      "name": "간단 데이터 생성",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://misoinfoadmin.webhook.office.com/webhookb2/8217a413-7c44-4dd2-9b16-d05fc66d3e90@b0705e7e-8b75-46d7-88b0-32b415cd622a/IncomingWebhook/1784cb29d4de4912a5da04047a828ab9/9bc25d0e-6976-4683-9932-d9e9ab8545e1/V2zFgDJiFgR6DoXBITdUv6vaS4mXOAU_wyYi__bvkKp7g1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "🧪 간단한 Teams 연결 테스트입니다!"
+            },
+            {
+              "name": "summary", 
+              "value": "Teams 연결 테스트"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "teams-simple-request",
+      "name": "Teams 간단 요청",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "simple-response",
+      "name": "테스트 완료",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "간단 테스트 시작": {
+      "main": [
+        [
+          {
+            "node": "간단 데이터 생성",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "간단 데이터 생성": {
+      "main": [
+        [
+          {
+            "node": "Teams 간단 요청",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Teams 간단 요청": {
+      "main": [
+        [
+          {
+            "node": "테스트 완료",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "teams-simple-test",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

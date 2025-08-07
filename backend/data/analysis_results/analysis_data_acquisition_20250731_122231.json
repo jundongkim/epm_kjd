@@ -1,0 +1,31 @@
+{
+  "acquired_datasets": [
+    {
+      "filepath": "/data/sensors/sensor_readings.csv",
+      "status": "acquired",
+      "row_count": 3018,
+      "column_count": 12,
+      "data_quality": {
+        "missing_values": 0,
+        "duplicates": 1,
+        "outliers": 2
+      },
+      "data_types": {
+        "numeric": 11,
+        "categorical": 2,
+        "datetime": 1
+      }
+    }
+  ],
+  "total_records": 3018,
+  "data_sources": {
+    "production_data": 0,
+    "sensor_data": 1,
+    "quality_data": 0
+  },
+  "ingestion_summary": {
+    "successful": 1,
+    "failed": 0,
+    "total_size_mb": 36.22
+  }
+}

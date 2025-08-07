@@ -1,0 +1,8 @@
+/data/
+/output/
+/reports/
+/ttl_files/
+/vector_db/
+/uploads/
+*copy*
+/models/

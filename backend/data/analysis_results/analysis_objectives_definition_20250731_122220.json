@@ -1,0 +1,21 @@
+{
+  "objectives": [],
+  "hypotheses": "",
+  "analysis_theme": "manufacturing_quality",
+  "defined_metrics": [
+    "품질 지표 (순도, 수율)",
+    "공정 파라미터 (온도, 압력, 유량)",
+    "설비 성능 지표",
+    "비용 효율성 지표"
+  ],
+  "analysis_scope": {
+    "time_range": "최근 3개월",
+    "data_sources": [],
+    "target_variables": [
+      "purity",
+      "yield",
+      "temperature",
+      "pressure"
+    ]
+  }
+}

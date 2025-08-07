@@ -1,0 +1,651 @@
+{
+  "metadata": {
+    "source_file": "coa_20250314_aug.pdf",
+    "extraction_date": "2025-06-23 08:56:12",
+    "parser_type": "table_based",
+    "ollama_image_description": true,
+    "ollama_model_used": "gemma3:12b-it-qat"
+  },
+  "parsed_data": {
+    "YE Part - CAM5 1 Line - 변경점 및 TEST 진행 현황": {
+      "text": "선별기 교체 완료. 교체 후 입도 분포 테스트 진행 중. 목표 입도 분포 도달까지 3일 예상.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 4,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 1 Line - 비고 (품질 특이사항 등)": {
+      "text": "교체된 선별기 모델이 이전 모델보다 소음 발생량이 증가함. 소음 저감 방안 검토 필요.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 4,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 2 Line - 변경점 및 TEST 진행 현황": {
+      "text": "혼합기 배럴 코팅 공정 진행 중.\n예상 완료는 내일 오후.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 5,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 2 Line - 비고 (품질 특이사항 등)": {
+      "text": "코팅 후 표면 강도 테스트 결과, 목표 강도에 미달. 추가 코팅 공정 검토.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 5,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 3 Line - 변경점 및 TEST 진행 현황": {
+      "text": "압연기 냉각 시스템 점검 및 청소 완료. 냉각 효율 개선 확인.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 6,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 3 Line - 비고 (품질 특이사항 등)": {
+      "text": "압연 후 발생되는 미세 균열 발생 빈도가 소폭 증가. 원인 분석 및 개선 작업 진행 중.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 6,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5N 4 Line - 변경점 및 TEST 진행 현황": {
+      "text": "분쇄기 모터 교체 예정. 부품 수급 문제로 인해 3일 지연.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 7,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5N 4 Line - 비고 (품질 특이사항 등)": {
+      "text": "수급 지연으로 인해 생산량 감소 예상. 대체 생산 라인 확보 방안 검토.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 7,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5N 5 Line - 변경점 및 TEST 진행 현황": {
+      "text": "건조기 온도 조절 시스템 보정 완료. 온도 편차 감소 확인.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 8,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5N 5 Line - 비고 (품질 특이사항 등)": {
+      "text": "건조 후 잔류 수분량이 목표 값보다 약간 높게 측정됨. 건조 시간 추가 검토.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 8,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "요소기술 Part - Part 통합 - TEST 진행 현황 및 신공법 검토": {
+      "text": "부분 통합 테스트 완료. 특정 조건에서 불량 발생. 데이터 분석 중. 신공법 도입 시 시\n뮬레이션 결과, 생산성 15% 향상 예상.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            657,
+            256
+          ],
+          "format": "JPEG",
+          "bbox": [
+            317.89849853515625,
+            508.1231689453125,
+            528.1171875,
+            590.0347900390625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다."
+        },
+        {
+          "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            430,
+            491
+          ],
+          "format": "JPEG",
+          "bbox": [
+            178.48660278320312,
+            139.53912353515625,
+            289.9826965332031,
+            266.85211181640625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+        }
+      ],
+      "table_position": {
+        "row": 13,
+        "column": 2,
+        "table_index": 2
+      }
+    }
+  },
+  "image_metadata": {
+    "img_16": {
+      "filename": "image_coa_20250314_aug_p1_xref16.jpeg",
+      "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref16.jpeg",
+      "page": 1,
+      "xref": 16,
+      "size": [
+        657,
+        256
+      ],
+      "format": "JPEG",
+      "image_type": "table",
+      "bbox": [
+        317.89849853515625,
+        508.1231689453125,
+        528.1171875,
+        590.0347900390625
+      ]
+    },
+    "img_17": {
+      "filename": "image_coa_20250314_aug_p1_xref17.jpeg",
+      "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250314_aug_p1_xref17.jpeg",
+      "page": 1,
+      "xref": 17,
+      "size": [
+        430,
+        491
+      ],
+      "format": "JPEG",
+      "image_type": "table",
+      "bbox": [
+        178.48660278320312,
+        139.53912353515625,
+        289.9826965332031,
+        266.85211181640625
+      ]
+    }
+  },
+  "image_descriptions": {
+    "image_coa_20250314_aug_p1_xref16.jpeg": "## 테이블 구조\n- 행 수: 10\n- 열 수: 10\n- 헤더: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']\n\n## 테이블 내용\n\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n|---|---|---|---|---|---|---|---|---|---|\n| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |\n| 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |\n| 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 |\n| 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 |\n| 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 |\n| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 |\n| 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 |\n| 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |\n| 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 |\n\n## 주요 정보\n\n- 테이블은 1부터 90까지의 숫자를 10x10 격자 형태로 보여줍니다.\n- 각 행은 1씩 증가하는 연속된 숫자를 나타냅니다.\n- 테이블은 단순한 숫자 시퀀스를 보여주는 것으로 보입니다.",
+    "image_coa_20250314_aug_p1_xref17.jpeg": "## 테이블 구조\n- 행 수: 12\n- 열 수: 12\n- 헤더: [\"Date\", \"Time\", \"Task\", \"Status\", \"Priority\", \"Assignee\", \"Start Time\", \"End Time\", \"Duration (mins)\", \"Notes\", \"Category\", \"\"]\n\n## 테이블 내용\n\n| Date       | Time    | Task                     | Status   | Priority | Assignee | Start Time | End Time | Duration (mins) | Notes                               | Category   |\n|------------|---------|--------------------------|----------|----------|----------|------------|----------|-----------------|-------------------------------------|------------|\n| 2024-01-01 | 08:00   | Check Emails            | Complete | High     | John Doe | 08:00       | 08:15     | 15              |                                     | Admin      |\n| 2024-01-01 | 08:15   | Project Planning       | In Progress | High     | Jane Smith | 08:15       | 09:00     | 45              |                                     | Project    |\n| 2024-01-01 | 09:00   | Team Meeting           | Complete | Medium   | John Doe, Jane Smith | 09:00       | 09:45     | 45              | Discuss project progress          | Meeting    |\n| 2024-01-01 | 09:45   | Code Review            | In Progress | High     | David Lee | 09:45       | 10:30     | 45              | Review code for functionality     | Development |\n| 2024-01-01 | 10:30   | Database Design       | To Do     | High     | Sarah Jones | 10:30       | 11:30     | 60              | Design database schema            | Development |\n| 2024-01-01 | 11:30   | Testing               | To Do     | Medium   | Michael Brown | 11:30       | 12:30     | 60              | Test application functionality    | Testing    |\n| 2024-01-01 | 12:30   | Documentation         | To Do     | Low      | Emily White | 12:30       | 13:30     | 60              | Update project documentation      | Documentation |\n| 2024-01-01 | 13:30   | Client Communication | Complete | Medium   | John Doe | 13:30       | 14:00     | 30              | Discuss project requirements     | Communication |\n| 2024-01-01 | 14:00   | Bug Fixing            | In Progress | High     | David Lee | 14:00       | 15:00     | 60              | Fix reported bugs                  | Development |\n| 2024-01-01 | 15:00   | System Monitoring     | Complete | Low      | Sarah Jones | 15:00       | 15:30     | 30              | Monitor system performance         | Operations |\n| 2024-01-01 | 15:30   | Report Generation    | To Do     | Medium   | Michael Brown | 15:30       | 16:30     | 60              | Generate weekly project report    | Reporting  |\n| 2024-01-01 | 16:30   | Planning Next Day    | Complete | Low      | Jane Smith | 16:30       | 17:00     | 30              | Plan tasks for the next day       | Admin      |\n\n## 주요 정보\n\n- **일정 관리:** 테이블은 2024년 1월 1일 하루 동안의 작업 일정을 보여줍니다.\n- **우선순위:** 작업의 우선순위는 High, Medium, Low로 구분됩니다. High 우선순위 작업이 가장 많습니다.\n- **작업 상태:** 작업 상태는 Complete, In Progress, To Do로 구분됩니다.\n- **작업 할당:** 각 작업은 특정 담당자(Assignee)에게 할당되어 있습니다.\n- **작업 기간:** 각 작업의 예상 또는 실제 기간(Duration (mins))이 분 단위로 표시됩니다.\n- **다양한 작업 카테고리:** Admin, Project, Meeting, Development, Testing, Documentation, Communication, Operations, Reporting 등의 다양한 작업 카테고리가 존재합니다."
+  },
+  "table_structures": {
+    "table_0_2": {
+      "dimensions": {
+        "rows": 13,
+        "columns": 3,
+        "cell_width": 185.56363689538205,
+        "cell_height": 46.18846365121695
+      },
+      "headers": [
+        "작성일자",
+        "2025-03-14",
+        ""
+      ],
+      "column_types": [
+        [
+          "text",
+          "empty"
+        ],
+        [
+          "text",
+          "null",
+          "empty"
+        ],
+        [
+          "text",
+          "null",
+          "empty"
+        ]
+      ],
+      "bbox": [
+        19.254546078768644,
+        40.87499237060547,
+        575.9454567649148,
+        641.3250198364258
+      ]
+    }
+  }
+}

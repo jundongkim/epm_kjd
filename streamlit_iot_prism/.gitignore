@@ -1,0 +1,113 @@
+# Python 관련
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*copy*.*
+*backup*.*
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 가상 환경
+venv/
+ENV/
+env/
+.env
+.venv
+env.bak/
+venv.bak/
+poetry.lock
+
+# 모델 파일
+CMMS/models/
+FWHM/models_cbm/
+FWHM/models_xgb/
+FWHM/plots_cbm/
+FWHM/plots_xgb/
+
+# 데이터 파일
+iot_prism/iot_data/
+iot_algorithm/iot_data/
+
+# 시각화 파일
+FWHM/visualization/
+
+# 에디터 설정
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 운영체제 파일
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 로그 파일
+*.log
+logs/
+
+# 데이터베이스
+*.db
+*.sqlite3
+
+# 프로젝트 특화 파일
+catboost_info/
+optimization_results/
+.ipynb_checkpoints/
+*.pkl
+*.h5
+*.model
+*.pth
+models
+
+
+# 개인 설정 파일
+config.ini
+secrets.json
+.env
+
+# 테스트 커버리지
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# 생성된 보고서 파일
+CMMS/reports/*
+PROCESS/reports/*
+SEM_EDS/reports/*
+
+# 원본 파일 ignore
+samples/*
+SEM_EDS/images/*
+# 디렉토리 허용
+!samples/
+!SEM_EDS/images/
+# 샘플 파일 허용
+!samples/sample*.*
+!SEM_EDS/images/sample*.*

@@ -1,0 +1,16 @@
+line_id,line_name,department,location,capacity_kg_per_hour,equipment_type,installation_date,last_maintenance,next_maintenance_due,status,primary_products,backup_products,operator_count,shift_pattern,efficiency_target_%,current_efficiency_%,downtime_hours_last_month,maintenance_cost_last_month,notes
+Line-1,양극재 생산라인 1호기,생산부,Building-A-1F,25,연속건조기,2018-03-15,2025-07-25,2025-10-25,operational,CAT01;CAT02;CAT05,CAT03;CAT07,3,3교대,95,92.5,18.5,125000,주력 생산라인
+Line-2,양극재 생산라인 2호기,생산부,Building-A-1F,22,연속건조기,2019-11-20,2025-06-30,2025-09-30,operational,CAT03;CAT07,CAT01;CAT02,3,3교대,94,89.3,24.2,98000,중급 제품 전용
+Line-3,양극재 생산라인 3호기,생산부,Building-A-2F,20,회분건조기,2020-08-10,2025-08-10,2025-11-10,operational,CAT02;CAT03,CAT01;CAT05,2,2교대,92,88.1,32.1,156000,소량 다품종 대응
+Line-4,음극재 생산라인 1호기,생산부,Building-B-1F,15,진공건조기,2021-05-18,2025-07-15,2025-10-15,operational,AN01;AN02,AN03,2,2교대,90,85.7,28.5,89000,음극재 전용라인
+Line-5,음극재 생산라인 2호기,생산부,Building-B-1F,18,진공건조기,2022-12-05,2025-08-05,2025-11-05,operational,AN03,AN01;AN02,2,2교대,91,87.2,21.3,76000,표준 음극재 전용
+Line-6,전해질 생산라인,생산부,Building-C-1F,8,혼합탱크,2020-02-28,2025-06-20,2025-09-20,operational,EL01;EL02,,1,1교대,88,86.5,12.0,45000,액체 전해질 전용
+Line-7,분리막 생산라인,생산부,Building-D-1F,12,압출기,2019-09-14,2025-07-10,2025-10-10,operational,SP01;SP02,,2,2교대,93,90.8,15.7,67000,분리막 전용라인
+Line-8,시험생산라인,연구부,Building-E-1F,5,소형건조기,2023-04-12,2025-08-01,2025-11-01,operational,CAT08;CAT06,,1,1교대,85,82.3,8.2,23000,R&D 전용 시험라인
+Line-A,백업라인 A,생산부,Building-A-3F,20,연속건조기,2017-06-22,2025-05-15,2025-08-15,standby,예비용,모든제품,2,필요시,90,0,0,35000,비상시 사용 대기
+Line-B,백업라인 B,생산부,Building-B-2F,15,회분건조기,2018-01-30,2025-04-10,2025-07-10,maintenance,정비중,,0,정비중,88,0,744,185000,정기점검 중
+QC-Lab,품질관리실험실,품질부,Building-F-1F,0.1,분석장비,2016-12-01,2025-07-20,2025-10-20,operational,샘플분석,,3,1교대,99,98.5,4.2,15000,품질검사 전용
+Warehouse-1,원료창고 1,자재부,Building-G-1F,,,2015-08-15,2025-06-25,2025-09-25,operational,원료보관,,1,1교대,100,99.2,2.1,8000,원료 보관 전용
+Warehouse-2,제품창고 1,출하부,Building-H-1F,,,2016-05-20,2025-07-05,2025-10-05,operational,완제품보관,,2,2교대,100,98.8,5.3,12000,완제품 보관 전용
+Packaging-1,포장라인 1,출하부,Building-H-2F,100,포장기,2019-03-25,2025-08-08,2025-11-08,operational,모든제품,,2,2교대,96,94.2,16.8,42000,자동포장라인
+Packaging-2,포장라인 2,출하부,Building-H-2F,80,수동포장,2018-07-18,2025-06-12,2025-09-12,operational,특수포장,,1,1교대,92,91.5,8.5,18000,수동포장라인 

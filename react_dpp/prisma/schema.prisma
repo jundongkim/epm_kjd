@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model OrderVersion {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  orders    Order[]
+
+  @@map("order_versions")
+}
+
+model Order {
+  id                         Int      @id @default(autoincrement())
+  division                   String?  @map("구분")
+  team                       String?  @map("팀")
+  customer_name              String?  @map("고객명")
+  steel_grade_ordered        String?  @map("강종(주문)")
+  steel_grade_produced       String?  @map("강종(생산)")
+  code                       String?  @map("코드")
+  steel_plant                String?  @map("제강공장")
+  code2                      String?  @map("코드2")
+  rolling                    String?  @map("압연")
+  thickness                  Float?   @map("두께")
+  product_length             Float?   @map("길이(제품)")
+  material_length            String?  @map("길이(소재)")
+  requested_quantity         String?  @map("요청량")
+  stock_quantity             String?  @map("재고량")
+  steelmaking_quantity       String?  @map("제강량")
+  ch_count                   Float?   @map("Ch수")
+  final_production_quantity  String?  @map("생산량(최종)")
+  usage                      String?  @map("용도별")
+  adjusted_quantity          String?  @map("조정량")
+  carryover_order            String?  @map("이월주문")
+  small_lot_classification   String?  @map("소LOT분류")
+  production_increase_review String?  @map("생산증량 검토 시")
+  remarks_factory            String?  @map("비고(공장)")
+  remarks_sales              String?  @map("비고(영업) - 특기사항")
+  remarks                    String?  @map("비고")
+  requested_line             String?  @map("요청라인")
+
+  orderVersionId Int
+  orderVersion   OrderVersion @relation(fields: [orderVersionId], references: [id], onDelete: Cascade)
+
+  @@map("orders")
+}

@@ -1,0 +1,133 @@
+{
+  "name": "데이터 변환 워크플로우",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "data-transform",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "data-input",
+      "name": "데이터 입력",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "data-transform"
+    },
+    {
+      "parameters": {
+        "functionCode": "// 입력 데이터 검증 및 전처리\nconst inputData = $input.all()[0].json;\n\n// 샘플 데이터가 없으면 기본 데이터 생성\nlet dataToProcess = inputData.data || [\n  { id: 1, name: '김철수', age: 30, department: '개발팀', salary: 5000 },\n  { id: 2, name: '이영희', age: 28, department: '디자인팀', salary: 4500 },\n  { id: 3, name: '박민수', age: 35, department: '마케팅팀', salary: 5500 },\n  { id: 4, name: '최지연', age: 32, department: '개발팀', salary: 5200 }\n];\n\n// 변환 모드 확인 (json-to-csv 또는 csv-to-json)\nconst mode = inputData.mode || 'json-to-csv';\n\nreturn [{\n  json: {\n    originalData: dataToProcess,\n    mode: mode,\n    timestamp: new Date().toISOString(),\n    inputType: Array.isArray(dataToProcess) ? 'array' : 'object'\n  }\n}];"
+      },
+      "id": "validate-input",
+      "name": "입력 검증",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// JSON to CSV 변환\nconst data = $input.all()[0].json;\nconst records = data.originalData;\n\nif (!Array.isArray(records) || records.length === 0) {\n  return [{ json: { error: 'Invalid data format', data: data } }];\n}\n\n// CSV 헤더 생성 (첫 번째 객체의 키들)\nconst headers = Object.keys(records[0]);\nconst csvHeader = headers.join(',');\n\n// CSV 데이터 행 생성\nconst csvRows = records.map(record => {\n  return headers.map(header => {\n    const value = record[header];\n    // 문자열에 쉼표가 있으면 따옴표로 감싸기\n    if (typeof value === 'string' && value.includes(',')) {\n      return `\"${value}\"`;\n    }\n    return value;\n  }).join(',');\n});\n\n// 전체 CSV 문자열 생성\nconst csvString = [csvHeader, ...csvRows].join('\\n');\n\nreturn [{\n  json: {\n    originalData: records,\n    csvString: csvString,\n    headers: headers,\n    rowCount: records.length,\n    conversion: 'json-to-csv',\n    success: true\n  }\n}];"
+      },
+      "id": "json-to-csv",
+      "name": "JSON → CSV",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "// CSV to JSON 변환 (역변환 테스트)\nconst data = $input.all()[0].json;\nconst csvString = data.csvString;\n\nif (!csvString) {\n  return [{ json: { error: 'No CSV data to convert' } }];\n}\n\n// CSV 파싱\nconst lines = csvString.split('\\n').filter(line => line.trim());\nconst headers = lines[0].split(',');\nconst dataRows = lines.slice(1);\n\n// JSON 객체 배열로 변환\nconst jsonArray = dataRows.map(row => {\n  const values = row.split(',');\n  const obj = {};\n  \n  headers.forEach((header, index) => {\n    let value = values[index];\n    \n    // 따옴표 제거\n    if (value && value.startsWith('\"') && value.endsWith('\"')) {\n      value = value.slice(1, -1);\n    }\n    \n    // 숫자 변환 시도\n    if (value && !isNaN(value) && !isNaN(parseFloat(value))) {\n      value = parseFloat(value);\n    }\n    \n    obj[header] = value;\n  });\n  \n  return obj;\n});\n\nreturn [{\n  json: {\n    originalCsv: csvString,\n    convertedJson: jsonArray,\n    headers: headers,\n    recordCount: jsonArray.length,\n    conversion: 'csv-to-json',\n    success: true\n  }\n}];"
+      },
+      "id": "csv-to-json",
+      "name": "CSV → JSON",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 변환 결과 요약 및 통계\nconst jsonToCsvData = $input.all()[0].json;\nconst csvToJsonData = $input.all()[1].json;\n\n// 변환 정확성 검증\nconst originalCount = jsonToCsvData.originalData.length;\nconst finalCount = csvToJsonData.convertedJson.length;\nconst isAccurate = originalCount === finalCount;\n\n// 샘플 비교 (첫 번째 레코드)\nconst originalSample = jsonToCsvData.originalData[0];\nconst convertedSample = csvToJsonData.convertedJson[0];\n\nconst result = {\n  timestamp: new Date().toISOString(),\n  transformationSummary: {\n    originalRecords: originalCount,\n    finalRecords: finalCount,\n    accuracy: isAccurate ? '100%' : `${Math.round(finalCount/originalCount*100)}%`,\n    dataIntegrity: isAccurate ? 'PASS' : 'FAIL'\n  },\n  sampleComparison: {\n    original: originalSample,\n    afterRoundTrip: convertedSample,\n    fieldsMatch: Object.keys(originalSample).length === Object.keys(convertedSample).length\n  },\n  csvPreview: jsonToCsvData.csvString.split('\\n').slice(0, 3).join('\\n') + '...',\n  conversionFlow: 'JSON → CSV → JSON',\n  status: isAccurate ? 'SUCCESS' : 'WARNING'\n};\n\nreturn [{ json: result }];"
+      },
+      "id": "analyze-results",
+      "name": "결과 분석",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "send-results",
+      "name": "결과 반환",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "데이터 입력": {
+      "main": [
+        [
+          {
+            "node": "입력 검증",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "입력 검증": {
+      "main": [
+        [
+          {
+            "node": "JSON → CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON → CSV": {
+      "main": [
+        [
+          {
+            "node": "CSV → JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CSV → JSON": {
+      "main": [
+        [
+          {
+            "node": "결과 분석",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "결과 분석": {
+      "main": [
+        [
+          {
+            "node": "결과 반환",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "5",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

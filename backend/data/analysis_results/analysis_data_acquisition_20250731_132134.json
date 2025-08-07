@@ -1,0 +1,31 @@
+{
+  "acquired_datasets": [
+    {
+      "filepath": "/data/quality/quality_metrics.csv",
+      "status": "acquired",
+      "row_count": 2935,
+      "column_count": 19,
+      "data_quality": {
+        "missing_values": 1,
+        "duplicates": 4,
+        "outliers": 3
+      },
+      "data_types": {
+        "numeric": 3,
+        "categorical": 2,
+        "datetime": 1
+      }
+    }
+  ],
+  "total_records": 2935,
+  "data_sources": {
+    "production_data": 0,
+    "sensor_data": 0,
+    "quality_data": 1
+  },
+  "ingestion_summary": {
+    "successful": 1,
+    "failed": 0,
+    "total_size_mb": 55.77
+  }
+}

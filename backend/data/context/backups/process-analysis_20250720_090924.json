@@ -1,0 +1,137 @@
+{
+  "timestamp": "2025-07-20T09:09:24.354972",
+  "data": {
+    "page_type": "process_analysis",
+    "statistics": {
+      "total_lots": 7,
+      "active_lots": 0,
+      "completed_lots": 7,
+      "waiting_lots": 0,
+      "anomaly_count": 0
+    },
+    "lots": [
+      {
+        "id": "LOT-2024-008",
+        "status": "완료",
+        "equipment": "EQ-04",
+        "progress": 100,
+        "purity": 97.9,
+        "yield": 87.7,
+        "start_time": "07-17 10:27",
+        "expected_completion": "완료"
+      },
+      {
+        "id": "LOT-2024-070",
+        "status": "완료",
+        "equipment": "EQ-05",
+        "progress": 100,
+        "purity": 97.1,
+        "yield": 92.6,
+        "start_time": "07-17 13:24",
+        "expected_completion": "완료"
+      },
+      {
+        "id": "LOT-2024-071",
+        "status": "완료",
+        "equipment": "EQ-03",
+        "progress": 100,
+        "purity": 95.3,
+        "yield": 90.4,
+        "start_time": "07-17 13:19",
+        "expected_completion": "완료"
+      },
+      {
+        "id": "LOT-2024-007",
+        "status": "완료",
+        "equipment": "EQ-06",
+        "progress": 100,
+        "purity": 95.2,
+        "yield": 89.3,
+        "start_time": "07-17 09:35",
+        "expected_completion": "완료"
+      },
+      {
+        "id": "LOT-2024-036",
+        "status": "완료",
+        "equipment": "EQ-06",
+        "progress": 100,
+        "purity": 96.8,
+        "yield": 93.5,
+        "start_time": "07-17 11:44",
+        "expected_completion": "완료"
+      },
+      {
+        "id": "LOT-2024-058",
+        "status": "완료",
+        "equipment": "EQ-07",
+        "progress": 100,
+        "purity": 97.4,
+        "yield": 94.1,
+        "start_time": "07-17 11:02",
+        "expected_completion": "완료"
+      },
+      {
+        "id": "LOT-2024-099",
+        "status": "완료",
+        "equipment": "EQ-07",
+        "progress": 100,
+        "purity": 98,
+        "yield": 95.1,
+        "start_time": "07-17 12:28",
+        "expected_completion": "완료"
+      }
+    ],
+    "equipment": [
+      {
+        "id": "EQ-03",
+        "status": "대기",
+        "utilization": 0,
+        "last_maintenance": "",
+        "current_lots": 0
+      },
+      {
+        "id": "EQ-04",
+        "status": "대기",
+        "utilization": 0,
+        "last_maintenance": "",
+        "current_lots": 0
+      },
+      {
+        "id": "EQ-05",
+        "status": "대기",
+        "utilization": 0,
+        "last_maintenance": "",
+        "current_lots": 0
+      },
+      {
+        "id": "EQ-06",
+        "status": "대기",
+        "utilization": 0,
+        "last_maintenance": "",
+        "current_lots": 0
+      },
+      {
+        "id": "EQ-07",
+        "status": "대기",
+        "utilization": 0,
+        "last_maintenance": "",
+        "current_lots": 0
+      }
+    ],
+    "anomalies": [],
+    "current_filters": {
+      "date_filter": "최근 3일",
+      "status_filter": "all",
+      "equipment_filter": "all",
+      "realtime_mode": false
+    },
+    "metadata": {
+      "timestamp": "2025-07-20T09:09:24.354545",
+      "total_data_points": 12,
+      "data_freshness": "static"
+    }
+  },
+  "source": "process_analysis_api",
+  "last_updated": "2025-07-20T09:09:24.354985",
+  "page_id": "process-analysis"
+}

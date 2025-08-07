@@ -1,0 +1,127 @@
+{
+  "name": "제조 데이터 모니터링",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "manufacturing-data",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "sensor-webhook-id",
+      "name": "센서 데이터 수신",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "manufacturing-data"
+    },
+    {
+      "parameters": {
+        "functionCode": "// 제조 데이터 분석\nconst data = $input.all()[0].json;\nconst temperature = data.temperature || 0;\nconst pressure = data.pressure || 0;\nconst quality = data.quality || 0;\n\n// 임계값 검사\nconst alerts = [];\nif (temperature > 200) alerts.push('온도 과열 경고');\nif (pressure > 3.0) alerts.push('압력 과부하 경고');\nif (quality < 90) alerts.push('품질 기준 미달');\n\nconst result = {\n  batchId: data.batchId || 'UNKNOWN',\n  measurements: { temperature, pressure, quality },\n  status: alerts.length > 0 ? 'WARNING' : 'NORMAL',\n  alerts: alerts,\n  analyzed_at: new Date().toISOString()\n};\n\nreturn [{ json: result }];"
+      },
+      "id": "analyze-data-id",
+      "name": "데이터 분석",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.status}}",
+              "operation": "equal",
+              "value2": "WARNING"
+            }
+          ]
+        }
+      },
+      "id": "check-alerts-id",
+      "name": "알림 필요 여부",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 알림 메시지 생성\nconst data = $input.all()[0].json;\nconst alertMessage = {\n  type: 'MANUFACTURING_ALERT',\n  batchId: data.batchId,\n  alerts: data.alerts,\n  timestamp: data.analyzed_at,\n  message: `배치 ${data.batchId}에서 ${data.alerts.length}개의 경고가 발생했습니다.`\n};\n\nreturn [{ json: alertMessage }];"
+      },
+      "id": "create-alert-id",
+      "name": "알림 생성",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 180]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "final-response-id",
+      "name": "처리 완료 응답",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "센서 데이터 수신": {
+      "main": [
+        [
+          {
+            "node": "데이터 분석",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "데이터 분석": {
+      "main": [
+        [
+          {
+            "node": "알림 필요 여부",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "알림 필요 여부": {
+      "main": [
+        [
+          {
+            "node": "알림 생성",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "처리 완료 응답",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "알림 생성": {
+      "main": [
+        [
+          {
+            "node": "처리 완료 응답",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "2",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

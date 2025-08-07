@@ -1,0 +1,49 @@
+{
+  "agent_1_1753683078": {
+    "id": "agent_1_1753683078",
+    "name": "산업안전보건법 RAG",
+    "description": "산업안전보건법 RAG",
+    "agent_type": "agent",
+    "instructions": "",
+    "opening_statement": "",
+    "llm_config": {},
+    "suggested_questions": [],
+    "created_at": "2025-07-28T15:11:18.842496",
+    "conversation_count": 1,
+    "api_key": "app-hJ0EXS5eSfQrrZIAZvGpo6iQ",
+    "status": "active",
+    "updated_at": "2025-07-28T15:11:55.983863",
+    "last_used": "2025-07-28T15:12:37.475831"
+  },
+  "agent_5_1753746296": {
+    "id": "agent_5_1753746296",
+    "name": "차트 분석 봇",
+    "description": "데이터 분석, 특히 차트 분석에 대한 표준적인 지식을 제공해줌으로서 분석을 잘 모르는 사용자나 시티즌 데이터 사이언티스트를 돕는 역할을 함",
+    "agent_type": "agent",
+    "instructions": "",
+    "opening_statement": "",
+    "llm_config": {},
+    "suggested_questions": [],
+    "created_at": "2025-07-29T08:44:56.821958",
+    "conversation_count": 0,
+    "api_key": "",
+    "status": "active",
+    "updated_at": "2025-07-29T14:08:44.673051"
+  },
+  "agent_2_1753770146": {
+    "id": "agent_2_1753770146",
+    "name": "양극재 부적합 Advisor",
+    "description": "",
+    "agent_type": "workflow",
+    "instructions": "",
+    "opening_statement": "",
+    "llm_config": {},
+    "suggested_questions": [],
+    "created_at": "2025-07-29T15:22:26.535833",
+    "conversation_count": 2,
+    "api_key": "app-8VvedGll99DCkdtW415GkKey",
+    "status": "active",
+    "updated_at": "2025-07-30T10:16:13.298248",
+    "last_used": "2025-07-29T15:23:26.265560"
+  }
+}

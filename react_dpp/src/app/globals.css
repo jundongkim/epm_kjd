@@ -1,0 +1,600 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Paperlogy 폰트 추가 */
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('/fonts/Paperlogy.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* react-resizable CSS */
+.react-resizable {
+  position: relative;
+}
+
+.react-resizable-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  background-color: #666;
+  border-radius: 3px;
+}
+
+.react-resizable-handle-se {
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+
+.react-resizable-handle-sw {
+  bottom: 0;
+  left: 0;
+  cursor: sw-resize;
+}
+
+.react-resizable-handle-ne {
+  top: 0;
+  right: 0;
+  cursor: ne-resize;
+}
+
+.react-resizable-handle-nw {
+  top: 0;
+  left: 0;
+  cursor: nw-resize;
+}
+
+.react-resizable-handle-w,
+.react-resizable-handle-e {
+  top: 50%;
+  margin-top: -6px;
+  cursor: ew-resize;
+}
+
+.react-resizable-handle-w {
+  left: 0;
+}
+
+.react-resizable-handle-e {
+  right: 0;
+}
+
+.react-resizable-handle-n,
+.react-resizable-handle-s {
+  left: 50%;
+  margin-left: -6px;
+  cursor: ns-resize;
+}
+
+.react-resizable-handle-n {
+  top: 0;
+}
+
+.react-resizable-handle-s {
+  bottom: 0;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Paperlogy', var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Paperlogy', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+  }
+  
+  /* 공정표 전용 스타일 */
+  .schedule-grid {
+    width: 100%;
+    overflow-x: auto;
+    font-size: 12px;
+  }
+  
+  .schedule-cell {
+    min-height: 100px;
+  }
+  
+  .process-bar {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* 스케줄 막대 기본 스타일 */
+  .schedule-bar {
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    overflow: hidden;
+  }
+
+  .schedule-bar:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+  }
+
+  /* 그리드 정렬 스타일 */
+  .grid-aligned {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .grid-aligned > * {
+    flex-shrink: 0;
+  }
+
+  /* 반응형 테이블 스타일 */
+  .responsive-table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .responsive-table td,
+  .responsive-table th {
+    border: 1px solid #e5e7eb;
+    vertical-align: top;
+    padding: 8px;
+  }
+}
+
+/* 인쇄 스타일 */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 5mm;
+  }
+  
+  body {
+    font-size: 7px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* HTML과 body 레벨에서 페이지 분할 방지 */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  /* 메인 콘텐츠 최적화 - transform 제거 */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  /* 인쇄용 페이지 설정 */
+  .min-h-screen {
+    min-height: auto !important;
+    height: auto !important;
+  }
+  
+  /* 페이지 브레이크 방지 */
+  * {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  .schedule-grid {
+    page-break-inside: avoid;
+    overflow: visible !important;
+  }
+  
+  .schedule-bar {
+    background-color: #EF4444 !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    box-shadow: none !important;
+  }
+  
+  .process-bar {
+    border: 1px solid #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 인쇄 시 테이블 스타일 유지 */
+  table, thead, tbody, th, td, tr {
+    page-break-inside: avoid;
+  }
+  
+  .border-gray-800 {
+    border-color: #1f2937 !important;
+  }
+  
+  .border-gray-400 {
+    border-color: #9ca3af !important;
+  }
+  
+  .border-gray-200 {
+    border-color: #e5e7eb !important;
+  }
+
+  .bg-blue-100 {
+    background-color: #dbeafe !important;
+  }
+
+  .bg-blue-50 {
+    background-color: #eff6ff !important;
+  }
+
+  .bg-yellow-100 {
+    background-color: #fef3c7 !important;
+  }
+
+  .bg-gray-100 {
+    background-color: #f3f4f6 !important;
+  }
+
+  .bg-gray-50 {
+    background-color: #f9fafb !important;
+  }
+
+  /* 인쇄 시 배경색 표시 */
+  .print-gray {
+    background-color: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact;
+  }
+  
+  /* 인쇄 시 패딩 최소화 */
+  .p-4 {
+    padding: 0.2rem !important;
+  }
+  
+  .p-2 {
+    padding: 0.1rem !important;
+  }
+  
+  .p-1 {
+    padding: 0.05rem !important;
+  }
+  
+  /* 텍스트 크기 최적화 */
+  .text-2xl {
+    font-size: 0.9rem !important;
+    line-height: 1.1 !important;
+  }
+  
+  .text-lg {
+    font-size: 0.7rem !important;
+    line-height: 1.1 !important;
+  }
+  
+  .text-sm {
+    font-size: 0.5rem !important;
+    line-height: 1.1 !important;
+  }
+  
+  .text-xs {
+    font-size: 0.4rem !important;
+    line-height: 1.1 !important;
+  }
+  
+  /* 테이블 높이 최적화 */
+  td[style*="height: 80px"] {
+    height: 40px !important;
+  }
+  
+  td[style*="min-height: 100px"] {
+    min-height: 50px !important;
+  }
+  
+  .h-16 {
+    height: 1.2rem !important;
+  }
+  
+  .h-full {
+    height: 100% !important;
+  }
+  
+  /* 여백 최소화 */
+  .mb-4 {
+    margin-bottom: 0.2rem !important;
+  }
+  
+  .mb-2 {
+    margin-bottom: 0.1rem !important;
+  }
+  
+  .space-y-1 > * + * {
+    margin-top: 0.05rem !important;
+  }
+  
+  /* 테이블 크기 최적화 */
+  table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+  }
+  
+  /* 테이블 셀 최적화 */
+  th, td {
+    padding: 0.1rem !important;
+    font-size: 0.45rem !important;
+    line-height: 1.1 !important;
+    vertical-align: top !important;
+  }
+  
+  /* 전체 컨테이너 크기 제한 */
+  .border-2.border-gray-800 {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+  
+  /* textarea 크기 축소 */
+  textarea {
+    font-size: 0.4rem !important;
+    padding: 0.05rem !important;
+    line-height: 1.1 !important;
+    min-height: 1rem !important;
+  }
+}
+
+/* 리사이즈 핸들 스타일 */
+.react-resizable-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #666;
+  border: 1px solid #333;
+  border-radius: 2px;
+}
+
+.react-resizable-handle-e {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: e-resize;
+}
+
+.react-resizable-handle-w {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: w-resize;
+}
+
+/* 드래그 중 스타일 */
+.react-draggable-dragging {
+  z-index: 1000;
+  opacity: 0.8;
+}
+
+/* 그리드 셀 스타일 */
+.grid-cell {
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  min-height: 100px;
+  position: relative;
+}
+
+.grid-cell:hover {
+  background-color: #f3f4f6;
+}
+
+/* 비가동/비조업 스타일 */
+.non-working {
+  background-color: #fef2f2;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    #fca5a5 10px,
+    #fca5a5 20px
+  );
+}
+
+.idle {
+  background-color: #fffbeb;
+}
+
+/* 헤더 스타일 */
+.grid-header {
+  background-color: #f8fafc;
+  border-bottom: 2px solid #374151;
+  font-weight: 600;
+}
+
+/* 공정 라벨 스타일 */
+.process-label {
+  background-color: #f1f5f9;
+  border-right: 1px solid #d1d5db;
+  font-weight: 700;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 스크롤바 스타일 */
+.schedule-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.schedule-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.schedule-grid::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.schedule-grid::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 1200px) {
+  .schedule-grid {
+    font-size: 11px;
+  }
+  
+  .schedule-bar {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .schedule-grid {
+    font-size: 10px;
+  }
+  
+  .schedule-bar {
+    font-size: 9px;
+  }
+}
+
+/* 가로 스크롤 개선 */
+.overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

@@ -1,0 +1,20 @@
+operator_id,operator_name,department,shift,certification_level,hire_date,experience_years,primary_line,backup_lines,contact,email,training_completed,last_training_date,performance_rating,notes
+OP123,김민성,생산부,A,Senior,2020-03-15,5.4,Line-1,Line-2;Line-3,010-1234-5678,kim.ms@company.com,Y,2025-05-30,A,우수한 공정 제어 능력
+OP124,박영수,생산부,B,Senior,2019-08-22,6.0,Line-2,Line-1,010-2345-6789,park.ys@company.com,Y,2025-06-15,A,안정적인 운전 실력
+OP125,이현진,생산부,C,Intermediate,2021-11-10,3.7,Line-3,Line-2,010-3456-7890,lee.hj@company.com,Y,2025-04-20,B,꼼꼼한 작업 수행
+OP126,정미영,생산부,A,Senior,2018-05-12,7.2,Line-2,Line-1;Line-3,010-4567-8901,jung.my@company.com,Y,2025-07-10,A,다년간 경험의 베테랑
+OP127,김태호,생산부,B,Intermediate,2022-01-18,3.6,Line-1,Line-3,010-5678-9012,kim.th@company.com,Y,2025-03-25,B,적극적인 학습 태도
+OP128,송지현,생산부,C,Junior,2023-06-05,2.1,Line-3,Line-1,010-6789-0123,song.jh@company.com,Y,2025-02-14,C,신입 운전자 교육 중
+OP129,황수진,생산부,A,Senior,2017-12-08,7.7,Line-1,Line-2,010-7890-1234,hwang.sj@company.com,Y,2025-06-30,A,문제 해결 능력 우수
+OP130,최동원,생산부,B,Intermediate,2020-09-14,4.9,Line-2,Line-3,010-8901-2345,choi.dw@company.com,Y,2025-05-15,B,안전 의식 우수
+OP131,임소영,생산부,C,Junior,2024-01-22,1.6,Line-3,,010-9012-3456,lim.sy@company.com,N,2025-01-22,C,기초 교육 완료
+OP132,강민수,생산부,A,Intermediate,2021-04-30,4.3,Line-1,Line-2,010-0123-4567,kang.ms@company.com,Y,2025-04-10,B,성실한 근무 태도
+QC001,최영희,품질부,Day,Expert,2016-03-20,9.3,QC_Lab,,010-1111-2222,choi.yh@company.com,Y,2025-07-20,A,품질 관리 전문가
+QC002,김수현,품질부,Day,Senior,2019-07-11,6.3,QC_Lab,,010-2222-3333,kim.sh@company.com,Y,2025-06-05,A,정밀한 측정 능력
+QC003,박민지,품질부,Day,Intermediate,2022-02-28,3.5,QC_Lab,,010-3333-4444,park.mj@company.com,Y,2025-03-15,B,분석 능력 향상 중
+MT001,유정호,정비부,Day,Expert,2015-11-12,9.8,Maintenance,,010-4444-5555,yu.jh@company.com,Y,2025-08-01,A,설비 전문가
+MT002,신대성,정비부,Day,Senior,2018-08-25,6.9,Maintenance,,010-5555-6666,shin.ds@company.com,Y,2025-07-05,A,예방 정비 전문
+MT003,조현우,정비부,Day,Senior,2020-01-15,5.6,Maintenance,,010-6666-7777,cho.hw@company.com,Y,2025-05-20,A,전기 시스템 전문
+IT001,이준석,IT부,Day,Expert,2017-04-18,8.1,IT_Support,,010-7777-8888,lee.js@company.com,Y,2025-06-25,A,제어 시스템 전문가
+QA001,박혜진,품질보증부,Day,Expert,2016-09-05,8.8,QA_Team,,010-8888-9999,park.hj@company.com,Y,2025-07-15,A,품질 보증 총괄
+QA002,김영준,품질보증부,Day,Senior,2020-12-03,4.7,QA_Team,,010-9999-0000,kim.yj@company.com,Y,2025-04-30,A,교육 프로그램 담당 

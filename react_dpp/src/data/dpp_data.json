@@ -1,0 +1,600 @@
+{
+  "scheduleData": [
+    {
+      "date": "2025-05-21",
+      "isNonWorking": false,
+      "isIdle": false,
+      "items": [
+        {
+          "id": "1",
+          "processNo": "5A-16",
+          "startTime": "2025-05-21T00:00:00",
+          "durationHours": 4,
+          "quantityTon": 932,
+          "description": "932",
+          "processLine": "No.1",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 339
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "processNo": "5A-15",
+          "startTime": "2025-05-21T12:00:00",
+          "durationHours": 5,
+          "quantityTon": 933,
+          "description": "933",
+          "processLine": "No.1",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 340
+            }
+          ]
+        },
+        {
+          "id": "8",
+          "processNo": "5A-19",
+          "startTime": "2025-05-21T14:00:00",
+          "durationHours": 9,
+          "quantityTon": 945,
+          "description": "945",
+          "processLine": "No.2",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 352
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2025-05-22",
+      "isNonWorking": false,
+      "isIdle": false,
+      "items": [
+        {
+          "id": "3",
+          "processNo": "5A-17",
+          "startTime": "2025-05-22T03:00:00",
+          "durationHours": 7,
+          "quantityTon": 939,
+          "description": "939",
+          "processLine": "No.1",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 346
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "processNo": "5A-17",
+          "startTime": "2025-05-22T11:00:00",
+          "durationHours": 3,
+          "quantityTon": 940,
+          "description": "940",
+          "processLine": "No.2",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 347
+            }
+          ]
+        },
+        {
+          "id": "9",
+          "processNo": "5A-20",
+          "startTime": "2025-05-22T16:00:00",
+          "durationHours": 7,
+          "quantityTon": 950,
+          "description": "950",
+          "processLine": "No.2",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 357
+            }
+          ]
+        },
+        {
+          "id": "5",
+          "processNo": "5A-18",
+          "startTime": "2025-05-22T11:00:00",
+          "durationHours": 10,
+          "quantityTon": 945,
+          "description": "945",
+          "processLine": "No.1",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 352
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2025-05-23",
+      "isNonWorking": false,
+      "isIdle": false,
+      "items": [
+        {
+          "id": "7",
+          "processNo": "5A-19",
+          "startTime": "2025-05-22T16:00:00",
+          "durationHours": 10,
+          "quantityTon": 924,
+          "description": "924",
+          "processLine": "No.1",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 331
+            }
+          ]
+        },
+        {
+          "id": "10",
+          "processNo": "5B-21",
+          "startTime": "2025-05-23T03:00:00",
+          "durationHours": 14,
+          "quantityTon": 951,
+          "description": "951",
+          "processLine": "No.2",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 358
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2025-05-24",
+      "isNonWorking": false,
+      "isIdle": true,
+      "items": [
+        {
+          "id": "6",
+          "processNo": "5A-18",
+          "startTime": "2025-05-24T04:00:00",
+          "durationHours": 20,
+          "quantityTon": 905,
+          "description": "905",
+          "processLine": "No.1",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 120
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 48
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 39
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 312
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2025-05-25",
+      "isNonWorking": false,
+      "isIdle": true,
+      "items": []
+    },
+    {
+      "date": "2025-05-30",
+      "isNonWorking": false,
+      "isIdle": false,
+      "items": [
+        {
+          "id": "11",
+          "processNo": "5A-22",
+          "startTime": "2025-05-30T08:00:00",
+          "durationHours": 12,
+          "quantityTon": 1200,
+          "description": "1200",
+          "processLine": "No.1",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 240
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 96
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 78
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 400
+            }
+          ]
+        },
+        {
+          "id": "12",
+          "processNo": "5A-23",
+          "startTime": "2025-05-30T08:00:00",
+          "durationHours": 16,
+          "quantityTon": 1500,
+          "description": "1500",
+          "processLine": "No.2",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 300
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 120
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 480
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 100
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 500
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2025-05-31",
+      "isNonWorking": false,
+      "isIdle": false,
+      "items": [
+        {
+          "id": "13",
+          "processNo": "5A-24",
+          "startTime": "2025-05-31T08:00:00",
+          "durationHours": 12,
+          "quantityTon": 1100,
+          "description": "1100",
+          "processLine": "No.1",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 220
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 88
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 386
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 72
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 334
+            }
+          ]
+        },
+        {
+          "id": "14",
+          "processNo": "5A-25",
+          "startTime": "2025-05-31T08:00:00",
+          "durationHours": 16,
+          "quantityTon": 1400,
+          "description": "1400",
+          "processLine": "No.2",
+          "specifications": [
+            {
+              "grade": "SCM440H",
+              "period": "4월 1차",
+              "quantity": 280
+            },
+            {
+              "grade": "15B37MJ",
+              "period": "4월 2차",
+              "quantity": 112
+            },
+            {
+              "grade": "SM25CA",
+              "period": "4월 1차",
+              "quantity": 450
+            },
+            {
+              "grade": "SM45C",
+              "period": "4월 1차",
+              "quantity": 90
+            },
+            {
+              "grade": "10B38M2",
+              "period": "당진 1차",
+              "quantity": 468
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "productionInfo": {
+    "2025-05-21": {
+      "rolling": "압연 1차 5600T",
+      "uncorrected": "Φ70 120T 출하\n1L1111\n1L2222\n1L3333",
+      "transfer": "Φ28 이송\n10B38M2 100T\nS45C 120T",
+      "billet": "육위 야드/ 입면 소재장\n출하\n120T"
+    },
+    "2025-05-22": {
+      "rolling": "압연 1차 5600Tkjkdjfasd",
+      "uncorrected": "Φ70 130T 출하\n2L1111\n2L2222",
+      "transfer": "Φ28 이송\n10B38M2 110T\nS45C 130T",
+      "billet": "육위 야드/ 입면 소재장\n이송\n130T"
+    },
+    "2025-05-23": {
+      "rolling": "압연 1차 5600T. ㄹㅎㅇㄱㅎㄷ",
+      "uncorrected": "Φ70 140T 출하\n3L1111\n3L2222\n3L3333",
+      "transfer": "",
+      "billet": "육위 야드/ 입면 소재장\n대기\n140T"
+    },
+    "2025-05-24": {
+      "rolling": "새로운 내용 입력....",
+      "uncorrected": "",
+      "transfer": "",
+      "billet": ""
+    },
+    "2025-05-25": {
+      "rolling": "테스트 2222",
+      "uncorrected": "추가 입력\n",
+      "transfer": "",
+      "billet": ""
+    },
+    "2025-05-26": {
+      "rolling": "압연 2차 5800T",
+      "uncorrected": "Φ70 150T 출하\n6L1111",
+      "transfer": "Φ28 이송\n10B38M2 120T",
+      "billet": "육위 야드/ 입면 소재장\n출하\n150T"
+    },
+    "2025-05-27": {
+      "rolling": "압연 2차 5900T",
+      "uncorrected": "Φ70 160T 출하\n7L1111\n7L2222",
+      "transfer": "Φ28 이송\nS45C 140T",
+      "billet": "육위 야드/ 입면 소재장\n준비\n160T"
+    }
+  }
+}

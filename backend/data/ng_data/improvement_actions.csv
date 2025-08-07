@@ -1,0 +1,16 @@
+action_id,lot_id,action_date,action_type,action_description,implemented_by,effectiveness_delta_wt%,target_parameter,before_value,after_value,status,validation_date,notes
+ACT001,20250701-CAT01,2025-07-01,maintenance,코일 고압 세척,MT001,-0.12,moisture_wt%,0.68,0.56,completed,2025-07-02,건조 효율 개선됨
+ACT002,20250615-CAT01,2025-06-15,process_adjustment,체류시간 +5%,OP123,-0.08,moisture_wt%,0.58,0.50,completed,2025-06-16,체류시간 125s -> 131s로 증가
+ACT003,20250530-CAT02,2025-05-30,equipment_replacement,온도센서 교체,MT002,-0.05,temp_stability,±2.5°C,±1.0°C,completed,2025-05-31,온도 제어 정밀도 향상
+ACT004,20250510-CAT01,2025-05-10,parameter_tuning,건조온도 +3°C,OP124,-0.09,moisture_wt%,0.62,0.53,completed,2025-05-11,78°C -> 81°C로 조정
+ACT005,20250425-CAT03,2025-04-25,preventive_maintenance,HVAC 필터 교체,MT003,-0.06,humidity_control,±3.0%,±1.5%,completed,2025-04-26,입구 습도 안정성 개선
+ACT006,20250410-CAT01,2025-04-10,calibration,습도센서 교정,MT001,-0.04,humidity_accuracy,±2%,±0.5%,completed,2025-04-11,센서 정확도 향상
+ACT007,20250320-CAT02,2025-03-20,process_optimization,분말 투입량 조정,OP125,-0.07,residence_time_consistency,±15s,±5s,completed,2025-03-21,체류시간 편차 감소
+ACT008,20250305-CAT01,2025-03-05,equipment_upgrade,건조기 내부 코팅 개선,MT002,-0.11,heat_transfer_efficiency,85%,92%,completed,2025-03-07,열전달 효율 개선
+ACT009,20250220-CAT03,2025-02-20,software_update,제어시스템 업데이트,IT001,-0.03,control_precision,±0.05,±0.02,completed,2025-02-21,PID 제어 정밀도 향상
+ACT010,20250205-CAT01,2025-02-05,procedure_revision,운전절차 개선,QA001,-0.05,operator_consistency,varied,standardized,completed,2025-02-10,표준화된 운전절차 적용
+ACT011,20250810-CAT01,2025-08-10,urgent_maintenance,HVAC 실링 점검,MT001,pending,humidity_control,현재상태,점검예정,scheduled,2025-08-15,2개월 지연된 점검 예정
+ACT012,20250715-CAT02,2025-07-15,equipment_inspection,압력센서 점검,MT003,-0.02,pressure_accuracy,±0.1bar,±0.05bar,completed,2025-07-16,압력 측정 정확도 개선
+ACT013,20250630-CAT01,2025-06-30,cleaning,건조기 내부 청소,MT002,-0.06,heat_distribution,uneven,uniform,completed,2025-07-01,열분포 균일성 개선
+ACT014,20250610-CAT03,2025-06-10,parameter_optimization,공기 유량 조정,OP126,-0.04,drying_efficiency,78%,82%,completed,2025-06-11,건조 효율 개선
+ACT015,20250525-CAT02,2025-05-25,training,운전자 재교육,QA002,-0.03,operation_quality,variable,consistent,completed,2025-05-30,운전 품질 일관성 향상 

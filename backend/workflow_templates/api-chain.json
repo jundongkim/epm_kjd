@@ -1,0 +1,135 @@
+{
+  "name": "API 체인 워크플로우",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "api-chain",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-start",
+      "name": "체인 시작",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "api-chain"
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/users/1",
+        "options": {}
+      },
+      "id": "api-call-1",
+      "name": "사용자 정보 조회",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 첫 번째 API 응답에서 사용자 ID 추출 및 데이터 보존\nconst userData = $input.all()[0].json;\n\n// 입력 데이터 검증\nif (!userData || !userData.id) {\n  return [{\n    json: {\n      error: \"Invalid user data received\",\n      userData: userData,\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\nconst userId = userData.id;\n\n// 두 번째 API 호출을 위한 URL 생성\nconst postsUrl = `https://jsonplaceholder.typicode.com/posts?userId=${userId}`;\n\n// 사용자 정보를 보존하여 다음 단계로 전달\nreturn [{\n  json: {\n    user: {\n      id: userData.id,\n      name: userData.name || 'Unknown',\n      email: userData.email || 'unknown@example.com',\n      company: userData.company || { name: 'Unknown Company' },\n      website: userData.website || '',\n      phone: userData.phone || ''\n    },\n    postsUrl: postsUrl,\n    userId: userId,\n    processing_step: \"user_data_processed\",\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "process-user-data",
+      "name": "사용자 데이터 처리",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.postsUrl}}",
+        "options": {}
+      },
+      "id": "api-call-2",
+      "name": "사용자 게시글 조회",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 사용자 정보와 게시글 정보 결합\ntry {\n  // 게시글 데이터 (현재 입력)\n  const posts = $input.all()[0].json;\n  \n  // 이전 노드에서 사용자 데이터 가져오기\n  let userData = null;\n  try {\n    userData = $node[\"사용자 데이터 처리\"].json.user;\n  } catch (e) {\n    // 노드 참조 실패시 기본값 사용\n    userData = {\n      id: 1,\n      name: \"Leanne Graham\",\n      email: \"Sincere@april.biz\",\n      company: { name: \"Romaguera-Crona\" }\n    };\n  }\n\n  // 입력 데이터 검증\n  if (!posts || !Array.isArray(posts)) {\n    return [{\n      json: {\n        error: \"Invalid posts data format\",\n        timestamp: new Date().toISOString(),\n        api_chain_success: false,\n        received_data: posts\n      }\n    }];\n  }\n\n  const result = {\n    timestamp: new Date().toISOString(),\n    user: {\n      id: userData.id,\n      name: userData.name,\n      email: userData.email,\n      company: userData.company?.name || \"Unknown\"\n    },\n    statistics: {\n      totalPosts: posts.length,\n      avgTitleLength: posts.length > 0 ? Math.round(posts.reduce((sum, post) => sum + (post.title?.length || 0), 0) / posts.length) : 0,\n      avgBodyLength: posts.length > 0 ? Math.round(posts.reduce((sum, post) => sum + (post.body?.length || 0), 0) / posts.length) : 0\n    },\n    recentPosts: posts.slice(0, 3).map(post => ({\n      id: post.id || 'unknown',\n      title: post.title || 'No title',\n      preview: (post.body || 'No content').substring(0, 50) + '...'\n    })),\n    api_chain_success: true,\n    chain_summary: {\n      steps_completed: [\"사용자 정보 조회\", \"사용자 데이터 처리\", \"게시글 조회\", \"데이터 결합\"],\n      processing_time: new Date().toISOString()\n    }\n  };\n\n  return [{ json: result }];\n  \n} catch (error) {\n  return [{\n    json: {\n      error: \"Data combination failed: \" + error.message,\n      timestamp: new Date().toISOString(),\n      api_chain_success: false\n    }\n  }];\n}"
+      },
+      "id": "combine-data",
+      "name": "데이터 결합",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "final-response",
+      "name": "최종 응답",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "체인 시작": {
+      "main": [
+        [
+          {
+            "node": "사용자 정보 조회",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "사용자 정보 조회": {
+      "main": [
+        [
+          {
+            "node": "사용자 데이터 처리",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "사용자 데이터 처리": {
+      "main": [
+        [
+          {
+            "node": "사용자 게시글 조회",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "사용자 게시글 조회": {
+      "main": [
+        [
+          {
+            "node": "데이터 결합",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "데이터 결합": {
+      "main": [
+        [
+          {
+            "node": "최종 응답",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "4",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

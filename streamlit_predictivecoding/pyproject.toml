@@ -1,0 +1,80 @@
+[tool.poetry]
+name = "predictive-coding"
+version = "0.1.0"
+description = "Real-time Predictive Coding - Optimized Streamlit Application"
+authors = ["Kwang Yong Jung <gyjong@gmail.com>"]
+readme = "README.md"
+packages = [{include = "pc_lib"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+# Core dependencies - exact versions from sentients environment
+streamlit = "==1.35.0"
+numpy = "==1.26.4"
+pandas = "==2.3.0"
+plotly = "==5.22.0"
+scipy = "==1.15.3"
+psutil = "==7.0.0"
+scikit-learn = "==1.7.0"
+tqdm = "==4.67.1"
+finance-datareader = "^0.9.96"
+
+[tool.poetry.group.dev.dependencies]
+# Testing
+pytest = ">=7.0.0"
+pytest-cov = ">=4.0.0"
+# Code formatting and linting
+black = ">=23.0.0"
+flake8 = ">=6.0.0"
+isort = ">=5.12.0"
+# Type checking
+mypy = ">=1.0.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["pc_demolib"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_functions = ["test_*"]
+addopts = "--cov=. --cov-report=html --cov-report=term-missing"

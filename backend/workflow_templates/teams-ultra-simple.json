@@ -1,0 +1,104 @@
+{
+  "name": "Teams 초간단 테스트",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "teams-ultra-simple",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "ultra-simple-webhook",
+      "name": "초간단 테스트",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "teams-ultra-simple"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Teams 메시지 데이터 준비 (HTTP Request 노드로 전송)\nconst message = {\n  text: '✅ Teams 연결 테스트 성공! (HTTP Request 노드 방식)',\n  summary: 'Teams 연결 테스트'\n};\n\nconsole.log('📋 Teams 메시지 데이터 준비 완료');\nreturn [{ json: message }];"
+      },
+      "id": "message-prepare",
+      "name": "메시지 데이터 준비",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://misoinfoadmin.webhook.office.com/webhookb2/8217a413-7c44-4dd2-9b16-d05fc66d3e90@b0705e7e-8b75-46d7-88b0-32b415cd622a/IncomingWebhook/1784cb29d4de4912a5da04047a828ab9/9bc25d0e-6976-4683-9932-d9e9ab8545e1/V2zFgDJiFgR6DoXBITdUv6vaS4mXOAU_wyYi__bvkKp7g1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "options": {}
+      },
+      "id": "teams-http-sender",
+      "name": "Teams HTTP 전송",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "ultra-simple-response",
+      "name": "완료",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "초간단 테스트": {
+      "main": [
+        [
+          {
+            "node": "메시지 데이터 준비",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "메시지 데이터 준비": {
+      "main": [
+        [
+          {
+            "node": "Teams HTTP 전송",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Teams HTTP 전송": {
+      "main": [
+        [
+          {
+            "node": "완료",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "teams-ultra-simple",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

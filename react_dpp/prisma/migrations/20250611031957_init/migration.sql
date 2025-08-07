@@ -1,0 +1,32 @@
+-- CreateTable
+CREATE TABLE "orders" (
+    "id" SERIAL NOT NULL,
+    "구분" TEXT,
+    "팀" TEXT,
+    "고객명" TEXT,
+    "강종(주문)" TEXT,
+    "강종(생산)" TEXT,
+    "코드" TEXT,
+    "제강공장" TEXT,
+    "코드2" TEXT,
+    "압연" TEXT,
+    "두께" DOUBLE PRECISION,
+    "길이(제품)" DOUBLE PRECISION,
+    "길이(소재)" TEXT,
+    "요청량" TEXT,
+    "재고량" TEXT,
+    "제강량" TEXT,
+    "Ch수" DOUBLE PRECISION,
+    "생산량(최종)" TEXT,
+    "용도별" TEXT,
+    "조정량" TEXT,
+    "이월주문" TEXT,
+    "소LOT분류" TEXT,
+    "생산증량 검토 시" TEXT,
+    "비고(공장)" TEXT,
+    "비고(영업) - 특기사항" TEXT,
+    "비고" TEXT,
+    "요청라인" TEXT,
+
+    CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
+);

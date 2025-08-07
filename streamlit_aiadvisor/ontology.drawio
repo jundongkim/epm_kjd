@@ -1,0 +1,172 @@
+<mxfile host="65bd71144e">
+    <diagram id="ontology_structure" name="DX-AI Advisor 온톨로지 구조">
+        <mxGraphModel dx="596" dy="414" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="1600" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="DX-AI Advisor 온톨로지 구조" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="40" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="section1" value="1. 문서 및 콘텐츠 구조" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;arcSize=6;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="100" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="section2" value="2. 엔티티 타입 체계" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;arcSize=6;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="100" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="section3" value="3. 관계 타입 체계" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;arcSize=6;fontColor=#333333;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="428" y="522" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="section4" value="4. 쿼리 및 보고서 구조" style="text;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;arcSize=6;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="288" y="795" width="280" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="section5" value="5. 온톨로지 활용 방안" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;arcSize=6;fontColor=#333333;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="206" y="989" width="580" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="document_class" value="&lt;b&gt;Document&lt;/b&gt;&lt;br&gt;- documentId: 문서 고유 식별자&lt;br&gt;- title: 문서 제목&lt;br&gt;- author: 작성자&lt;br&gt;- creationDate: 생성일자&lt;br&gt;- format: 파일 형식&lt;br&gt;- version: 문서 버전&lt;br&gt;- fullContent: 문서 전체 내용&lt;br&gt;- contentCount: 내용 항목 수" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="150" width="200" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="section_class" value="&lt;b&gt;Section&lt;/b&gt;&lt;br&gt;- sectionId: 섹션 고유 식별자&lt;br&gt;- title: 섹션 제목&lt;br&gt;- level: 계층 구조 레벨&lt;br&gt;- orderIndex: 순서 인덱스&lt;br&gt;- content: 섹션 내용" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="340" width="201" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="metadata_class" value="&lt;b&gt;Metadata&lt;/b&gt;&lt;br&gt;- key: 메타데이터 키&lt;br&gt;- value: 메타데이터 값&lt;br&gt;- source: 메타데이터 출처" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="324" y="136" width="159" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="concept_class" value="&lt;b&gt;Concept&lt;/b&gt;&lt;br&gt;- conceptId: 개념 고유 식별자&lt;br&gt;- name: 개념 이름&lt;br&gt;- description: 개념 설명&lt;br&gt;- category: 개념 카테고리&lt;br&gt;- importance: 중요도" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="150" width="240" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="general_entities" value="&lt;b&gt;일반 엔티티 (General Entities)&lt;/b&gt;&lt;br&gt;- Organization: 조직, 기업 등&lt;br&gt;- Person: 인물, 사람&lt;br&gt;- Country: 국가, 지역" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="286" width="240" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="product_entities" value="&lt;b&gt;제품 및 자재 (Products &amp;amp; Materials)&lt;/b&gt;&lt;br&gt;- Product: 완제품, 양극재 등&lt;br&gt;- Material: 원자재, 소재&lt;br&gt;- Component: 부품, 컴포넌트&lt;br&gt;- Chemical: 화학물질, Li, Al, Zr 등" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="150" width="240" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="process_entities" value="&lt;b&gt;공정 및 설비 (Process &amp;amp; Equipment)&lt;/b&gt;&lt;br&gt;- Equipment: 설비, 장비, 라인&lt;br&gt;- Process: 공정, 프로세스&lt;br&gt;- Instrument: 계측기, 측정장비&lt;br&gt;- Tool: 도구, 작업도구" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="270" width="240" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="fault_entities" value="&lt;b&gt;문제 및 품질 (Faults &amp;amp; Quality)&lt;/b&gt;&lt;br&gt;- Defect: 결함, 불량, NG, 이물 등&lt;br&gt;- FailureMode: 고장 모드, 파손, 손상 등&lt;br&gt;- RootCause: 근본 원인&lt;br&gt;- Parameter: 파라미터, 측정값, 온도, 압력 등" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="390" width="240" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="other_entities" value="&lt;b&gt;기타 엔티티 (Other Entities)&lt;/b&gt;&lt;br&gt;- Technology: 기술, 솔루션&lt;br&gt;- Policy: 정책, 규제, 가이드라인&lt;br&gt;- Event: 이벤트, 사건&lt;br&gt;- Industry: 산업&lt;br&gt;- Market: 시장" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="390" width="240" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="basic_relations" value="&lt;b&gt;기본 관계 (Basic Relations)&lt;/b&gt;&lt;br&gt;- related: 일반적인 관련성&lt;br&gt;- include: 포함 관계" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=5;fontColor=#333333;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="168" y="572" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="causal_relations" value="&lt;b&gt;인과 관계 (Causal Relations)&lt;/b&gt;&lt;br&gt;- caused_by: 원인-결과 관계 (문제 원인)&lt;br&gt;- resulted_in: 결과 관계 (문제 결과)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=5;fontColor=#333333;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="168" y="652" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="business_relations" value="&lt;b&gt;비즈니스/제조 관계&lt;/b&gt;&lt;br&gt;- competes_with: 경쟁 관계&lt;br&gt;- supply_to: 공급 관계&lt;br&gt;- receive_from: 수신 관계&lt;br&gt;- manufactured_by: 제조 관계" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=5;fontColor=#333333;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="408" y="572" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="equipment_relations" value="&lt;b&gt;장비/공정 관계&lt;/b&gt;&lt;br&gt;- used_in: 사용 관계 (장비/도구 사용)&lt;br&gt;- part_of: 부분-전체 관계 (장비 구성)&lt;br&gt;- connected_to: 연결 관계 (배관/장비)&lt;br&gt;- measured_by: 측정 관계 (센서/계측기)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=5;fontColor=#333333;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="408" y="672" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="quality_relations" value="&lt;b&gt;품질/문제 관계&lt;/b&gt;&lt;br&gt;- detected_in: 불량 발견 관계&lt;br&gt;- affected_by: 영향 관계&lt;br&gt;- improved_by: 개선 관계&lt;br&gt;- failed_due_to: 고장 원인 관계" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=5;fontColor=#333333;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="648" y="572" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="business_regulation_relations" value="&lt;b&gt;비즈니스/규제 관계&lt;/b&gt;&lt;br&gt;- invested_in: 투자 관계&lt;br&gt;- regulated_by: 규제 관계" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=5;fontColor=#333333;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="648" y="672" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="query_class" value="&lt;b&gt;Query (질의)&lt;/b&gt;&lt;br&gt;- queryId: 질의 식별자&lt;br&gt;- content: 질의 내용&lt;br&gt;- timestamp: 시간 정보&lt;br&gt;- source: 질의 출처&lt;br&gt;- status: 질의 상태" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="37" y="845" width="220" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="response_class" value="&lt;b&gt;Response (응답)&lt;/b&gt;&lt;br&gt;- responseId: 응답 식별자&lt;br&gt;- content: 응답 내용&lt;br&gt;- timestamp: 시간 정보&lt;br&gt;- confidence: 신뢰도&lt;br&gt;- sources: 참조 소스" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="408" y="845" width="220" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="report_class" value="&lt;b&gt;Report (보고서)&lt;/b&gt;&lt;br&gt;- reportId: 보고서 식별자&lt;br&gt;- title: 보고서 제목&lt;br&gt;- creationDate: 생성일자&lt;br&gt;- summary: 요약 내용&lt;br&gt;- type: 보고서 유형&lt;br&gt;- format: 형식" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="744" y="845" width="220" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="ontology_creation_process" value="&lt;b&gt;온톨로지 생성 프로세스&lt;/b&gt;&lt;br&gt;1. 문서 파싱: 구조, 섹션, 콘텐츠 식별&lt;br&gt;2. 전체 내용 추출: 문서의 모든 콘텐츠 추출 및 저장&lt;br&gt;3. 정보 추출: LLM 모델이 중요 개념, 엔티티, 관계 추출&lt;br&gt;4. 메타데이터 관리: 문서 속성 및 정보 구조화&lt;br&gt;5. 관계 모델링: 개념 간, 문서 간 관계 정의&lt;br&gt;6. TTL 변환: 온톨로지를 RDF/TTL 형식으로 저장" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="66" y="1039" width="320" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="advisor_usage" value="&lt;b&gt;어드바이저에서의 온톨로지 활용&lt;/b&gt;&lt;br&gt;1. 질의 분석: 사용자 질의에서 핵심 개념 추출&lt;br&gt;2. 관계 탐색: 개념 간 관계를 통한 맥락 이해&lt;br&gt;3. 관련 문서 검색: 개념과 관련된 문서 섹션 탐색&lt;br&gt;4. 증거 수집: 질의 관련 증거를 온톨로지 그래프에서 수집&lt;br&gt;5. 전체 문서 내용 검색: 필요시 원본 전체 내용 참조&lt;br&gt;6. 응답 생성: LLM이 온톨로지 정보를 기반으로 응답 생성" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="406" y="1039" width="320" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="fault_analysis_usage" value="&lt;b&gt;제조 불량 분석에서의 온톨로지 활용&lt;/b&gt;&lt;br&gt;1. 불량 분류: 불량 현상을 유형별로 분류&lt;br&gt;2. 원인 추적: 인과 관계를 통한 근본 원인 파악&lt;br&gt;3. 연관 장비/부품 식별: 불량과 연관된 설비 및 부품 식별&lt;br&gt;4. 유사 사례 검색: 과거 유사 불량 사례 검색&lt;br&gt;5. 전체 문서 내용 기반 RCA: 상세 원인 분석 수행&lt;br&gt;6. 개선 방안 도출: 유사 사례의 해결책 참조" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="746" y="1039" width="320" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="key_benefits" value="&lt;b&gt;온톨로지 활용의 주요 이점&lt;/b&gt;&lt;br&gt;1. 맥락 인식: 단순 키워드 매칭을 넘어선 의미적 이해&lt;br&gt;2. 추론 능력: 명시적 정보를 넘어 암묵적 관계 추론&lt;br&gt;3. 투명성: 응답 및 보고서의 근거 명확히 제시&lt;br&gt;4. 일관성: 다양한 문서 간 통합된 지식 표현&lt;br&gt;5. 원본 참조: 필요시 원본 전체 내용에 접근 가능&lt;br&gt;6. 확장성: 새로운 문서와 개념을 지속적으로 통합 가능" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="406" y="1179" width="320" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="contains_relation" value="" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=paperlogy;" parent="1" source="document_class" target="section_class" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="contains_label" value="contains" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontFamily=paperlogy;" parent="contains_relation" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="has_metadata_relation" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fontFamily=paperlogy;" parent="1" source="document_class" target="metadata_class" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="has_metadata_label" value="hasMetadata" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontFamily=paperlogy;" parent="has_metadata_relation" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="mentions_relation" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=paperlogy;" parent="1" source="section_class" target="concept_class" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="500" y="350"/>
+                            <mxPoint x="500" y="200"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="mentions_label" value="mentions" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontFamily=paperlogy;" parent="mentions_relation" vertex="1" connectable="0">
+                    <mxGeometry x="-0.4" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="concept_to_entities" value="" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=paperlogy;" parent="1" source="concept_class" target="general_entities" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="concept_to_entities_label" value="hasType" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontFamily=paperlogy;" parent="concept_to_entities" connectable="0" vertex="1">
+                    <mxGeometry x="-0.2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="concept_to_product" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fontFamily=paperlogy;" parent="1" source="concept_class" target="product_entities" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="concept_to_product_label" value="categorizedAs" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontFamily=paperlogy;" parent="concept_to_product" connectable="0" vertex="1">
+                    <mxGeometry x="-0.2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="query_to_response" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=paperlogy;" parent="1" source="query_class" target="response_class" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="query_to_response_label" value="hasResponse" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontFamily=paperlogy;" parent="query_to_response" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="response_to_report" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=paperlogy;" parent="1" source="response_class" target="report_class" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="response_to_report_label" value="includesIn" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontFamily=paperlogy;" parent="response_to_report" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="explanation" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;DX-AI Advisor 온톨로지 구조 설명&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;br&gt;이 온톨로지는 제조 도메인 특히 불량 분석을 위한 지식 표현 방식을 나타냅니다.&lt;br&gt;&lt;br&gt;주요 구성:&lt;br&gt;1. 문서/콘텐츠 구조: 기본 문서, 섹션 정보 관리, 전체 원문 텍스트 보존&lt;br&gt;2. 엔티티 타입 체계: 다양한 제조 관련 개체 유형 분류&lt;br&gt;3. 관계 타입 체계: 제조 공정 및 불량 관련 관계 정의&lt;br&gt;4. 쿼리/보고서 구조: 사용자 질의와 결과물 모델링&lt;br&gt;5. 활용 방안: 온톨로지 생성 및 응용 프로세스" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=#f8cecc;strokeColor=#b85450;spacingLeft=5;spacingRight=5;spacing=5;verticalAlign=top;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="66" y="1179" width="320" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="implementation_notes" value="&lt;b&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;구현 세부 사항&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;br&gt;- 메모리 표현: rdflib 라이브러리 활용&lt;br&gt;- 저장 형식: RDF/TTL (Turtle) 포맷&lt;br&gt;- URI 체계: http://dxai.advisor/ontology#[entity_name]&lt;br&gt;- 관계 정규화: 특수문자 처리 및 일관된 명명 규칙 적용&lt;br&gt;- 전체 내용 저장: 문서 원본 내용 저장 및 RCA 활용&lt;br&gt;- 확장성: 새로운 엔티티 타입과 관계 추가 가능&lt;br&gt;- 다국어 지원: 한글 엔티티 처리 로직 포함" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=#f8cecc;strokeColor=#b85450;spacingLeft=5;spacingRight=5;spacing=5;verticalAlign=top;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="746" y="1179" width="320" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="full_content_class" value="&lt;b&gt;FullContent&lt;/b&gt;&lt;br&gt;- documentId: 문서 ID&lt;br&gt;- fullText: 전체 텍스트&lt;br&gt;- contentItems: 세부 항목 배열&lt;br&gt;- contentCount: 항목 수" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=5;fontFamily=paperlogy;" parent="1" vertex="1">
+                    <mxGeometry x="318" y="227" width="167" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="has_full_content" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=paperlogy;" parent="1" source="document_class" target="full_content_class" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="has_full_content_label" value="hasFullContent" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontFamily=paperlogy;" parent="has_full_content" connectable="0" vertex="1">
+                    <mxGeometry x="-0.2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -1,0 +1,109 @@
+{
+    "lot_id": "20250810-CAT01",
+    "product": {
+      "code": "CAT01",
+      "name": "NCM811_양극재_분말"
+    },
+    "production_line": "Line-1",
+    "detection": {
+      "timestamp": "2025-08-10T14:05:23Z",
+      "moisture_measured_wt%": 0.62,
+      "moisture_threshold_wt%": 0.50,
+      "severity": "high"
+    },
+    "sensor_readings": [
+      {
+        "timestamp": "2025-08-10T13:50:00Z",
+        "exit_humidity_%": 32.1,
+        "inlet_humidity_%": 18.7,
+        "drying_temp_°C": 80.2,
+        "residence_time_s": 125
+      },
+      {
+        "timestamp": "2025-08-10T13:55:00Z",
+        "exit_humidity_%": 33.4,
+        "inlet_humidity_%": 19.2,
+        "drying_temp_°C": 79.8,
+        "residence_time_s": 123
+      },
+      {
+        "timestamp": "2025-08-10T14:00:00Z",
+        "exit_humidity_%": 34.5,
+        "inlet_humidity_%": 20.1,
+        "drying_temp_°C": 79.5,
+        "residence_time_s": 120
+      }
+    ],
+    "correlation_results": {
+      "exit_humidity_%":   { "pearson_r":  0.82, "p_value": 0.003 },
+      "residence_time_s":  { "pearson_r": -0.68, "p_value": 0.010 },
+      "inlet_humidity_%":  { "pearson_r":  0.45, "p_value": 0.047 }
+    },
+    "process_trend_analysis": [
+        {
+          "variable": "exit_humidity_%",
+          "slope": 0.15,
+          "trend_direction": "increasing",
+          "anomaly_points": 2,
+          "chart_url": "https://…/exit_humidity_trend.png",
+          "historical_pattern_comparison": {
+            "baseline_slope": 0.05,
+            "baseline_anomaly_rate": 0.02,
+            "current_vs_historical": "slope ↑ 200%, anomaly ↑ 150%",
+            "is_anomalous": true,
+            "description": "최근 5회 유사 LOT 평균 대비 출구습도 상승폭이 크게 확대되었습니다."
+          }
+        },
+        {
+          "variable": "residence_time_s",
+          "slope": -0.10,
+          "trend_direction": "decreasing",
+          "anomaly_points": 1,
+          "chart_url": "https://…/res_time_trend.png",
+          "historical_pattern_comparison": {
+            "baseline_slope": -0.02,
+            "baseline_anomaly_rate": 0.01,
+            "current_vs_historical": "slope ↓ 500%, anomaly ↑ 100%",
+            "is_anomalous": true,
+            "description": "평소 대비 체류시간 감소 속도가 5배 빠르며, 일정 간격 이상치가 관측됩니다."
+          }
+        },
+        {
+          "variable": "inlet_humidity_%",
+          "slope": 0.05,
+          "trend_direction": "slightly_increasing",
+          "anomaly_points": 0,
+          "chart_url": "https://…/inlet_humidity_trend.png",
+          "historical_pattern_comparison": {
+            "baseline_slope": 0.04,
+            "baseline_anomaly_rate": 0.00,
+            "current_vs_historical": "slope ↑ 25%, anomaly 동일",
+            "is_anomalous": false,
+            "description": "기존 패턴 범위 내 상승이며, 눈에 띄는 이상치는 없습니다."
+          }
+        }
+      ],
+    "past_improvement_actions": [
+      {
+        "action": "코일 고압 세척",
+        "date": "2025-07-01",
+        "effectiveness_delta_wt%": -0.12
+      },
+      {
+        "action": "체류시간 +5%",
+        "date": "2025-06-15",
+        "effectiveness_delta_wt%": -0.08
+      }
+    ],
+    "operator_on_duty": {
+      "id": "OP123",
+      "name": "김민성"
+    },
+    "historical_records_count": 12,
+    "anomaly_flags": [
+      "exit_humidity_spike",
+      "res_time_variance_high"
+    ],
+    "additional_notes": "HVAC 실링 점검 2개월 지연 중"
+  }
+  

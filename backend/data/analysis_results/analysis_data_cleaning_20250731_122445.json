@@ -1,0 +1,59 @@
+{
+  "cleaning_results": {
+    "before_cleaning": {
+      "total_records": 7569,
+      "missing_values": 81,
+      "duplicates": 24,
+      "outliers": 29
+    },
+    "cleaning_operations": {
+      "removed_duplicates": 30,
+      "filled_missing_values": 78,
+      "treated_outliers": 29,
+      "standardized_formats": 13
+    },
+    "after_cleaning": {
+      "total_records": 4147,
+      "data_quality_score": 0.861,
+      "completeness": 0.972
+    }
+  },
+  "feature_engineering_results": {
+    "original_features": 10,
+    "engineered_features": {
+      "interaction_features": 8,
+      "polynomial_features": 9,
+      "temporal_features": 5,
+      "aggregate_features": 10
+    },
+    "final_feature_count": 38,
+    "feature_importance": {
+      "temperature": 0.23,
+      "pressure": 0.18,
+      "flow_rate": 0.15,
+      "catalyst_concentration": 0.12,
+      "residence_time": 0.1
+    }
+  },
+  "preprocessing_config": {
+    "enabled": true,
+    "cleaningRules": [
+      "중복 제거",
+      "결측값 처리"
+    ],
+    "featureEngineering": [
+      "정규화",
+      "피처 선택"
+    ],
+    "metadataTagging": true
+  },
+  "metadata_tags": {
+    "data_version": "v1.0_cleaned",
+    "processing_date": "2025-07-31T12:24:45.680819",
+    "quality_flags": [
+      "cleaned",
+      "normalized",
+      "feature_enhanced"
+    ]
+  }
+}

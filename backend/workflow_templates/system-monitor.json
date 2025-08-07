@@ -1,0 +1,190 @@
+{
+  "name": "시스템 모니터링 워크플로우",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "system-monitor",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "monitor-trigger",
+      "name": "모니터링 시작",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "system-monitor"
+    },
+    {
+      "parameters": {
+        "functionCode": "// 시스템 상태 체크 시뮬레이션\nconst inputData = $input.all()[0].json;\n\n// 현재 시간\nconst now = new Date();\nconst timestamp = now.toISOString();\n\n// 시스템 메트릭 시뮬레이션 (실제 환경에서는 실제 메트릭 수집)\nconst metrics = {\n  cpu: {\n    usage: Math.random() * 100,\n    cores: 8,\n    temperature: 45 + Math.random() * 30\n  },\n  memory: {\n    total: 16384, // MB\n    used: Math.random() * 12000 + 2000,\n    available: 0\n  },\n  disk: {\n    total: 512000, // MB  \n    used: Math.random() * 400000 + 50000,\n    available: 0\n  },\n  network: {\n    inbound: Math.random() * 1000, // Mbps\n    outbound: Math.random() * 500,\n    latency: Math.random() * 100 + 10 // ms\n  },\n  services: {\n    database: Math.random() > 0.1 ? 'healthy' : 'warning',\n    webserver: Math.random() > 0.05 ? 'healthy' : 'critical',\n    api: Math.random() > 0.08 ? 'healthy' : 'warning'\n  }\n};\n\n// 계산된 값들\nmetrics.memory.available = metrics.memory.total - metrics.memory.used;\nmetrics.disk.available = metrics.disk.total - metrics.disk.used;\nmetrics.memory.usagePercent = (metrics.memory.used / metrics.memory.total) * 100;\nmetrics.disk.usagePercent = (metrics.disk.used / metrics.disk.total) * 100;\n\nreturn [{\n  json: {\n    timestamp: timestamp,\n    systemMetrics: metrics,\n    checkInterval: inputData.interval || '5m',\n    monitoringEnabled: true\n  }\n}];"
+      },
+      "id": "collect-metrics",
+      "name": "메트릭 수집",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 시스템 상태 분석 및 알람 레벨 결정\nconst data = $input.all()[0].json;\nconst metrics = data.systemMetrics;\n\n// 임계값 정의\nconst thresholds = {\n  cpu: { warning: 70, critical: 90 },\n  memory: { warning: 80, critical: 95 },\n  disk: { warning: 85, critical: 95 },\n  temperature: { warning: 70, critical: 85 },\n  latency: { warning: 100, critical: 200 }\n};\n\n// 알람 분석\nconst alerts = [];\nlet overallStatus = 'healthy';\nlet severityScore = 0;\n\n// CPU 체크\nif (metrics.cpu.usage > thresholds.cpu.critical) {\n  alerts.push({\n    type: 'CPU',\n    level: 'CRITICAL',\n    message: `CPU 사용률 위험 수준: ${metrics.cpu.usage.toFixed(1)}%`,\n    value: metrics.cpu.usage,\n    threshold: thresholds.cpu.critical\n  });\n  severityScore += 3;\n} else if (metrics.cpu.usage > thresholds.cpu.warning) {\n  alerts.push({\n    type: 'CPU',\n    level: 'WARNING',\n    message: `CPU 사용률 주의 수준: ${metrics.cpu.usage.toFixed(1)}%`,\n    value: metrics.cpu.usage,\n    threshold: thresholds.cpu.warning\n  });\n  severityScore += 1;\n}\n\n// 메모리 체크\nif (metrics.memory.usagePercent > thresholds.memory.critical) {\n  alerts.push({\n    type: 'MEMORY',\n    level: 'CRITICAL',\n    message: `메모리 사용률 위험 수준: ${metrics.memory.usagePercent.toFixed(1)}%`,\n    value: metrics.memory.usagePercent,\n    threshold: thresholds.memory.critical\n  });\n  severityScore += 3;\n} else if (metrics.memory.usagePercent > thresholds.memory.warning) {\n  alerts.push({\n    type: 'MEMORY',\n    level: 'WARNING',\n    message: `메모리 사용률 주의 수준: ${metrics.memory.usagePercent.toFixed(1)}%`,\n    value: metrics.memory.usagePercent,\n    threshold: thresholds.memory.warning\n  });\n  severityScore += 1;\n}\n\n// 디스크 체크\nif (metrics.disk.usagePercent > thresholds.disk.critical) {\n  alerts.push({\n    type: 'DISK',\n    level: 'CRITICAL',\n    message: `디스크 사용률 위험 수준: ${metrics.disk.usagePercent.toFixed(1)}%`,\n    value: metrics.disk.usagePercent,\n    threshold: thresholds.disk.critical\n  });\n  severityScore += 3;\n} else if (metrics.disk.usagePercent > thresholds.disk.warning) {\n  alerts.push({\n    type: 'DISK',\n    level: 'WARNING',\n    message: `디스크 사용률 주의 수준: ${metrics.disk.usagePercent.toFixed(1)}%`,\n    value: metrics.disk.usagePercent,\n    threshold: thresholds.disk.warning\n  });\n  severityScore += 1;\n}\n\n// 서비스 상태 체크\nObject.entries(metrics.services).forEach(([service, status]) => {\n  if (status === 'critical') {\n    alerts.push({\n      type: 'SERVICE',\n      level: 'CRITICAL',\n      message: `서비스 ${service} 중단 상태`,\n      service: service,\n      status: status\n    });\n    severityScore += 3;\n  } else if (status === 'warning') {\n    alerts.push({\n      type: 'SERVICE',\n      level: 'WARNING',\n      message: `서비스 ${service} 주의 상태`,\n      service: service,\n      status: status\n    });\n    severityScore += 1;\n  }\n});\n\n// 전체 상태 결정\nif (severityScore >= 6) {\n  overallStatus = 'critical';\n} else if (severityScore >= 3) {\n  overallStatus = 'warning';\n} else if (alerts.length > 0) {\n  overallStatus = 'degraded';\n}\n\nreturn [{\n  json: {\n    timestamp: data.timestamp,\n    systemMetrics: metrics,\n    analysis: {\n      overallStatus: overallStatus,\n      severityScore: severityScore,\n      alertCount: alerts.length,\n      alerts: alerts,\n      thresholds: thresholds\n    },\n    needsNotification: severityScore > 0\n  }\n}];"
+      },
+      "id": "analyze-health",
+      "name": "상태 분석",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.needsNotification}}",
+              "operation": "equal",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "check-alert-needed",
+      "name": "알림 필요 여부",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 알림 메시지 생성 및 전송 시뮬레이션\nconst data = $input.all()[0].json;\nconst analysis = data.analysis;\n\n// 알림 메시지 구성\nconst alertMessage = {\n  subject: `🚨 시스템 모니터링 알림 - ${analysis.overallStatus.toUpperCase()}`,\n  timestamp: new Date().toISOString(),\n  severity: analysis.overallStatus,\n  summary: {\n    status: analysis.overallStatus,\n    alertCount: analysis.alertCount,\n    severityScore: analysis.severityScore\n  },\n  details: analysis.alerts.map(alert => ({\n    type: alert.type,\n    level: alert.level,\n    message: alert.message,\n    ...(alert.value && { value: alert.value.toFixed(1) }),\n    ...(alert.threshold && { threshold: alert.threshold })\n  })),\n  recommendations: [],\n  systemSnapshot: {\n    cpu: `${data.systemMetrics.cpu.usage.toFixed(1)}%`,\n    memory: `${data.systemMetrics.memory.usagePercent.toFixed(1)}%`,\n    disk: `${data.systemMetrics.disk.usagePercent.toFixed(1)}%`,\n    services: data.systemMetrics.services\n  }\n};\n\n// 권장사항 생성\nanalysis.alerts.forEach(alert => {\n  switch(alert.type) {\n    case 'CPU':\n      alertMessage.recommendations.push('프로세스 점검 및 불필요한 작업 종료');\n      break;\n    case 'MEMORY':\n      alertMessage.recommendations.push('메모리 누수 점검 및 캐시 정리');\n      break;\n    case 'DISK':\n      alertMessage.recommendations.push('불필요한 파일 정리 및 로그 로테이션');\n      break;\n    case 'SERVICE':\n      alertMessage.recommendations.push(`${alert.service} 서비스 재시작 검토`);\n      break;\n  }\n});\n\n// 중복 제거\nalertMessage.recommendations = [...new Set(alertMessage.recommendations)];\n\nreturn [{\n  json: {\n    notification: alertMessage,\n    sentTo: ['admin@company.com', 'devops@company.com'],\n    notificationMethod: ['email', 'slack'],\n    escalation: analysis.severityScore >= 6 ? 'immediate' : 'normal',\n    followUpRequired: analysis.overallStatus === 'critical'\n  }\n}];"
+      },
+      "id": "send-notification",
+      "name": "알림 발송",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 정상 상태 보고서 생성\nconst data = $input.all()[0].json;\n\nconst healthReport = {\n  timestamp: new Date().toISOString(),\n  status: 'ALL_SYSTEMS_OPERATIONAL',\n  summary: {\n    overallHealth: data.analysis.overallStatus,\n    monitorsChecked: 7,\n    issuesFound: 0,\n    lastCheck: data.timestamp\n  },\n  metrics: {\n    cpu: `${data.systemMetrics.cpu.usage.toFixed(1)}%`,\n    memory: `${data.systemMetrics.memory.usagePercent.toFixed(1)}%`,\n    disk: `${data.systemMetrics.disk.usagePercent.toFixed(1)}%`,\n    network: `${data.systemMetrics.network.latency.toFixed(0)}ms`,\n    services: Object.entries(data.systemMetrics.services).filter(([_, status]) => status === 'healthy').length\n  },\n  nextCheck: new Date(Date.now() + 5 * 60 * 1000).toISOString() // 5분 후\n};\n\nreturn [{\n  json: {\n    healthReport: healthReport,\n    logLevel: 'INFO',\n    dashboardUpdate: true\n  }\n}];"
+      },
+      "id": "generate-health-report",
+      "name": "정상 상태 보고",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 모니터링 결과 통합 및 최종 응답 생성\nconst allInputs = $input.all();\nlet finalReport;\n\nif (allInputs.length > 0) {\n  const firstInput = allInputs[0].json;\n  \n  // 알림이 발송된 경우\n  if (firstInput.notification) {\n    finalReport = {\n      monitoringResult: 'ALERTS_GENERATED',\n      timestamp: new Date().toISOString(),\n      alertsTriggered: true,\n      notification: {\n        sent: true,\n        severity: firstInput.notification.severity,\n        alertCount: firstInput.notification.summary.alertCount,\n        recipients: firstInput.sentTo,\n        escalation: firstInput.escalation\n      },\n      summary: firstInput.notification.systemSnapshot\n    };\n  } else {\n    // 정상 상태 보고인 경우\n    finalReport = {\n      monitoringResult: 'SYSTEM_HEALTHY',\n      timestamp: new Date().toISOString(),\n      alertsTriggered: false,\n      healthReport: firstInput.healthReport,\n      summary: firstInput.healthReport.metrics\n    };\n  }\n} else {\n  // 기본 응답\n  finalReport = {\n    monitoringResult: 'MONITORING_COMPLETED',\n    timestamp: new Date().toISOString(),\n    status: 'success'\n  };\n}\n\n// 공통 메타데이터 추가\nfinalReport.workflow = {\n  name: 'System Monitoring',\n  version: '1.0.0',\n  executionId: Math.random().toString(36).substr(2, 9),\n  nextExecution: new Date(Date.now() + 5 * 60 * 1000).toISOString()\n};\n\nreturn [{ json: finalReport }];"
+      },
+      "id": "compile-report",
+      "name": "최종 보고서",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "final-response",
+      "name": "응답 전송",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "모니터링 시작": {
+      "main": [
+        [
+          {
+            "node": "메트릭 수집",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "메트릭 수집": {
+      "main": [
+        [
+          {
+            "node": "상태 분석",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "상태 분석": {
+      "main": [
+        [
+          {
+            "node": "알림 필요 여부",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "알림 필요 여부": {
+      "main": [
+        [
+          {
+            "node": "알림 발송",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "정상 상태 보고",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "알림 발송": {
+      "main": [
+        [
+          {
+            "node": "최종 보고서",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "정상 상태 보고": {
+      "main": [
+        [
+          {
+            "node": "최종 보고서",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "최종 보고서": {
+      "main": [
+        [
+          {
+            "node": "응답 전송",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "7",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

@@ -1,0 +1,558 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: 양극재 부적합 Advisor
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/ollama:0.0.6@f430f3eb959f4863b1e87171544a8fec179441b90deda5693c85f07712d2a68c
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/huggingface_hub:0.0.5@aa2c5584ce1138bf2021a30b8dead51a30bd21f121542a216bb7c063a61a6213
+kind: app
+version: 0.3.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: llm
+        targetType: answer
+      id: llm-answer
+      selected: false
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: question-classifier
+      id: 1753766319396-source-1753766351591-target
+      source: '1753766319396'
+      sourceHandle: source
+      target: '1753766351591'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: template-transform
+      id: 1753766351591-1-1753766419763-target
+      source: '1753766351591'
+      sourceHandle: '1'
+      target: '1753766419763'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: llm
+      id: 1753766351591-2-1753766445088-target
+      source: '1753766351591'
+      sourceHandle: '2'
+      target: '1753766445088'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: knowledge-retrieval
+      id: 1753766445088-source-1753766509873-target
+      source: '1753766445088'
+      sourceHandle: source
+      target: '1753766509873'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: if-else
+      id: 1753766509873--1753766536451-target
+      source: '1753766509873'
+      sourceHandle: source
+      target: '1753766536451'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: template-transform
+      id: 1753766536451-true-1753766554192-target
+      source: '1753766536451'
+      sourceHandle: 'true'
+      target: '1753766554192'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: template-transform
+      id: 1753766536451-false-1753766583420-target
+      source: '1753766536451'
+      sourceHandle: 'false'
+      target: '1753766583420'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: template-transform
+        targetType: variable-aggregator
+      id: 1753766419763-source-1753766603871-target
+      source: '1753766419763'
+      sourceHandle: source
+      target: '1753766603871'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: template-transform
+        targetType: variable-aggregator
+      id: 1753766554192-source-1753766603871-target
+      source: '1753766554192'
+      sourceHandle: source
+      target: '1753766603871'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: template-transform
+        targetType: variable-aggregator
+      id: 1753766583420-source-1753766603871-target
+      source: '1753766583420'
+      sourceHandle: source
+      target: '1753766603871'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: variable-aggregator
+        targetType: llm
+      id: 1753766603871-source-llm-target
+      source: '1753766603871'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 시작
+        type: start
+        variables: []
+      height: 54
+      id: '1753766319396'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemma3:4b-it-qat
+          provider: langgenius/ollama/ollama
+        prompt_template:
+        - id: 26af554f-be25-491f-bdbb-dbcf0c818d83
+          role: system
+          text: '당신은 2차전지 양극재 생산 공정 품질관리의 전문가입니다.
+
+            당신이 일하는 업체는 전구체와 리튬 원료를 가지고 혼합 공정부터 시작하여 양극재 제품을 생산합니다.
+
+
+            주어진 컨텍스트를 기반으로 사용자의 질문에 답하세요.
+
+
+            ---
+
+
+            {{#1753766603871.output#}}'
+        - id: adce3eb7-9586-4d37-bfd7-eb3c242cf999
+          role: user
+          text: '{{#sys.query#}}'
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: llm
+      position:
+        x: 2310
+        y: 356
+      positionAbsolute:
+        x: 2310
+        y: 356
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#llm.text#}}'
+        desc: ''
+        selected: false
+        title: 답변
+        type: answer
+        variables: []
+      height: 105
+      id: answer
+      position:
+        x: 2652
+        y: 356
+      positionAbsolute:
+        x: 2652
+        y: 356
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        classes:
+        - id: '1'
+          name: SIMPLE_ANSWER
+        - id: '2'
+          name: DETAILED_INFORMATION
+        desc: ''
+        instruction: '- "DETAILED_INFORMATION": question about cathode material production
+          issues
+
+          - "SIMPLE_ANSWER": other question'
+        instructions: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemma3:4b-it-qat
+          provider: langgenius/ollama/ollama
+        query_variable_selector:
+        - '1753766319396'
+        - sys.query
+        selected: false
+        title: 질문 분류기
+        topics: []
+        type: question-classifier
+        vision:
+          enabled: false
+      height: 172
+      id: '1753766351591'
+      position:
+        x: 380
+        y: 282
+      positionAbsolute:
+        x: 380
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        selected: false
+        template: ' '
+        title: 템플릿
+        type: template-transform
+        variables: []
+      height: 54
+      id: '1753766419763'
+      position:
+        x: 1307
+        y: 356
+      positionAbsolute:
+        x: 1307
+        y: 356
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemma3:1b-it-qat
+          provider: langgenius/ollama/ollama
+        prompt_template:
+        - id: aab4521b-0fa5-492a-b2e3-242cb268ac1a
+          role: system
+          text: 'You are an expert in cathode material production industry.
+
+            Given user input, generate query string for retrieving relevant documents
+            from vector database.'
+        - id: 5d16e10d-438f-4979-a431-a46fdc3e14c5
+          role: user
+          text: '질문:
+
+            {{#sys.query#}}
+
+
+            질문에 대한 검색어를 한국어로 생성해주세요.'
+        selected: false
+        structured_output:
+          schema:
+            additionalProperties: false
+            properties:
+              query:
+                description: generated query
+                type: string
+            required: []
+            type: object
+        structured_output_enabled: true
+        title: LLM 2
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1753766445088'
+      position:
+        x: 675
+        y: 488
+      positionAbsolute:
+        x: 675
+        y: 488
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        dataset_ids:
+        - P8nKLmNYvDxqedoSNNBj8HZcpcSh61WFNwom0Uj5NZgpJ8UF3mxp//3VzCMeFeR3
+        desc: ''
+        multiple_retrieval_config:
+          reranking_enable: false
+          reranking_mode: weighted_score
+          top_k: 4
+          weights:
+            keyword_setting:
+              keyword_weight: 0
+            vector_setting:
+              embedding_model_name: intfloat/multilingual-e5-large-instruct
+              embedding_provider_name: langgenius/huggingface_hub/huggingface_hub
+              vector_weight: 1
+        query_variable_selector:
+        - '1753766319396'
+        - sys.query
+        retrieval_mode: multiple
+        selected: false
+        title: 지식 검색
+        type: knowledge-retrieval
+      height: 92
+      id: '1753766509873'
+      position:
+        x: 979
+        y: 488
+      positionAbsolute:
+        x: 979
+        y: 488
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: not empty
+            id: 666491fd-38d9-48a3-81fa-7f488b5e78c1
+            value: ''
+            varType: array[object]
+            variable_selector:
+            - '1753766509873'
+            - result
+          id: 'true'
+          logical_operator: and
+        desc: ''
+        selected: false
+        title: IF/ELSE
+        type: if-else
+      height: 126
+      id: '1753766536451'
+      position:
+        x: 1283
+        y: 488
+      positionAbsolute:
+        x: 1283
+        y: 488
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        selected: false
+        template: "{% for doc in docs %}\n  === 과거 사례 {{ loop.index}} ===\n  {{ doc.content\
+          \ }}\n  \n{% endfor %}"
+        title: 템플릿 2
+        type: template-transform
+        variables:
+        - value_selector:
+          - '1753766509873'
+          - result
+          value_type: array[object]
+          variable: docs
+      height: 54
+      id: '1753766554192'
+      position:
+        x: 1587
+        y: 488
+      positionAbsolute:
+        x: 1587
+        y: 488
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        selected: false
+        template: 과거 사례 없음
+        title: 템플릿 3
+        type: template-transform
+        variables:
+        - value_selector:
+          - '1753766509873'
+          - result
+          value_type: array[object]
+          variable: arg1
+      height: 54
+      id: '1753766583420'
+      position:
+        x: 1587
+        y: 581
+      positionAbsolute:
+        x: 1587
+        y: 581
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        output_type: string
+        selected: false
+        title: 변수 집계자
+        type: variable-aggregator
+        variables:
+        - - '1753766419763'
+          - output
+        - - '1753766554192'
+          - output
+        - - '1753766583420'
+          - output
+      height: 153
+      id: '1753766603871'
+      position:
+        x: 1960
+        y: 356
+      positionAbsolute:
+        x: 1960
+        y: 356
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -1775
+      y: 60
+      zoom: 1

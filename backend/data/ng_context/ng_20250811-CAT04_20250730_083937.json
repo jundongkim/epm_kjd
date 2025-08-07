@@ -1,0 +1,144 @@
+{
+  "lot_id": "20250811-CAT04",
+  "product": {
+    "code": "CAT04",
+    "name": "NCM811_양극재_분말"
+  },
+  "production_line": "Line-2",
+  "detection": {
+    "timestamp": "2025-07-29T23:39:37.893Z",
+    "d50_measured_μm": 9.2,
+    "d50_spec_range_μm": {
+      "min": 10,
+      "max": 15
+    },
+    "deviation": "below_minimum",
+    "severity": "medium"
+  },
+  "sensor_readings": [
+    {
+      "timestamp": "2025-08-11T13:55:00Z",
+      "mill_rpm": 310,
+      "grinding_pressure_bar": 28.5,
+      "classifier_speed_rpm": 1480,
+      "vacuum_pressure_kPa": 58.2
+    },
+    {
+      "timestamp": "2025-08-11T14:00:00Z",
+      "mill_rpm": 305,
+      "grinding_pressure_bar": 29.1,
+      "classifier_speed_rpm": 1450,
+      "vacuum_pressure_kPa": 57.9
+    },
+    {
+      "timestamp": "2025-08-11T14:05:00Z",
+      "mill_rpm": 300,
+      "grinding_pressure_bar": 30,
+      "classifier_speed_rpm": 1420,
+      "vacuum_pressure_kPa": 57.5
+    }
+  ],
+  "correlation_results": {
+    "mill_rpm": {
+      "pearson_r": 0,
+      "p_value": 1
+    },
+    "grinding_pressure_bar": {
+      "pearson_r": 0,
+      "p_value": 1
+    },
+    "classifier_speed_rpm": {
+      "pearson_r": 0,
+      "p_value": 1
+    },
+    "vacuum_pressure_kPa": {
+      "pearson_r": 0,
+      "p_value": 1
+    }
+  },
+  "process_trend_analysis": [
+    {
+      "variable": "mill_rpm",
+      "slope": -5,
+      "trend_direction": "decreasing",
+      "anomaly_points": 0,
+      "chart_url": "https://charts.company.com/particle_size/mill_rpm_trend.png",
+      "historical_pattern_comparison": {
+        "baseline_slope": -1,
+        "baseline_anomaly_rate": 0,
+        "current_vs_historical": "slope ↓ 400%, anomaly ↑ 0개",
+        "is_anomalous": true,
+        "description": "평소 대비 변화율이 400% 감소하여 이상 징후가 감지됩니다."
+      }
+    },
+    {
+      "variable": "grinding_pressure_bar",
+      "slope": 0.75,
+      "trend_direction": "increasing",
+      "anomaly_points": 0,
+      "chart_url": "https://charts.company.com/particle_size/grinding_pressure_bar_trend.png",
+      "historical_pattern_comparison": {
+        "baseline_slope": 0.1,
+        "baseline_anomaly_rate": 0.01,
+        "current_vs_historical": "slope ↑ 650%, anomaly ↑ 0개",
+        "is_anomalous": true,
+        "description": "평소 대비 변화율이 650% 증가하여 이상 징후가 감지됩니다."
+      }
+    },
+    {
+      "variable": "classifier_speed_rpm",
+      "slope": -30,
+      "trend_direction": "decreasing",
+      "anomaly_points": 0,
+      "chart_url": "https://charts.company.com/particle_size/classifier_speed_rpm_trend.png",
+      "historical_pattern_comparison": {
+        "baseline_slope": -5,
+        "baseline_anomaly_rate": 0.01,
+        "current_vs_historical": "slope ↓ 500%, anomaly ↑ 0개",
+        "is_anomalous": true,
+        "description": "평소 대비 변화율이 500% 감소하여 이상 징후가 감지됩니다."
+      }
+    },
+    {
+      "variable": "vacuum_pressure_kPa",
+      "slope": -0.35,
+      "trend_direction": "decreasing",
+      "anomaly_points": 0,
+      "chart_url": "https://charts.company.com/particle_size/vacuum_pressure_kPa_trend.png",
+      "historical_pattern_comparison": {
+        "baseline_slope": -0.05,
+        "baseline_anomaly_rate": 0,
+        "current_vs_historical": "slope ↓ 600%, anomaly ↑ 0개",
+        "is_anomalous": true,
+        "description": "평소 대비 변화율이 600% 감소하여 이상 징후가 감지됩니다."
+      }
+    }
+  ],
+  "past_improvement_actions": [
+    {
+      "action": "분급기 임펠러 블레이드 교체",
+      "date": "2025-07-20",
+      "effectiveness_delta_μm": 1.5
+    },
+    {
+      "action": "분쇄 압력 -2 bar 조정",
+      "date": "2025-06-30",
+      "effectiveness_delta_μm": 1
+    },
+    {
+      "action": "분쇄기 라이너 교체",
+      "date": "2025-06-15",
+      "effectiveness_delta_μm": -0.8
+    }
+  ],
+  "operator_on_duty": {
+    "id": "OP124",
+    "name": "박지훈"
+  },
+  "historical_records_count": 8,
+  "anomaly_flags": [
+    "grinding_pressure_spike",
+    "classifier_speed_drop"
+  ],
+  "additional_notes": "분급기 정기점검 1개월 지연, 블레이드 마모 우려"
+}

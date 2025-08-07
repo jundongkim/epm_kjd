@@ -1,0 +1,107 @@
+{
+  "name": "Teams 알림 테스트",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "teams-test",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "test-webhook",
+      "name": "테스트 시작",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "teams-test"
+    },
+    {
+      "parameters": {
+        "functionCode": "// 테스트용 고심각도 알림 데이터 생성\nconst testData = {\n  alert_type: 'HIGH_SEVERITY_MOISTURE_TEST',\n  lot_id: '20250101-TEST01',\n  product_name: 'NCM811_양극재_분말_테스트',\n  production_line: 'Test-Line-1',\n  moisture_measured: 0.75,\n  moisture_threshold: 0.50,\n  operator: '테스트운전자',\n  anomaly_flags: ['exit_humidity_spike', 'res_time_variance_high', 'strong_correlation'],\n  timestamp: new Date().toISOString()\n};\n\nconsole.log('🧪 Teams 알림 테스트 데이터 생성:', testData);\nreturn [{ json: testData }];"
+      },
+      "id": "test-data-generator",
+      "name": "테스트 데이터 생성",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://misoinfoadmin.webhook.office.com/webhookb2/8217a413-7c44-4dd2-9b16-d05fc66d3e90@b0705e7e-8b75-46d7-88b0-32b415cd622a/IncomingWebhook/1784cb29d4de4912a5da04047a828ab9/9bc25d0e-6976-4683-9932-d9e9ab8545e1/V2zFgDJiFgR6DoXBITdUv6vaS4mXOAU_wyYi__bvkKp7g1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "jsonBody": "{\n  \"@type\": \"MessageCard\",\n  \"@context\": \"http://schema.org/extensions\",\n  \"summary\": \"🧪 Teams 알림 테스트\",\n  \"themeColor\": \"0078D4\",\n  \"title\": \"🧪 Teams 연동 테스트\",\n  \"sections\": [\n    {\n      \"activityTitle\": \"NG 수분 알림 시스템 테스트\",\n      \"activitySubtitle\": \"{{$json.timestamp}}\",\n      \"activityImage\": \"https://img.icons8.com/color/96/000000/test-tube.png\",\n      \"facts\": [\n        {\n          \"name\": \"🔬 테스트 LOT\",\n          \"value\": \"{{$json.lot_id}}\"\n        },\n        {\n          \"name\": \"📦 제품명\",\n          \"value\": \"{{$json.product_name}}\"\n        },\n        {\n          \"name\": \"🏭 생산라인\",\n          \"value\": \"{{$json.production_line}}\"\n        },\n        {\n          \"name\": \"💧 측정값\",\n          \"value\": \"{{$json.moisture_measured}}% (기준: {{$json.moisture_threshold}}%)\"\n        },\n        {\n          \"name\": \"👷 운전자\",\n          \"value\": \"{{$json.operator}}\"\n        },\n        {\n          \"name\": \"⚠️ 이상 플래그\",\n          \"value\": \"{{$json.anomaly_flags.length}}개 감지\"\n        }\n      ],\n      \"markdown\": true\n    },\n    {\n      \"activityTitle\": \"📋 감지된 이상 플래그\",\n      \"facts\": [\n        {\n          \"name\": \"출구 습도 급상승\",\n          \"value\": \"✅ 감지됨\"\n        },\n        {\n          \"name\": \"체류시간 변동\",\n          \"value\": \"✅ 감지됨\"\n        },\n        {\n          \"name\": \"강한 상관관계\",\n          \"value\": \"✅ 감지됨\"\n        }\n      ]\n    }\n  ],\n  \"potentialAction\": [\n    {\n      \"@type\": \"OpenUri\",\n      \"name\": \"📊 실제 대시보드로 이동\",\n      \"targets\": [\n        {\n          \"os\": \"default\",\n          \"uri\": \"http://localhost:3000/dashboard\"\n        }\n      ]\n    },\n    {\n      \"@type\": \"HttpPOST\",\n      \"name\": \"✅ 테스트 완료 확인\",\n      \"target\": \"http://localhost:8000/api/test-completed\",\n      \"body\": \"{\\\"test_id\\\": \\\"{{$json.lot_id}}\\\", \\\"status\\\": \\\"success\\\"}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "teams-test-alert",
+      "name": "Teams 테스트 알림",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "test-response",
+      "name": "테스트 응답",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "테스트 시작": {
+      "main": [
+        [
+          {
+            "node": "테스트 데이터 생성",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "테스트 데이터 생성": {
+      "main": [
+        [
+          {
+            "node": "Teams 테스트 알림",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Teams 테스트 알림": {
+      "main": [
+        [
+          {
+            "node": "테스트 응답",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "teams-test",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

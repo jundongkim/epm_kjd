@@ -1,0 +1,154 @@
+{
+  "name": "텍스트 처리 워크플로우",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "text-processor",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "text-input",
+      "name": "텍스트 입력",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "text-processor"
+    },
+    {
+      "parameters": {
+        "functionCode": "// 텍스트 입력 검증 및 전처리\nconst inputData = $input.all()[0].json;\n\n// 샘플 텍스트가 없으면 기본 텍스트 사용\nconst text = inputData.text || `\n이것은 샘플 텍스트입니다. 이 텍스트는 다양한 처리를 테스트하기 위한 것입니다.\n텍스트 분석 기능을 확인할 수 있습니다. 한국어와 English가 혼재되어 있습니다.\n이메일 주소: test@example.com, 전화번호: 010-1234-5678\n웹사이트: https://www.example.com\n중요한 키워드: 데이터, 분석, 처리, 워크플로우\n`;\n\nconst operation = inputData.operation || 'analyze';\n\n// 기본 텍스트 정보 수집\nconst basicInfo = {\n  originalText: text,\n  operation: operation,\n  length: text.length,\n  timestamp: new Date().toISOString(),\n  inputSource: inputData.source || 'webhook'\n};\n\nreturn [{ json: basicInfo }];"
+      },
+      "id": "validate-text",
+      "name": "텍스트 검증",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 텍스트 기본 분석\nconst data = $input.all()[0].json;\nconst text = data.originalText;\n\n// 기본 통계\nconst words = text.trim().split(/\\s+/).filter(word => word.length > 0);\nconst sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);\nconst paragraphs = text.split(/\\n\\s*\\n/).filter(p => p.trim().length > 0);\nconst lines = text.split('\\n');\n\n// 문자 분석\nconst koreanChars = (text.match(/[가-힣]/g) || []).length;\nconst englishChars = (text.match(/[a-zA-Z]/g) || []).length;\nconst numbers = (text.match(/[0-9]/g) || []).length;\nconst specialChars = text.length - koreanChars - englishChars - numbers - (text.match(/\\s/g) || []).length;\n\n// 패턴 매칭\nconst patterns = {\n  emails: text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/g) || [],\n  phones: text.match(/\\d{2,3}-\\d{3,4}-\\d{4}/g) || [],\n  urls: text.match(/https?:\\/\\/[^\\s]+/g) || [],\n  numbers: text.match(/\\b\\d+\\b/g) || []\n};\n\n// 키워드 빈도 분석 (간단한 버전)\nconst wordFreq = {};\nwords.forEach(word => {\n  const cleanWord = word.toLowerCase().replace(/[^가-힣a-zA-Z0-9]/g, '');\n  if (cleanWord.length > 1) {\n    wordFreq[cleanWord] = (wordFreq[cleanWord] || 0) + 1;\n  }\n});\n\n// 상위 키워드 추출\nconst topKeywords = Object.entries(wordFreq)\n  .sort(([,a], [,b]) => b - a)\n  .slice(0, 10)\n  .map(([word, count]) => ({ word, count }));\n\nconst analysis = {\n  statistics: {\n    totalCharacters: text.length,\n    totalWords: words.length,\n    totalSentences: sentences.length,\n    totalParagraphs: paragraphs.length,\n    totalLines: lines.length,\n    averageWordsPerSentence: sentences.length > 0 ? Math.round(words.length / sentences.length * 10) / 10 : 0\n  },\n  characterAnalysis: {\n    korean: koreanChars,\n    english: englishChars,\n    numbers: numbers,\n    special: specialChars,\n    whitespace: (text.match(/\\s/g) || []).length\n  },\n  patterns: patterns,\n  keywords: topKeywords,\n  readabilityScore: Math.max(0, Math.min(100, 100 - (words.length / sentences.length) * 2)) // 간단한 가독성 점수\n};\n\nreturn [{\n  json: {\n    originalText: text,\n    analysis: analysis,\n    processingStep: 'analysis_complete'\n  }\n}];"
+      },
+      "id": "analyze-text",
+      "name": "텍스트 분석",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 텍스트 변환 처리\nconst data = $input.all()[0].json;\nconst text = data.originalText;\n\n// 다양한 변환 수행\nconst transformations = {\n  // 대소문자 변환\n  uppercase: text.toUpperCase(),\n  lowercase: text.toLowerCase(),\n  \n  // 공백 정리\n  trimmed: text.trim(),\n  singleSpaced: text.replace(/\\s+/g, ' '),\n  \n  // 줄바꿈 정리\n  singleLineBreaks: text.replace(/\\n+/g, '\\n'),\n  noLineBreaks: text.replace(/\\n/g, ' '),\n  \n  // 특수문자 처리\n  alphanumericOnly: text.replace(/[^가-힣a-zA-Z0-9\\s]/g, ''),\n  numbersOnly: (text.match(/\\d/g) || []).join(''),\n  \n  // 개인정보 마스킹\n  maskedEmails: text.replace(/([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})/g, '***@$2'),\n  maskedPhones: text.replace(/(\\d{2,3})-\\d{3,4}-\\d{4}/g, '$1-****-****'),\n  \n  // 단어 통계\n  wordCount: text.trim().split(/\\s+/).filter(word => word.length > 0).length,\n  characterCount: text.length,\n  \n  // 역순\n  reversed: text.split('').reverse().join(''),\n  \n  // 요약 (첫 100자)\n  summary: text.substring(0, 100) + (text.length > 100 ? '...' : '')\n};\n\n// 텍스트 품질 평가\nconst quality = {\n  hasEmptyLines: /\\n\\s*\\n/.test(text),\n  hasMultipleSpaces: /  +/.test(text),\n  hasSpecialChars: /[^가-힣a-zA-Z0-9\\s.,!?]/.test(text),\n  averageWordLength: transformations.wordCount > 0 ? \n    Math.round((text.replace(/\\s/g, '').length / transformations.wordCount) * 10) / 10 : 0\n};\n\nreturn [{\n  json: {\n    originalText: text,\n    transformations: transformations,\n    quality: quality,\n    processingStep: 'transformation_complete'\n  }\n}];"
+      },
+      "id": "transform-text",
+      "name": "텍스트 변환",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 텍스트 검증 및 검사\nconst data = $input.all()[0].json;\nconst text = data.originalText;\n\n// 언어 감지 (간단한 휴리스틱)\nconst koreanRatio = (text.match(/[가-힣]/g) || []).length / text.length;\nconst englishRatio = (text.match(/[a-zA-Z]/g) || []).length / text.length;\nconst numberRatio = (text.match(/[0-9]/g) || []).length / text.length;\n\nlet primaryLanguage = 'unknown';\nif (koreanRatio > 0.3) primaryLanguage = 'korean';\nelse if (englishRatio > 0.5) primaryLanguage = 'english';\nelse if (numberRatio > 0.5) primaryLanguage = 'numeric';\n\n// 텍스트 검증 규칙\nconst validations = {\n  minLength: text.length >= 10,\n  maxLength: text.length <= 10000,\n  hasContent: text.trim().length > 0,\n  hasWords: /\\w/.test(text),\n  noSuspiciousPatterns: !/(<script|javascript:|data:text\\/html)/i.test(text),\n  reasonableLineLength: text.split('\\n').every(line => line.length <= 200),\n  validEncoding: !/[\\uFFFD]/.test(text) // 잘못된 유니코드 문자 체크\n};\n\n// 컨텐츠 분류\nconst contentTypes = {\n  hasEmail: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/.test(text),\n  hasPhone: /\\d{2,3}-\\d{3,4}-\\d{4}/.test(text),\n  hasURL: /https?:\\/\\//.test(text),\n  hasCode: /[{}();]/.test(text),\n  hasMarkdown: /[*_#`]/.test(text),\n  isStructured: /\\n\\s*[-*]|\\d+\\./.test(text)\n};\n\n// 보안 검사\nconst security = {\n  noMaliciousKeywords: !/(?:password|secret|token|key)\\s*[:=]/i.test(text),\n  noSQLInjection: !/(?:union|select|insert|update|delete)\\s+.*(?:from|into|set)/i.test(text),\n  noXSS: !/<.*(?:script|iframe|object|embed|form).*>/i.test(text)\n};\n\nconst validation = {\n  isValid: Object.values(validations).every(v => v === true),\n  validations: validations,\n  language: {\n    primary: primaryLanguage,\n    ratios: {\n      korean: Math.round(koreanRatio * 100),\n      english: Math.round(englishRatio * 100),\n      numeric: Math.round(numberRatio * 100)\n    }\n  },\n  contentTypes: contentTypes,\n  security: security,\n  isSecure: Object.values(security).every(v => v === true)\n};\n\nreturn [{\n  json: {\n    originalText: text,\n    validation: validation,\n    processingStep: 'validation_complete'\n  }\n}];"
+      },
+      "id": "validate-content",
+      "name": "내용 검증",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 모든 처리 결과 통합\nconst analysisData = $input.all()[0].json;\nconst transformData = $input.all()[1].json;\nconst validationData = $input.all()[2].json;\n\nconst text = analysisData.originalText;\n\n// 처리 요약\nconst summary = {\n  textLength: text.length,\n  wordCount: analysisData.analysis.statistics.totalWords,\n  primaryLanguage: validationData.validation.language.primary,\n  isValid: validationData.validation.isValid,\n  isSecure: validationData.validation.isSecure,\n  readabilityScore: analysisData.analysis.readabilityScore,\n  topKeywords: analysisData.analysis.keywords.slice(0, 5)\n};\n\n// 권장사항 생성\nconst recommendations = [];\nif (!validationData.validation.validations.minLength) {\n  recommendations.push('텍스트가 너무 짧습니다 (최소 10자 필요)');\n}\nif (analysisData.analysis.readabilityScore < 50) {\n  recommendations.push('가독성을 위해 문장을 더 짧게 작성하는 것을 권장합니다');\n}\nif (transformData.quality.hasMultipleSpaces) {\n  recommendations.push('불필요한 공백을 제거하는 것을 권장합니다');\n}\nif (analysisData.analysis.statistics.averageWordsPerSentence > 20) {\n  recommendations.push('문장당 단어 수가 많습니다. 문장을 나누는 것을 권장합니다');\n}\nif (validationData.validation.contentTypes.hasEmail || validationData.validation.contentTypes.hasPhone) {\n  recommendations.push('개인정보가 포함되어 있습니다. 마스킹 처리를 고려하세요');\n}\n\n// 최종 결과\nconst finalResult = {\n  summary: summary,\n  recommendations: recommendations,\n  processing: {\n    analysis: {\n      statistics: analysisData.analysis.statistics,\n      patterns: analysisData.analysis.patterns,\n      topKeywords: analysisData.analysis.keywords\n    },\n    transformations: {\n      cleaned: transformData.transformations.singleSpaced.trim(),\n      masked: transformData.transformations.maskedEmails.replace(/\\d{2,3}-\\d{3,4}-\\d{4}/g, '***-****-****'),\n      summary: transformData.transformations.summary\n    },\n    validation: {\n      language: validationData.validation.language,\n      contentTypes: validationData.validation.contentTypes,\n      security: validationData.validation.security\n    }\n  },\n  metadata: {\n    processedAt: new Date().toISOString(),\n    workflowVersion: '1.0.0',\n    processingTime: 'instant',\n    totalSteps: 4\n  }\n};\n\nreturn [{ json: finalResult }];"
+      },
+      "id": "compile-results",
+      "name": "결과 통합",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "final-output",
+      "name": "결과 출력",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "텍스트 입력": {
+      "main": [
+        [
+          {
+            "node": "텍스트 검증",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "텍스트 검증": {
+      "main": [
+        [
+          {
+            "node": "텍스트 분석",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "텍스트 분석": {
+      "main": [
+        [
+          {
+            "node": "텍스트 변환",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "텍스트 변환": {
+      "main": [
+        [
+          {
+            "node": "내용 검증",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "내용 검증": {
+      "main": [
+        [
+          {
+            "node": "결과 통합",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "결과 통합": {
+      "main": [
+        [
+          {
+            "node": "결과 출력",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "8",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

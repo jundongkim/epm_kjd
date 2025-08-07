@@ -1,0 +1,16 @@
+lot_id,inspection_timestamp,moisture_measured_wt%,moisture_threshold_wt%,moisture_status,particle_size_d50_μm,particle_size_status,tap_density_g/cm³,tap_density_status,surface_area_m²/g,surface_area_status,overall_grade,inspector_id,inspector_name,anomaly_flags,correlation_exit_humidity_r,correlation_exit_humidity_p,correlation_residence_time_r,correlation_residence_time_p,correlation_inlet_humidity_r,correlation_inlet_humidity_p
+20250810-CAT01,2025-08-10T14:05:23Z,0.62,0.50,NG,12.3,OK,2.45,OK,4.8,OK,NG,QC001,최영희,exit_humidity_spike;res_time_variance_high,0.82,0.003,-0.68,0.010,0.45,0.047
+20250809-CAT01,2025-08-09T14:35:15Z,0.45,0.50,OK,12.1,OK,2.52,OK,4.9,OK,OK,QC002,김수현,,0.75,0.008,-0.55,0.025,0.38,0.089
+20250808-CAT01,2025-08-08T09:50:30Z,0.42,0.50,OK,11.9,OK,2.48,OK,5.1,OK,OK,QC001,최영희,,0.68,0.015,-0.48,0.045,0.42,0.067
+20250807-CAT02,2025-08-07T16:40:45Z,0.58,0.50,NG,13.2,WARNING,2.38,OK,4.6,OK,NG,QC003,박민지,exit_humidity_spike,0.79,0.005,-0.62,0.018,0.51,0.032
+20250806-CAT01,2025-08-06T11:30:22Z,0.48,0.50,OK,12.0,OK,2.50,OK,5.0,OK,OK,QC002,김수현,,0.71,0.012,-0.52,0.035,0.39,0.078
+20250805-CAT03,2025-08-05T14:05:18Z,0.38,0.45,OK,10.5,OK,2.65,OK,4.2,OK,OK,QC001,최영희,,0.59,0.028,-0.41,0.078,0.33,0.145
+20250804-CAT01,2025-08-04T10:35:40Z,0.65,0.50,NG,13.8,WARNING,2.35,WARNING,4.5,WARNING,NG,QC003,박민지,exit_humidity_spike;res_time_variance_high;temp_deviation,0.85,0.002,-0.72,0.007,0.48,0.041
+20250803-CAT02,2025-08-03T15:50:25Z,0.47,0.50,OK,12.5,OK,2.47,OK,4.7,OK,OK,QC002,김수현,,0.73,0.010,-0.56,0.028,0.44,0.055
+20250802-CAT01,2025-08-02T09:05:12Z,0.44,0.50,OK,11.8,OK,2.53,OK,5.2,OK,OK,QC001,최영희,,0.66,0.018,-0.45,0.052,0.37,0.095
+20250801-CAT03,2025-08-01T12:40:35Z,0.41,0.45,OK,10.2,OK,2.68,OK,4.1,OK,OK,QC003,박민지,,0.57,0.035,-0.38,0.089,0.31,0.167
+20250731-CAT02,2025-07-31T08:25:45Z,0.53,0.50,NG,12.8,OK,2.41,OK,4.8,OK,NG,QC002,김수현,exit_humidity_spike,0.77,0.006,-0.59,0.022,0.46,0.048
+20250730-CAT01,2025-07-30T15:15:30Z,0.46,0.50,OK,12.2,OK,2.49,OK,4.9,OK,OK,QC001,최영희,,0.69,0.014,-0.50,0.038,0.41,0.072
+20250729-CAT03,2025-07-29T11:45:15Z,0.39,0.45,OK,10.7,OK,2.63,OK,4.3,OK,OK,QC003,박민지,,0.61,0.025,-0.43,0.068,0.35,0.125
+20250728-CAT01,2025-07-28T13:30:20Z,0.49,0.50,OK,12.4,OK,2.46,OK,5.0,OK,OK,QC002,김수현,,0.72,0.011,-0.54,0.031,0.43,0.061
+20250727-CAT02,2025-07-27T09:50:10Z,0.56,0.50,NG,13.0,WARNING,2.39,OK,4.7,OK,NG,QC001,최영희,exit_humidity_spike,0.81,0.004,-0.65,0.015,0.49,0.038 

@@ -1,0 +1,13 @@
+---
+alwaysApply: true
+---
+
+기존 파일들은 건들지 말아야 합니다 기존 파일 수정/삭제에 대해서는 사용자의 허가를 받아야 합니다
+epm/frontend/src, epm/backend/src 아래 본인이 맡은 파트에 대하여 하위 폴더를 생성하여 그 안에서만 작업해야 합니다
+backend/src/ai 폴더 코드 이용하여 chatbot widget 구성 필요.
+backend/src 밑에 필요한 폴더 생성하여 메뉴별 backend 로직 구성 필요.
+frontend/src/components 폴더 코드 활용하여 공통 UI Component 적용 필요.
+frontend/src/app 밑에 필요한 폴더 생성하여 필요한 메뉴별 frontend 구성 필요.
+폴더 내부 구조는 기존 src 내부 구조와 동일하게 구성해야 합니다
+본인이 맡은 파트는 AI Advisor입니다
+페이지 ui / 백엔드 api 등의 요소들은 기존 작업물들을 참고하여 동일하거나 유사한 디자인으로 작성해야 합니다

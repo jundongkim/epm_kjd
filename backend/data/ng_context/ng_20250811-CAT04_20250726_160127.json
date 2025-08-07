@@ -1,0 +1,109 @@
+{
+  "lot_id": "20250811-CAT04",
+  "product": {
+    "code": "CAT04",
+    "name": "NCM811_양극재_분말"
+  },
+  "production_line": "Line-2",
+  "detection": {
+    "timestamp": "2025-08-11T14:10:45Z",
+    "d50_measured_μm": 9.2,
+    "d50_spec_range_μm": { "min": 10, "max": 15 },
+    "deviation": "below_minimum",
+    "severity": "high"
+  },
+  "sensor_readings": [
+    {
+      "timestamp": "2025-08-11T13:55:00Z",
+      "mill_rpm": 310,
+      "grinding_pressure_bar": 28.5,
+      "classifier_speed_rpm": 1480,
+      "vacuum_pressure_kPa": 58.2
+    },
+    {
+      "timestamp": "2025-08-11T14:00:00Z",
+      "mill_rpm": 305,
+      "grinding_pressure_bar": 29.1,
+      "classifier_speed_rpm": 1450,
+      "vacuum_pressure_kPa": 57.9
+    },
+    {
+      "timestamp": "2025-08-11T14:05:00Z",
+      "mill_rpm": 300,
+      "grinding_pressure_bar": 30.0,
+      "classifier_speed_rpm": 1420,
+      "vacuum_pressure_kPa": 57.5
+    }
+  ],
+  "correlation_results": {
+    "classifier_speed_rpm":   { "pearson_r":  0.75, "p_value": 0.002 },
+    "grinding_pressure_bar":  { "pearson_r": -0.65, "p_value": 0.012 },
+    "mill_rpm":               { "pearson_r":  0.42, "p_value": 0.061 }
+  },
+  "process_trend_analysis": [
+    {
+      "variable": "classifier_speed_rpm",
+      "slope": -20,
+      "trend_direction": "decreasing",
+      "anomaly_points": 2,
+      "chart_url": "https://s3.amazonaws.com/charts/lot_20250811_classifier_speed_trend.png",
+      "historical_pattern_comparison": {
+        "baseline_slope": -5,
+        "baseline_anomaly_rate": 0.01,
+        "current_vs_historical": "slope ↓ 400%, anomaly ↑ 200%",
+        "is_anomalous": true,
+        "description": "과거 평균 대비 분류기 회전속도 감소폭이 4배 크며, 이상치도 2배 증가했습니다."
+      }
+    },
+    {
+      "variable": "grinding_pressure_bar",
+      "slope": 0.30,
+      "trend_direction": "increasing",
+      "anomaly_points": 1,
+      "chart_url": "https://s3.amazonaws.com/charts/lot_20250811_grinding_pressure_trend.png",
+      "historical_pattern_comparison": {
+        "baseline_slope": 0.10,
+        "baseline_anomaly_rate": 0.00,
+        "current_vs_historical": "slope ↑ 300%, anomaly ↑ 100%",
+        "is_anomalous": true,
+        "description": "분쇄 압력이 평소 대비 3배 빠르게 상승하고, 신규 이상치가 감지되었습니다."
+      }
+    },
+    {
+      "variable": "mill_rpm",
+      "slope": -2,
+      "trend_direction": "slightly_decreasing",
+      "anomaly_points": 0,
+      "chart_url": "https://s3.amazonaws.com/charts/lot_20250811_mill_rpm_trend.png",
+      "historical_pattern_comparison": {
+        "baseline_slope": -1,
+        "baseline_anomaly_rate": 0.00,
+        "current_vs_historical": "slope ↓ 100%, anomaly 동일",
+        "is_anomalous": false,
+        "description": "밀 회전속도 감소는 과거 패턴과 유사하여 통상 범위 내입니다."
+      }
+    }
+  ],
+  "past_improvement_actions": [
+    {
+      "action": "분급기 임펠러 블레이드 교체",
+      "date": "2025-07-20",
+      "effectiveness_delta_μm": 1.5
+    },
+    {
+      "action": "분쇄 압력 -2 bar 조정",
+      "date": "2025-06-30",
+      "effectiveness_delta_μm": 1.0
+    }
+  ],
+  "operator_on_duty": {
+    "id": "OP124",
+    "name": "박지훈"
+  },
+  "historical_records_count": 8,
+  "anomaly_flags": [
+    "classifier_speed_drop",
+    "grinding_pressure_spike"
+  ],
+  "additional_notes": "분급기 정기점검 1개월 지연, 블레이드 마모 우려"
+}

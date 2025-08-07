@@ -1,0 +1,651 @@
+{
+  "metadata": {
+    "source_file": "coa_20250313_aug.pdf",
+    "extraction_date": "2025-06-23 09:19:52",
+    "parser_type": "table_based",
+    "ollama_image_description": true,
+    "ollama_model_used": "gemma3:12b-it-qat"
+  },
+  "parsed_data": {
+    "YE Part - CAM5 1 Line - 변경점 및 TEST 진행 현황": {
+      "text": "새로운 혼합기 모델 설치 완료. 성능 테스트 진행 중. 예상보다 혼합 균일성이 향상되는 경향\n을 보임. 이번 주 내 최종 테스트 결과 보고 예정.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 4,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 1 Line - 비고 (품질 특이사항 등)": {
+      "text": "혼합기 교체 후 니켈 침전량 편차가 약간 증가. 원인 분석 및 개선 방안 검토 중.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 4,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 2 Line - 변경점 및 TEST 진행 현황": {
+      "text": "기존 사용 중인 건조기 노후화로 인해, 예비 건조기 교체 진행.\n교체 작업 중 생산량 감소 예상.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 5,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 2 Line - 비고 (품질 특이사항 등)": {
+      "text": "교체된 건조기는 에너지 효율이 높아 장기적으로 운영 비용 절감 효과가 있을 것으로 예상됨.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 5,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 3 Line - 변경점 및 TEST 진행 현황": {
+      "text": "라인 자동화 시스템 업그레이드 완료. 생산 효율 증대 및 인력 감소 효과 확인됨.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 6,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5 3 Line - 비고 (품질 특이사항 등)": {
+      "text": "업그레이드 후 초기 단계에서 시스템 오류가 발생했으나, 현재는 안정적인 운영 상태 유지.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 6,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5N 4 Line - 변경점 및 TEST 진행 현황": {
+      "text": "새로운 코팅액 사용 시작. 코팅 두께 균일성 테스트 결과, 기존 대비 향상된 수치 확인.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 7,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5N 4 Line - 비고 (품질 특이사항 등)": {
+      "text": "새로운 코팅액은 가격이 다소 높지만, 성능 개선 효과가 크다고 판단됨.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 7,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5N 5 Line - 변경점 및 TEST 진행 현황": {
+      "text": "라인 내 일부 설비에서 진동 문제가 발생하여, 설비 점검 및 보수 작업 진행 중.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 8,
+        "column": 2,
+        "table_index": 2
+      }
+    },
+    "YE Part - CAM5N 5 Line - 비고 (품질 특이사항 등)": {
+      "text": "진동 문제는 제품 품질에 직접적인 영향을 미치지 않지만, 장기적으로 설비 수명 단축의 원인이\n될 수 있음.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 8,
+        "column": 3,
+        "table_index": 2
+      }
+    },
+    "요소기술 Part - Part 통합 - TEST 진행 현황 및 신공법 검토": {
+      "text": "부분 합금화 공정 테스트 진행 중. 기존 공법 대비 결정립 크기 및 밀도 향상 확인. 상\n용화를 위한 추가적인 테스트 및 최적화 작업 진행 예정.",
+      "page": 1,
+      "images": [],
+      "graphs": [],
+      "image_tables": [
+        {
+          "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+          "page": 1,
+          "xref": 16,
+          "size": [
+            697,
+            308
+          ],
+          "format": "JPEG",
+          "bbox": [
+            93.47244262695312,
+            165.44500732421875,
+            303.6317443847656,
+            258.3131103515625
+          ],
+          "image_type": "table",
+          "description": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다."
+        },
+        {
+          "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+          "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+          "page": 1,
+          "xref": 17,
+          "size": [
+            320,
+            320
+          ],
+          "format": "JPEG",
+          "bbox": [
+            316.77349853515625,
+            502.61749267578125,
+            454.35650634765625,
+            640.2005004882812
+          ],
+          "image_type": "table",
+          "description": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+        }
+      ],
+      "table_position": {
+        "row": 13,
+        "column": 2,
+        "table_index": 2
+      }
+    }
+  },
+  "image_metadata": {
+    "img_16": {
+      "filename": "image_coa_20250313_aug_p1_xref16.jpeg",
+      "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref16.jpeg",
+      "page": 1,
+      "xref": 16,
+      "size": [
+        697,
+        308
+      ],
+      "format": "JPEG",
+      "image_type": "table",
+      "bbox": [
+        93.47244262695312,
+        165.44500732421875,
+        303.6317443847656,
+        258.3131103515625
+      ]
+    },
+    "img_17": {
+      "filename": "image_coa_20250313_aug_p1_xref17.jpeg",
+      "path": "/Users/edaim76/git/ecopro_idsb/PROCESS/output/images/image_coa_20250313_aug_p1_xref17.jpeg",
+      "page": 1,
+      "xref": 17,
+      "size": [
+        320,
+        320
+      ],
+      "format": "JPEG",
+      "image_type": "table",
+      "bbox": [
+        316.77349853515625,
+        502.61749267578125,
+        454.35650634765625,
+        640.2005004882812
+      ]
+    }
+  },
+  "image_descriptions": {
+    "image_coa_20250313_aug_p1_xref16.jpeg": "## 테이블 구조\n- 행 수: 11\n- 열 수: 3\n- 헤더: [\"Date\", \"Close\", \"Volume\"]\n\n## 테이블 내용\n\n| Date       | Close | Volume |\n|------------|-------|--------|\n| 2024-01-01 | 168.16 | 26773700 |\n| 2024-01-02 | 168.23 | 23584800 |\n| 2024-01-03 | 167.97 | 24719800 |\n| 2024-01-04 | 167.73 | 23731700 |\n| 2024-01-05 | 167.65 | 24617000 |\n| 2024-01-08 | 167.84 | 23883400 |\n| 2024-01-09 | 168.08 | 24804200 |\n| 2024-01-10 | 167.88 | 24358800 |\n| 2024-01-11 | 167.65 | 23988800 |\n| 2024-01-12 | 167.52 | 23618700 |\n| 2024-01-15 | 167.77 | 23883400 |\n\n## 주요 정보\n\n- **주가 변동:** 2024년 1월 1일부터 1월 15일까지 주가는 167.52에서 168.23 사이에서 변동했습니다.\n- **거래량:** 거래량은 23618700에서 26773700 사이에서 변동했습니다.\n- **전반적인 추세:** 주가는 전반적으로 약간 하락하는 경향을 보입니다.",
+    "image_coa_20250313_aug_p1_xref17.jpeg": "Okay, let's analyze the provided image of the table.\n\n## 테이블 구조\n- 행 수: 7\n- 열 수: 4\n- 헤더: [\"Type\", \"Value\", \"Unit\", \"Defect\"]\n\n## 테이블 내용\n\n| Type | Value | Unit | Defect |\n|---|---|---|---|\n| Temperature | 25 | °C | - |\n| Humidity | 60 | % | - |\n| Pressure | 1013 | hPa | - |\n| Vibration | 0.1 | g | - |\n| Flow Rate | 10 | m³/s | - |\n| Dimensions | 100 | mm | - |\n| Inspection | 100 | % | - |\n\n## 주요 정보\n- The table presents a set of sensor readings for various parameters.\n- The parameters monitored include Temperature, Humidity, Pressure, Vibration, Flow Rate, Dimensions, and Inspection.\n- All values appear to be within normal ranges, as indicated by the absence of defects in the \"Defect\" column.\n- The table provides a snapshot of the current state of the system being monitored.\n\nLet me know if you'd like me to perform any further analysis or extract specific information from the table!"
+  },
+  "table_structures": {
+    "table_0_2": {
+      "dimensions": {
+        "rows": 13,
+        "columns": 3,
+        "cell_width": 185.56363689538205,
+        "cell_height": 46.18846365121695
+      },
+      "headers": [
+        "작성일자",
+        "2025-03-13",
+        ""
+      ],
+      "column_types": [
+        [
+          "text",
+          "empty"
+        ],
+        [
+          "text",
+          "null",
+          "empty"
+        ],
+        [
+          "text",
+          "null",
+          "empty"
+        ]
+      ],
+      "bbox": [
+        19.254546078768644,
+        40.87499237060547,
+        575.9454567649148,
+        641.3250198364258
+      ]
+    }
+  }
+}

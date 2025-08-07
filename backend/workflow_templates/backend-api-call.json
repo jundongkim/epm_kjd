@@ -1,0 +1,92 @@
+{
+  "name": "Backend API 연동",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "api-test",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger-id",
+      "name": "웹훅 트리거",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "api-test"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:8000/api/v1/workflow/health",
+        "options": {}
+      },
+      "id": "backend-health-id",
+      "name": "Backend 상태 확인",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Backend 응답 처리\nconst backendResponse = $input.all()[0].json;\nconst result = {\n  workflow_name: 'Backend API 연동 테스트',\n  backend_status: backendResponse.status,\n  n8n_connected: backendResponse.n8n_connected,\n  test_timestamp: new Date().toISOString(),\n  success: true\n};\n\nreturn [{ json: result }];"
+      },
+      "id": "process-response-id",
+      "name": "응답 처리",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "send-response-id",
+      "name": "최종 응답",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "웹훅 트리거": {
+      "main": [
+        [
+          {
+            "node": "Backend 상태 확인",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Backend 상태 확인": {
+      "main": [
+        [
+          {
+            "node": "응답 처리",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "응답 처리": {
+      "main": [
+        [
+          {
+            "node": "최종 응답",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "3",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

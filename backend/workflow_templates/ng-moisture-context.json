@@ -1,0 +1,267 @@
+{
+  "name": "NG 수분 Context 생성기 (고급)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ng-moisture-context",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "ng-webhook-input",
+      "name": "NG 수분 분석 요청",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "ng-moisture-context"
+    },
+    {
+      "parameters": {
+        "functionCode": "// MES 부적합 정보 전처리\nconst rawInput = $input.all()[0].json;\nconsole.log('전체 웹훅 데이터:', JSON.stringify(rawInput, null, 2));\n\n// 입력 데이터 추출\nlet inputData = {};\nif (rawInput.body && Object.keys(rawInput.body).length > 0) {\n  inputData = rawInput.body;\n} else if (rawInput.query && Object.keys(rawInput.query).length > 0) {\n  inputData = rawInput.query;\n} else if (rawInput.params && Object.keys(rawInput.params).length > 0) {\n  inputData = rawInput.params;\n} else {\n  inputData = { lot_id: '20250810-CAT01' };\n}\n\nconst lotId = inputData.lot_id || inputData.lotId || inputData.LOT_ID || inputData.id || '20250810-CAT01';\nconsole.log('추출된 LOT ID:', lotId);\n\n// MES 부적합 정보 (품질, 생산, 운전자 데이터)\nconst lotProduction = [\n  {lot_id: '20250810-CAT01', product_code: 'CAT01', production_line: 'Line-1', operator_id: 'OP123', operator_name: '김민성', status: 'NG', 'moisture_measured_wt%': '0.62', 'moisture_threshold_wt%': '0.50', severity: 'high', historical_records_count: '12', additional_notes: 'HVAC 실링 점검 2개월 지연 중'},\n  {lot_id: '20250809-CAT01', product_code: 'CAT01', production_line: 'Line-1', operator_id: 'OP124', operator_name: '박영수', status: 'OK', 'moisture_measured_wt%': '0.45', 'moisture_threshold_wt%': '0.50', severity: 'low', historical_records_count: '11', additional_notes: '정상 생산'},\n  {lot_id: '20250808-CAT01', product_code: 'CAT01', production_line: 'Line-2', operator_id: 'OP125', operator_name: '이현진', status: 'OK', 'moisture_measured_wt%': '0.42', 'moisture_threshold_wt%': '0.50', severity: 'low', historical_records_count: '10', additional_notes: '정상 생산'},\n  {lot_id: '20250807-CAT02', product_code: 'CAT02', production_line: 'Line-1', operator_id: 'OP123', operator_name: '김민성', status: 'NG', 'moisture_measured_wt%': '0.58', 'moisture_threshold_wt%': '0.50', severity: 'medium', historical_records_count: '9', additional_notes: '온도 센서 교정 필요'}\n];\n\nconst qualityInspection = [\n  {lot_id: '20250810-CAT01', inspection_timestamp: '2025-08-10T14:05:23Z', 'moisture_measured_wt%': '0.62', 'moisture_threshold_wt%': '0.50', moisture_status: 'NG', 'particle_size_d50_μm': '12.3', particle_size_status: 'OK', 'tap_density_g/cm³': '2.45', overall_grade: 'NG', inspector_id: 'QC001', inspector_name: '최영희', anomaly_flags: 'exit_humidity_spike;res_time_variance_high'},\n  {lot_id: '20250809-CAT01', inspection_timestamp: '2025-08-09T14:35:15Z', 'moisture_measured_wt%': '0.45', 'moisture_threshold_wt%': '0.50', moisture_status: 'OK', 'particle_size_d50_μm': '12.1', particle_size_status: 'OK', 'tap_density_g/cm³': '2.52', overall_grade: 'OK', inspector_id: 'QC002', inspector_name: '김수현', anomaly_flags: ''}\n];\n\nconst products = [\n  {product_code: 'CAT01', product_name: 'NCM811_양극재_분말', category: '배터리소재', subcategory: '양극재', 'moisture_threshold_wt%': '0.50', 'particle_size_target_d50_μm': '12.0', 'drying_temp_standard_°C': '80.0', residence_time_standard_s: '125'},\n  {product_code: 'CAT02', product_name: 'NCM622_양극재_분말', category: '배터리소재', subcategory: '양극재', 'moisture_threshold_wt%': '0.50', 'particle_size_target_d50_μm': '12.5', 'drying_temp_standard_°C': '78.5', residence_time_standard_s: '120'},\n  {product_code: 'CAT03', product_name: 'LFP_양극재_분말', category: '배터리소재', subcategory: '양극재', 'moisture_threshold_wt%': '0.45', 'particle_size_target_d50_μm': '10.5', 'drying_temp_standard_°C': '82.0', residence_time_standard_s: '135'}\n];\n\nconst operators = [\n  {operator_id: 'OP123', operator_name: '김민성', department: '생산부', shift: 'A', certification_level: 'Senior', experience_years: '5.4', primary_line: 'Line-1'},\n  {operator_id: 'OP124', operator_name: '박영수', department: '생산부', shift: 'B', certification_level: 'Senior', experience_years: '6.0', primary_line: 'Line-2'},\n  {operator_id: 'OP125', operator_name: '이현진', department: '생산부', shift: 'C', certification_level: 'Intermediate', experience_years: '3.7', primary_line: 'Line-3'}\n];\n\nconst improvementActions = [\n  {action_id: 'ACT001', action_date: '2025-07-01', action_type: 'maintenance', action_description: '코일 고압 세척', implemented_by: 'MT001', 'effectiveness_delta_wt%': '-0.12'},\n  {action_id: 'ACT002', action_date: '2025-06-15', action_type: 'process_adjustment', action_description: '체류시간 +5%', implemented_by: 'OP123', 'effectiveness_delta_wt%': '-0.08'},\n  {action_id: 'ACT003', action_date: '2025-05-30', action_type: 'equipment_replacement', action_description: '온도센서 교체', implemented_by: 'MT002', 'effectiveness_delta_wt%': '-0.05'}\n];\n\n// IoT 센서 데이터 (실시간 공정 데이터)\nconst sensorReadings = [\n  {lot_id: '20250810-CAT01', timestamp: '2025-08-10T13:50:00Z', 'exit_humidity_%': '32.1', 'inlet_humidity_%': '18.7', 'drying_temp_°C': '80.2', residence_time_s: '125', production_line: 'Line-1', sensor_id: 'SENSOR_001', status: 'normal'},\n  {lot_id: '20250810-CAT01', timestamp: '2025-08-10T13:55:00Z', 'exit_humidity_%': '33.4', 'inlet_humidity_%': '19.2', 'drying_temp_°C': '79.8', residence_time_s: '123', production_line: 'Line-1', sensor_id: 'SENSOR_001', status: 'normal'},\n  {lot_id: '20250810-CAT01', timestamp: '2025-08-10T14:00:00Z', 'exit_humidity_%': '34.5', 'inlet_humidity_%': '20.1', 'drying_temp_°C': '79.5', residence_time_s: '120', production_line: 'Line-1', sensor_id: 'SENSOR_001', status: 'alert'},\n  {lot_id: '20250809-CAT01', timestamp: '2025-08-09T14:15:00Z', 'exit_humidity_%': '28.5', 'inlet_humidity_%': '17.8', 'drying_temp_°C': '80.5', residence_time_s: '128', production_line: 'Line-1', sensor_id: 'SENSOR_001', status: 'normal'},\n  {lot_id: '20250809-CAT01', timestamp: '2025-08-09T14:20:00Z', 'exit_humidity_%': '29.1', 'inlet_humidity_%': '18.1', 'drying_temp_°C': '80.3', residence_time_s: '127', production_line: 'Line-1', sensor_id: 'SENSOR_001', status: 'normal'}\n];\n\n// 히스토리컬 베이스라인 데이터 (과거 5회 평균)\nconst historicalBaseline = {\n  'exit_humidity_%': { mean: 29.8, std: 1.2, slope: 0.05, anomaly_rate: 0.02, trend: 'stable' },\n  'inlet_humidity_%': { mean: 18.2, std: 0.8, slope: 0.04, anomaly_rate: 0.00, trend: 'slightly_increasing' },\n  'drying_temp_°C': { mean: 80.1, std: 0.5, slope: -0.01, anomaly_rate: 0.01, trend: 'stable' },\n  'residence_time_s': { mean: 126, std: 3.2, slope: -0.02, anomaly_rate: 0.01, trend: 'stable' }\n};\n\n// LOT 정보 조회 및 데이터 통합\nconst lotInfo = lotProduction.find(lot => lot.lot_id === lotId) || {\n  lot_id: lotId, product_code: 'CAT01', production_line: 'Line-1', operator_id: 'OP123', operator_name: '김민성',\n  status: 'NG', 'moisture_measured_wt%': '0.62', 'moisture_threshold_wt%': '0.50', severity: 'high',\n  historical_records_count: '12', additional_notes: 'AI 생성 기본 Context'\n};\n\nconst productInfo = products.find(p => p.product_code === lotInfo.product_code) || products[0];\nconst operatorInfo = operators.find(o => o.operator_id === lotInfo.operator_id) || operators[0];\nconst qualityData = qualityInspection.find(q => q.lot_id === lotId);\nconst currentLotSensorData = sensorReadings.filter(s => s.lot_id === lotId);\n\nif (currentLotSensorData.length === 0) {\n  const defaultSensorData = [\n    {lot_id: lotId, timestamp: new Date().toISOString(), 'exit_humidity_%': '32.1', 'inlet_humidity_%': '18.7', 'drying_temp_°C': '80.2', residence_time_s: '125'},\n    {lot_id: lotId, timestamp: new Date(Date.now() - 300000).toISOString(), 'exit_humidity_%': '33.4', 'inlet_humidity_%': '19.2', 'drying_temp_°C': '79.8', residence_time_s: '123'},\n    {lot_id: lotId, timestamp: new Date(Date.now() - 600000).toISOString(), 'exit_humidity_%': '34.5', 'inlet_humidity_%': '20.1', 'drying_temp_°C': '79.5', residence_time_s: '120'}\n  ];\n  currentLotSensorData.push(...defaultSensorData);\n}\n\nconst completeData = {\n  lot_id: lotId,\n  lot_info: lotInfo,\n  product_info: productInfo,\n  operator_info: operatorInfo,\n  quality_data: qualityData,\n  sensor_data: currentLotSensorData,\n  historical_baseline: historicalBaseline,\n  improvement_actions: improvementActions,\n  timestamp: new Date().toISOString()\n};\n\nconsole.log('통합 데이터 준비 완료:', JSON.stringify(completeData, null, 2));\nreturn [{ json: completeData }];"
+      },
+      "id": "data-processor",
+      "name": "데이터 통합 처리",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 상관분석 및 트렌드 분석 통합 수행\nconst data = $input.all()[0].json;\nconst sensorData = data.sensor_data;\nconst qualityData = data.quality_data;\n\nconsole.log('고급 분석 시작');\n\n// 데이터 유효성 검사\nif (!sensorData || !Array.isArray(sensorData) || sensorData.length === 0) {\n  throw new Error('센서 데이터가 없습니다.');\n}\n\n// 수치 변환 함수\nfunction toNumber(value) {\n  const num = parseFloat(value);\n  return isNaN(num) ? 0 : num;\n}\n\n// 피어슨 상관계수 계산\nfunction calculatePearsonCorrelation(x, y) {\n  const n = x.length;\n  if (n !== y.length || n < 3) return { r: 0, p_value: 1, significance: 'none' };\n  \n  const sumX = x.reduce((a, b) => a + b, 0);\n  const sumY = y.reduce((a, b) => a + b, 0);\n  const sumXY = x.reduce((acc, xi, i) => acc + xi * y[i], 0);\n  const sumX2 = x.reduce((acc, xi) => acc + xi * xi, 0);\n  const sumY2 = y.reduce((acc, yi) => acc + yi * yi, 0);\n  \n  const numerator = n * sumXY - sumX * sumY;\n  const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));\n  \n  if (denominator === 0) return { r: 0, p_value: 1, significance: 'none' };\n  \n  const r = numerator / denominator;\n  const t = r * Math.sqrt((n - 2) / (1 - r * r));\n  \n  let p_value;\n  if (Math.abs(t) > 3.18) p_value = 0.001;\n  else if (Math.abs(t) > 2.78) p_value = 0.01;\n  else if (Math.abs(t) > 2.06) p_value = 0.05;\n  else p_value = 0.1;\n  \n  let significance = 'none';\n  if (p_value <= 0.001) significance = 'very_high';\n  else if (p_value <= 0.01) significance = 'high';\n  else if (p_value <= 0.05) significance = 'moderate';\n  \n  return { r: Math.round(r * 100) / 100, p_value: p_value, significance: significance };\n}\n\n// 트렌드 분석 함수\nfunction analyzeTimeTrend(values, baseline) {\n  if (values.length < 2) return { slope: 0, direction: 'stable', anomaly_points: 0 };\n  \n  const n = values.length;\n  const x = Array.from({length: n}, (_, i) => i);\n  const y = values;\n  \n  const sumX = x.reduce((a, b) => a + b, 0);\n  const sumY = y.reduce((a, b) => a + b, 0);\n  const sumXY = x.reduce((acc, xi, i) => acc + xi * y[i], 0);\n  const sumX2 = x.reduce((acc, xi) => acc + xi * xi, 0);\n  \n  const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);\n  \n  let direction = 'stable';\n  const slopeThreshold = baseline ? Math.abs(baseline.slope) * 2 : 0.1;\n  \n  if (Math.abs(slope) > slopeThreshold) {\n    direction = slope > 0 ? 'increasing' : 'decreasing';\n  } else if (Math.abs(slope) > slopeThreshold * 0.5) {\n    direction = slope > 0 ? 'slightly_increasing' : 'slightly_decreasing';\n  }\n  \n  // 이상치 감지 (간단한 IQR 방법)\n  const sorted = [...values].sort((a, b) => a - b);\n  const q1 = sorted[Math.floor(n * 0.25)];\n  const q3 = sorted[Math.floor(n * 0.75)];\n  const iqr = q3 - q1;\n  const lowerBound = q1 - 1.5 * iqr;\n  const upperBound = q3 + 1.5 * iqr;\n  const anomalyPoints = values.filter(val => val < lowerBound || val > upperBound).length;\n  \n  return {\n    slope: Math.round(slope * 1000) / 1000,\n    direction: direction,\n    anomaly_points: anomalyPoints\n  };\n}\n\n// 목표 변수 (수분 측정값)\nconst moistureValue = qualityData ? toNumber(qualityData['moisture_measured_wt%']) : toNumber(data.lot_info['moisture_measured_wt%']);\nconst moistureThreshold = qualityData ? toNumber(qualityData['moisture_threshold_wt%']) : toNumber(data.lot_info['moisture_threshold_wt%']);\nconst moistureArray = new Array(sensorData.length).fill(moistureValue);\n\n// 변수별 상관관계 및 트렌드 분석\nconst variables = ['exit_humidity_%', 'inlet_humidity_%', 'drying_temp_°C', 'residence_time_s'];\nconst correlationResults = {};\nconst processTrendAnalysis = [];\n\nvariables.forEach(varName => {\n  const values = sensorData.map(s => toNumber(s[varName]));\n  const baseline = data.historical_baseline[varName];\n  \n  // 상관관계 분석\n  const correlation = calculatePearsonCorrelation(values, moistureArray);\n  correlationResults[varName] = {\n    pearson_r: correlation.r,\n    p_value: correlation.p_value\n  };\n  \n  // 트렌드 분석\n  const trend = analyzeTimeTrend(values, baseline);\n  const slopeChange = baseline && baseline.slope !== 0 ? Math.round(((trend.slope - baseline.slope) / Math.abs(baseline.slope)) * 100) : 0;\n  const isAnomalous = Math.abs(slopeChange) > 100 || trend.anomaly_points > 1;\n  \n  let description = '기존 패턴 범위 내에서 정상적인 변화입니다.';\n  if (Math.abs(slopeChange) > 200) {\n    description = `평소 대비 변화율이 ${Math.abs(slopeChange)}% ${slopeChange > 0 ? '증가' : '감소'}하여 이상 징후가 감지됩니다.`;\n  } else if (trend.anomaly_points > 1) {\n    description = `이상치가 ${trend.anomaly_points}개 감지되었습니다.`;\n  }\n  \n  processTrendAnalysis.push({\n    variable: varName,\n    slope: trend.slope,\n    trend_direction: trend.direction,\n    anomaly_points: trend.anomaly_points,\n    chart_url: `https://charts.company.com/${varName.replace('%', '').replace(/[°]/g, '').replace(/[^a-zA-Z0-9_]/g, '_')}_trend.png`,\n    historical_pattern_comparison: {\n      baseline_slope: baseline?.slope || 0,\n      baseline_anomaly_rate: baseline?.anomaly_rate || 0,\n      current_vs_historical: `slope ${slopeChange > 0 ? '↑' : '↓'} ${Math.abs(slopeChange)}%, anomaly ↑ ${trend.anomaly_points}개`,\n      is_anomalous: isAnomalous,\n      description: description\n    }\n  });\n});\n\n// 이상 징후 플래그 생성\nconst anomalyFlags = [];\nObject.entries(correlationResults).forEach(([varName, corr]) => {\n  if (Math.abs(corr.pearson_r) > 0.7) {\n    anomalyFlags.push(`${varName}_strong_correlation`);\n  }\n});\n\nprocessTrendAnalysis.forEach(trend => {\n  if (trend.historical_pattern_comparison.is_anomalous) {\n    if (trend.variable === 'exit_humidity_%' && trend.slope > 0.1) {\n      anomalyFlags.push('exit_humidity_spike');\n    }\n    if (trend.variable === 'residence_time_s' && trend.anomaly_points > 0) {\n      anomalyFlags.push('res_time_variance_high');\n    }\n  }\n});\n\n// 심각도 결정\nconst moistureExcess = moistureValue - moistureThreshold;\nlet severity = 'low';\nlet severityScore = 0;\n\nif (moistureExcess > 0.15) severityScore += 3;\nelse if (moistureExcess > 0.1) severityScore += 2;\nelse if (moistureExcess > 0.05) severityScore += 1;\n\nseverityScore += Object.values(correlationResults).filter(c => c.p_value <= 0.05).length * 0.5;\nseverityScore += processTrendAnalysis.filter(t => t.historical_pattern_comparison.is_anomalous).length * 0.7;\n\nif (severityScore >= 4) severity = 'high';\nelse if (severityScore >= 2) severity = 'medium';\n\nconst result = {\n  ...data,\n  correlation_results: correlationResults,\n  process_trend_analysis: processTrendAnalysis,\n  anomaly_flags: anomalyFlags,\n  severity: severity,\n  severity_score: Math.round(severityScore * 10) / 10,\n  analysis_timestamp: new Date().toISOString()\n};\n\nconsole.log('고급 분석 완료. 심각도:', severity, ', 이상 플래그:', anomalyFlags.length, '개');\nreturn [{ json: result }];"
+      },
+      "id": "advanced-analyzer",
+      "name": "고급 분석 엔진",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 최종 NG Context JSON 생성\nconst data = $input.all()[0].json;\n\nconsole.log('최종 Context JSON 생성 시작');\n\n// 개선 조치 이력 포맷팅\nconst pastActions = data.improvement_actions.map(action => ({\n  action: action.action_description,\n  date: action.action_date,\n  effectiveness_delta_wt: parseFloat(action['effectiveness_delta_wt%']) || 0\n}));\n\n// ng_20250625001.json과 동일한 구조로 최종 Context 생성\nconst ngContext = {\n  lot_id: data.lot_id,\n  product: {\n    code: data.product_info?.product_code || data.lot_info.product_code,\n    name: data.product_info?.product_name || 'Unknown Product'\n  },\n  production_line: data.lot_info.production_line,\n  detection: {\n    timestamp: new Date().toISOString(),\n    'moisture_measured_wt%': parseFloat(data.quality_data?.['moisture_measured_wt%'] || data.lot_info['moisture_measured_wt%']) || 0,\n    'moisture_threshold_wt%': parseFloat(data.quality_data?.['moisture_threshold_wt%'] || data.lot_info['moisture_threshold_wt%']) || 0.5,\n    severity: data.severity\n  },\n  sensor_readings: data.sensor_data.map(reading => ({\n    timestamp: reading.timestamp,\n    'exit_humidity_%': parseFloat(reading['exit_humidity_%']) || 0,\n    'inlet_humidity_%': parseFloat(reading['inlet_humidity_%']) || 0,\n    'drying_temp_°C': parseFloat(reading['drying_temp_°C']) || 0,\n    residence_time_s: parseFloat(reading.residence_time_s) || 0\n  })),\n  correlation_results: data.correlation_results,\n  process_trend_analysis: data.process_trend_analysis,\n  past_improvement_actions: pastActions,\n  operator_on_duty: {\n    id: data.operator_info?.operator_id || data.lot_info.operator_id,\n    name: data.operator_info?.operator_name || data.lot_info.operator_name\n  },\n  historical_records_count: parseInt(data.lot_info.historical_records_count) || 0,\n  anomaly_flags: data.anomaly_flags,\n  additional_notes: data.lot_info.additional_notes || 'AI 생성 고급 Context'\n};\n\nconsole.log('최종 NG Context 생성 완료. 심각도:', data.severity, ', 이상 플래그:', data.anomaly_flags.length, '개');\nreturn [{ json: ngContext }];"
+      },
+      "id": "context-generator",
+      "name": "NG Context 생성",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// NG Context와 저장 정보 생성\nconst ngContext = $input.all()[0].json;\nconst timestamp = new Date().toISOString().replace(/[:.]/g, '-');\nconst filename = `ng_${ngContext.lot_id}_${timestamp}.json`;\nconst filepath = `backend/data/ng_context/${filename}`;\n\n// 저장 정보와 함께 ng_context 반환 (백엔드 자동 저장용)\nconst result = {\n  success: true,\n  message: 'NG Context 생성 완료 - 백엔드 자동 저장 예정',\n  filename: filename,\n  filepath: filepath,\n  lot_id: ngContext.lot_id,\n  severity: ngContext.detection.severity,\n  saved_at: new Date().toISOString(),\n  file_size_bytes: JSON.stringify(ngContext).length,\n  file_size_kb: Math.round(JSON.stringify(ngContext).length / 1024 * 100) / 100,\n  \n  // 백엔드 자동 저장을 위한 ng_context 포함\n  ng_context: ngContext,\n  should_save_to_file: true\n};\n\nconsole.log('📁 NG Context 준비 완료:', {\n  filename: filename,\n  severity: ngContext.detection.severity,\n  size_kb: result.file_size_kb,\n  lot_id: ngContext.lot_id,\n  auto_save: 'enabled'\n});\n\nreturn [{ json: result }];"
+      },
+      "id": "context-saver",
+      "name": "Context 파일 저장",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.ng_context ? $json.ng_context.detection.severity : $json.detection.severity}}",
+              "operation": "equal",
+              "value2": "high"
+            }
+          ]
+        }
+      },
+      "id": "severity-check",
+      "name": "심각도 확인",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1240, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 고심각도 알림 생성 (개선된 데이터 처리)\nconst inputData = $input.all()[0].json;\nconsole.log('🔍 고심각도 알림 입력 데이터 구조:', Object.keys(inputData));\nconsole.log('📋 입력 데이터 샘플:', JSON.stringify(inputData, null, 2).substring(0, 500) + '...');\n\n// 다양한 데이터 구조에서 NG Context 추출\nlet ngContext;\nlet saveInfo = null;\n\n// 1. 백엔드 저장 API 응답인 경우 (success 필드가 있는 경우)\nif (inputData.success && inputData.ng_context) {\n  ngContext = inputData.ng_context;\n  saveInfo = {\n    filename: inputData.filename,\n    filepath: inputData.filepath,\n    file_size_kb: inputData.file_size_kb,\n    saved_at: inputData.saved_at\n  };\n  console.log('✅ 백엔드 저장 API 응답에서 NG Context 추출');\n}\n// 2. 일반 저장 결과 데이터인 경우\nelse if (inputData.ng_context) {\n  ngContext = inputData.ng_context;\n  saveInfo = inputData.save_info || null;\n  console.log('✅ 저장 결과에서 NG Context 추출');\n}\n// 3. 직접 NG Context인 경우\nelse if (inputData.lot_id && inputData.detection) {\n  ngContext = inputData;\n  console.log('✅ 직접 NG Context 데이터 사용');\n}\n// 4. 오류 처리 및 디버깅\nelse {\n  console.error('❌ NG Context를 찾을 수 없습니다.');\n  console.error('📊 사용 가능한 키:', Object.keys(inputData));\n  console.error('🔎 데이터 구조:', {\n    has_success: 'success' in inputData,\n    has_ng_context: 'ng_context' in inputData,\n    has_lot_id: 'lot_id' in inputData,\n    has_detection: 'detection' in inputData,\n    type: typeof inputData\n  });\n  \n  // 임시 대안: severity 필드가 있다면 간단한 알림 생성\n  if (inputData.severity) {\n    console.log('⚠️ 임시 대안: severity 기반 알림 생성');\n    return [{ json: {\n      alert_type: 'HIGH_SEVERITY_MOISTURE_FALLBACK',\n      message: '🚨 고심각도 수분 초과 감지 (제한된 정보)',\n      severity: inputData.severity,\n      lot_id: inputData.lot_id || 'unknown',\n      timestamp: new Date().toISOString(),\n      raw_data: inputData\n    }}];\n  }\n  \n  throw new Error('NG Context 데이터를 찾을 수 없습니다.');\n}\n\nconst alertData = {\n  alert_type: 'HIGH_SEVERITY_MOISTURE_ADVANCED',\n  lot_id: ngContext.lot_id,\n  product_name: ngContext.product?.name || 'Unknown Product',\n  production_line: ngContext.production_line,\n  moisture_measured: ngContext.detection?.['moisture_measured_wt%'] || 0,\n  moisture_threshold: ngContext.detection?.['moisture_threshold_wt%'] || 0.5,\n  operator: ngContext.operator_on_duty?.name || 'Unknown Operator',\n  anomaly_flags: ngContext.anomaly_flags || [],\n  timestamp: ngContext.detection?.timestamp || new Date().toISOString(),\n  message: `🚨 고급 분석 - 높은 심각도 수분 초과 감지!\\n\\nLOT: ${ngContext.lot_id}\\n제품: ${ngContext.product?.name || 'Unknown Product'}\\n라인: ${ngContext.production_line}\\n측정값: ${ngContext.detection?.['moisture_measured_wt%'] || 0}%\\n기준값: ${ngContext.detection?.['moisture_threshold_wt%'] || 0.5}%\\n이상 플래그: ${(ngContext.anomaly_flags || []).length}개\\n운전자: ${ngContext.operator_on_duty?.name || 'Unknown Operator'}\\n\\n상세 분석 결과를 확인하고 즉시 조치하시기 바랍니다.`,\n  \n  // 저장 정보 포함\n  save_info: saveInfo,\n  ng_context: ngContext\n};\n\nconsole.log('✅ 고심각도 알림 생성 완료:', {\n  lot_id: alertData.lot_id,\n  severity: 'high',\n  saved: !!alertData.save_info\n});\n\nreturn [{ json: alertData }];"
+      },
+      "id": "high-severity-alert",
+      "name": "고심각도 알림",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1460, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Teams 메시지 데이터 준비 (HTTP Request 노드로 전송)\nconst alertData = $input.all()[0].json;\nconsole.log('📨 Teams 알림 메시지 준비:', alertData.lot_id);\n\n// 안전한 값 추출\nconst lotId = alertData.lot_id || 'Unknown';\nconst productName = alertData.product_name || 'Unknown Product';\nconst productionLine = alertData.production_line || 'Unknown Line';\nconst moistureMeasured = alertData.moisture_measured || 0;\nconst moistureThreshold = alertData.moisture_threshold || 0.5;\nconst operator = alertData.operator || 'Unknown Operator';\nconst anomalyCount = (alertData.anomaly_flags || []).length;\nconst timestamp = alertData.timestamp || new Date().toISOString();\n\n// Teams 메시지 데이터 생성\nconst teamsMessage = {\n  text: `🚨 고심각도 수분 초과 감지!\\n\\nLOT ID: ${lotId}\\n제품: ${productName}\\n라인: ${productionLine}\\n측정값: ${moistureMeasured}% (기준: ${moistureThreshold}%)\\n운전자: ${operator}\\n이상 플래그: ${anomalyCount}개`,\n  summary: '🚨 고심각도 수분 초과 감지'\n};\n\nconsole.log('✅ Teams 메시지 데이터 준비 완료');\nreturn [{ json: teamsMessage }];"
+      },
+      "id": "teams-message-prepare",
+      "name": "Teams 메시지 준비",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1640, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://misoinfoadmin.webhook.office.com/webhookb2/8217a413-7c44-4dd2-9b16-d05fc66d3e90@b0705e7e-8b75-46d7-88b0-32b415cd622a/IncomingWebhook/1784cb29d4de4912a5da04047a828ab9/9bc25d0e-6976-4683-9932-d9e9ab8545e1/V2zFgDJiFgR6DoXBITdUv6vaS4mXOAU_wyYi__bvkKp7g1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "options": {}
+      },
+      "id": "teams-http-sender",
+      "name": "Teams HTTP 전송",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1840, 200]
+    },
+      {
+        "parameters": {
+          "functionCode": "// 일반 응답 생성 (개선된 데이터 처리)\nconst inputData = $input.all()[0].json;\nconsole.log('🔍 일반 응답 입력 데이터 구조:', Object.keys(inputData));\nconsole.log('📋 입력 데이터 샘플:', JSON.stringify(inputData, null, 2).substring(0, 500) + '...');\n\n// 다양한 데이터 구조에서 NG Context 추출\nlet ngContext;\nlet saveInfo = null;\n\n// 1. 백엔드 저장 API 응답인 경우\nif (inputData.success && inputData.ng_context) {\n  ngContext = inputData.ng_context;\n  saveInfo = {\n    filename: inputData.filename,\n    filepath: inputData.filepath,\n    file_size_kb: inputData.file_size_kb,\n    saved_at: inputData.saved_at\n  };\n  console.log('✅ 백엔드 저장 API 응답에서 NG Context 추출');\n}\n// 2. 일반 저장 결과 데이터인 경우\nelse if (inputData.ng_context) {\n  ngContext = inputData.ng_context;\n  saveInfo = inputData.save_info || null;\n  console.log('✅ 저장 결과에서 NG Context 추출');\n}\n// 3. 직접 NG Context인 경우\nelse if (inputData.lot_id && inputData.detection) {\n  ngContext = inputData;\n  console.log('✅ 직접 NG Context 데이터 사용');\n}\n// 4. 오류 처리 및 디버깅\nelse {\n  console.error('❌ NG Context를 찾을 수 없습니다.');\n  console.error('📊 사용 가능한 키:', Object.keys(inputData));\n  console.error('🔎 데이터 구조:', {\n    has_success: 'success' in inputData,\n    has_ng_context: 'ng_context' in inputData,\n    has_lot_id: 'lot_id' in inputData,\n    has_detection: 'detection' in inputData\n  });\n  \n  // 임시 대안\n  if (inputData.severity) {\n    console.log('⚠️ 임시 대안: severity 기반 응답 생성');\n    return [{ json: {\n      success: true,\n      message: 'NG 수분 Context 분석 완료 (제한된 정보)',\n      severity: inputData.severity,\n      lot_id: inputData.lot_id || 'unknown',\n      timestamp: new Date().toISOString(),\n      raw_data: inputData\n    }}];\n  }\n  \n  throw new Error('NG Context 데이터를 찾을 수 없습니다.');\n}\n\nconst response = {\n  success: true,\n  message: 'NG 수분 Context 고급 분석 완료',\n  lot_id: ngContext.lot_id,\n  severity: ngContext.detection?.severity || 'unknown',\n  moisture_status: (ngContext.detection?.['moisture_measured_wt%'] || 0) > (ngContext.detection?.['moisture_threshold_wt%'] || 0.5) ? 'NG' : 'OK',\n  analysis_summary: {\n    significant_correlations: Object.keys(ngContext.correlation_results || {}).length,\n    anomalous_trends: (ngContext.process_trend_analysis || []).filter(t => t.historical_pattern_comparison?.is_anomalous).length,\n    total_anomaly_flags: (ngContext.anomaly_flags || []).length,\n    historical_records: ngContext.historical_records_count || 0\n  },\n  generated_at: new Date().toISOString(),\n  analysis_version: '2.0_advanced',\n  \n  // 저장 정보 포함\n  save_info: saveInfo,\n  ng_context: ngContext\n};\n\nconsole.log('✅ 일반 응답 생성 완료:', {\n  lot_id: response.lot_id,\n  severity: response.severity,\n  saved: !!response.save_info\n});\n\nreturn [{ json: response }];"
+        },
+        "id": "normal-response",
+        "name": "일반 응답",
+        "type": "n8n-nodes-base.function",
+        "typeVersion": 1,
+        "position": [1460, 400]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "webhook-response",
+        "name": "응답 전송",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1,
+        "position": [2040, 300]
+    }
+  ],
+  "connections": {
+    "NG 수분 분석 요청": {
+      "main": [
+        [
+          {
+            "node": "데이터 통합 처리",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "데이터 통합 처리": {
+      "main": [
+        [
+          {
+            "node": "고급 분석 엔진",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "고급 분석 엔진": {
+      "main": [
+        [
+          {
+            "node": "NG Context 생성",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NG Context 생성": {
+      "main": [
+        [
+          {
+            "node": "Context 파일 저장",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Context 파일 저장": {
+      "main": [
+        [
+          {
+            "node": "심각도 확인",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "심각도 확인": {
+      "main": [
+        [
+          {
+            "node": "고심각도 알림",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "일반 응답",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "고심각도 알림": {
+      "main": [
+        [
+          {
+            "node": "Teams 메시지 준비",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Teams 메시지 준비": {
+      "main": [
+        [
+          {
+            "node": "Teams HTTP 전송",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Teams HTTP 전송": {
+      "main": [
+        [
+          {
+            "node": "응답 전송",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "일반 응답": {
+      "main": [
+        [
+          {
+            "node": "응답 전송",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "ng-moisture-context-advanced",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 

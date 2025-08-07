@@ -1,0 +1,31 @@
+lot_id,variable,slope,trend_direction,anomaly_points,baseline_slope,baseline_anomaly_rate,current_vs_historical_slope_%,current_vs_historical_anomaly_%,is_anomalous,description,chart_url
+20250810-CAT01,exit_humidity_%,0.15,increasing,2,0.05,0.02,200,150,true,최근 5회 유사 LOT 평균 대비 출구습도 상승폭이 크게 확대되었습니다,https://charts.company.com/exit_humidity_trend_20250810.png
+20250810-CAT01,residence_time_s,-0.10,decreasing,1,-0.02,0.01,500,100,true,평소 대비 체류시간 감소 속도가 5배 빠르며 일정 간격 이상치가 관측됩니다,https://charts.company.com/res_time_trend_20250810.png
+20250810-CAT01,inlet_humidity_%,0.05,slightly_increasing,0,0.04,0.00,25,0,false,기존 패턴 범위 내 상승이며 눈에 띄는 이상치는 없습니다,https://charts.company.com/inlet_humidity_trend_20250810.png
+20250809-CAT01,exit_humidity_%,0.08,increasing,1,0.05,0.02,60,50,false,정상 범위 내 상승 추세입니다,https://charts.company.com/exit_humidity_trend_20250809.png
+20250809-CAT01,residence_time_s,-0.03,decreasing,0,-0.02,0.01,50,0,false,정상 범위 내 감소 추세입니다,https://charts.company.com/res_time_trend_20250809.png
+20250809-CAT01,inlet_humidity_%,0.04,slightly_increasing,0,0.04,0.00,0,0,false,기준선과 동일한 추세입니다,https://charts.company.com/inlet_humidity_trend_20250809.png
+20250808-CAT01,exit_humidity_%,0.06,increasing,0,0.05,0.02,20,0,false,정상 범위 내 상승입니다,https://charts.company.com/exit_humidity_trend_20250808.png
+20250808-CAT01,residence_time_s,-0.02,decreasing,0,-0.02,0.01,0,0,false,기준선과 동일한 추세입니다,https://charts.company.com/res_time_trend_20250808.png
+20250808-CAT01,inlet_humidity_%,0.03,slightly_increasing,0,0.04,0.00,-25,0,false,기준선보다 낮은 상승 추세입니다,https://charts.company.com/inlet_humidity_trend_20250808.png
+20250807-CAT02,exit_humidity_%,0.12,increasing,2,0.06,0.02,100,100,true,CAT02 제품 특성상 기대치보다 높은 상승율을 보입니다,https://charts.company.com/exit_humidity_trend_20250807.png
+20250807-CAT02,residence_time_s,-0.08,decreasing,1,-0.03,0.01,167,100,true,체류시간 감소 속도가 예상보다 빠릅니다,https://charts.company.com/res_time_trend_20250807.png
+20250807-CAT02,inlet_humidity_%,0.07,increasing,0,0.05,0.00,40,0,false,정상 범위 내 상승입니다,https://charts.company.com/inlet_humidity_trend_20250807.png
+20250806-CAT01,exit_humidity_%,0.05,increasing,0,0.05,0.02,0,0,false,기준선과 동일한 추세입니다,https://charts.company.com/exit_humidity_trend_20250806.png
+20250806-CAT01,residence_time_s,-0.02,decreasing,0,-0.02,0.01,0,0,false,기준선과 동일한 추세입니다,https://charts.company.com/res_time_trend_20250806.png
+20250806-CAT01,inlet_humidity_%,0.04,slightly_increasing,0,0.04,0.00,0,0,false,기준선과 동일한 추세입니다,https://charts.company.com/inlet_humidity_trend_20250806.png
+20250805-CAT03,exit_humidity_%,0.04,slightly_increasing,0,0.03,0.01,33,0,false,LFP 제품 특성상 정상 범위입니다,https://charts.company.com/exit_humidity_trend_20250805.png
+20250805-CAT03,residence_time_s,-0.01,stable,0,-0.01,0.00,0,0,false,안정적인 체류시간 유지,https://charts.company.com/res_time_trend_20250805.png
+20250805-CAT03,inlet_humidity_%,0.02,slightly_increasing,0,0.02,0.00,0,0,false,기준선과 동일한 추세입니다,https://charts.company.com/inlet_humidity_trend_20250805.png
+20250804-CAT01,exit_humidity_%,0.18,increasing,3,0.05,0.02,260,250,true,심각한 출구습도 상승으로 즉시 조치가 필요합니다,https://charts.company.com/exit_humidity_trend_20250804.png
+20250804-CAT01,residence_time_s,-0.12,decreasing,2,-0.02,0.01,500,200,true,체류시간 급격한 감소로 품질에 영향을 미칩니다,https://charts.company.com/res_time_trend_20250804.png
+20250804-CAT01,inlet_humidity_%,0.08,increasing,1,0.04,0.00,100,100,true,입구습도 상승이 공정에 악영향을 미치고 있습니다,https://charts.company.com/inlet_humidity_trend_20250804.png
+20250803-CAT02,exit_humidity_%,0.07,increasing,0,0.06,0.02,17,0,false,정상 범위 내 상승입니다,https://charts.company.com/exit_humidity_trend_20250803.png
+20250803-CAT02,residence_time_s,-0.03,decreasing,0,-0.03,0.01,0,0,false,기준선과 동일한 추세입니다,https://charts.company.com/res_time_trend_20250803.png
+20250803-CAT02,inlet_humidity_%,0.05,slightly_increasing,0,0.05,0.00,0,0,false,기준선과 동일한 추세입니다,https://charts.company.com/inlet_humidity_trend_20250803.png
+20250802-CAT01,exit_humidity_%,0.04,slightly_increasing,0,0.05,0.02,-20,0,false,기준선보다 낮은 상승 추세입니다,https://charts.company.com/exit_humidity_trend_20250802.png
+20250802-CAT01,residence_time_s,-0.01,stable,0,-0.02,0.01,50,0,false,안정적인 체류시간 유지,https://charts.company.com/res_time_trend_20250802.png
+20250802-CAT01,inlet_humidity_%,0.03,slightly_increasing,0,0.04,0.00,-25,0,false,기준선보다 낮은 상승 추세입니다,https://charts.company.com/inlet_humidity_trend_20250802.png
+20250801-CAT03,exit_humidity_%,0.03,slightly_increasing,0,0.03,0.01,0,0,false,LFP 제품 특성상 정상 범위입니다,https://charts.company.com/exit_humidity_trend_20250801.png
+20250801-CAT03,residence_time_s,-0.01,stable,0,-0.01,0.00,0,0,false,안정적인 체류시간 유지,https://charts.company.com/res_time_trend_20250801.png
+20250801-CAT03,inlet_humidity_%,0.02,slightly_increasing,0,0.02,0.00,0,0,false,기준선과 동일한 추세입니다,https://charts.company.com/inlet_humidity_trend_20250801.png 

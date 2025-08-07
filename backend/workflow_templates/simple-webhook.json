@@ -1,0 +1,70 @@
+{
+  "name": "간단한 웹훅 처리",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "test-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "d5a41330-2a8e-4d3b-9b4c-1a2b3c4d5e6f",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "test-webhook"
+    },
+    {
+      "parameters": {
+        "functionCode": "// 받은 데이터 처리\nconst inputData = $input.all();\nconst processedData = {\n  message: '데이터 처리 완료',\n  timestamp: new Date().toISOString(),\n  received_data: inputData,\n  processed: true\n};\n\nreturn [{ json: processedData }];"
+      },
+      "id": "a1b2c3d4-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+      "name": "데이터 처리",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b2c3d4e5-6f7g-8h9i-0j1k-2l3m4n5o6p7q",
+      "name": "응답",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "데이터 처리",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "데이터 처리": {
+      "main": [
+        [
+          {
+            "node": "응답",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "id": "1",
+  "meta": {
+    "instanceId": "00000000-0000-0000-0000-000000000000"
+  }
+} 
