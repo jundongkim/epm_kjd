@@ -1,13 +1,14 @@
-// Dify Service Configuration
+// Dify Service Configuration - AI Advisor 외부 기능용
+// AI Advisor에서는 사용하지 않음
+
 export interface DifyServiceConfig {
   id: string
   name: string
-  description?: string
-  apiUrl: string
+  baseUrl: string
   apiKey: string
   isActive: boolean
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 // Dify App Types
@@ -16,13 +17,10 @@ export type DifyAppType = 'chatbot' | 'agent' | 'workflow'
 export interface DifyApp {
   id: string
   name: string
-  description?: string
   mode: DifyAppType
-  enable_site: boolean
-  enable_api: boolean
-  api_rpm_limit: number
-  api_tpm_limit: number
-  status: 'active' | 'inactive'
+  icon: string
+  color: string
+  description?: string
   created_at: string
   updated_at: string
 }
@@ -30,19 +28,20 @@ export interface DifyApp {
 // Dify API Responses
 export interface DifyAppsResponse {
   data: DifyApp[]
-  has_more: boolean
-  limit: number
   total: number
   page: number
+  limit: number
 }
 
-// Chat/Conversation Types
 export interface DifyMessage {
   id: string
-  content: string
-  role: 'user' | 'assistant'
+  conversation_id: string
+  inputs: Record<string, any>
+  query: string
+  message: string
+  answer: string
+  feedback: any
   created_at: string
-  files?: any[]
 }
 
 export interface DifyConversation {
@@ -50,78 +49,68 @@ export interface DifyConversation {
   name: string
   inputs: Record<string, any>
   status: string
-  introduction: string
   created_at: string
+  updated_at: string
 }
 
-// Service Creation/Update
 export interface CreateDifyServiceRequest {
   name: string
-  description?: string
-  apiUrl: string
+  baseUrl: string
   apiKey: string
 }
 
 export interface UpdateDifyServiceRequest extends Partial<CreateDifyServiceRequest> {
   id: string
-  isActive?: boolean
 }
 
-// Error Types
 export interface DifyApiError {
   code: string
   message: string
-  status: number
+  details?: string
 }
 
-// Hook State Types
 export interface UseDifyState {
   services: DifyServiceConfig[]
   currentService: DifyServiceConfig | null
   apps: DifyApp[]
   conversations: DifyConversation[]
-  isLoading: boolean
+  loading: boolean
   error: DifyApiError | null
 }
 
-// API Parameters
 export interface DifyCreateAppRequest {
   name: string
-  description?: string
   mode: DifyAppType
   icon?: string
-  icon_background?: string
+  color?: string
+  description?: string
 }
 
 export interface DifyChatRequest {
+  inputs: Record<string, any>
   query: string
-  inputs?: Record<string, any>
-  response_mode?: 'streaming' | 'blocking'
-  conversation_id?: string
+  response_mode: 'blocking' | 'streaming'
   user: string
+  conversation_id?: string
   files?: any[]
 }
 
 export interface DifyChatResponse {
-  message_id: string
-  conversation_id: string
-  mode: string
   answer: string
+  conversation_id: string
+  message_id: string
   metadata: {
     usage: {
       prompt_tokens: number
       completion_tokens: number
       total_tokens: number
     }
-    retriever_resources?: any[]
   }
-  created_at: number
 }
 
-// Service Test Result
 export interface DifyServiceTestResult {
   success: boolean
-  latency?: number
+  message: string
   appsCount?: number
-  error?: string
-} 
+  error?: DifyApiError
+}

@@ -15,11 +15,11 @@ from typing import Dict, List, Tuple, Optional, Any, Union
 from dataclasses import dataclass
 from enum import Enum
 
-# AI 모듈 import
-from ..ai.core.ai_report_generator import (
-    create_report_generator, 
-    ReportGenerationConfig
-)
+# AI 모듈 import - 보고서 생성기 제거됨
+# from ..ai.core.ai_report_generator import (
+#     create_report_generator, 
+#     ReportGenerationConfig
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -107,8 +107,8 @@ class ProductModelingEngine:
             logger.error("ModelManager를 import할 수 없습니다.")
             self.model_manager = None
         
-        # AI 보고서 생성기
-        self.report_generator = create_report_generator()
+        # AI 보고서 생성기 - 제거됨
+        # self.report_generator = create_report_generator()
         
         # 상태 관리
         self.training_results = {}
@@ -440,7 +440,7 @@ class ProductModelingEngine:
     
     def generate_ai_report(self, request: ReportRequest) -> Dict[str, Any]:
         """
-        AI 보고서 생성
+        AI 보고서 생성 - 보고서 생성기 제거됨
         
         Args:
             request: 보고서 생성 요청
@@ -449,54 +449,6 @@ class ProductModelingEngine:
             생성된 보고서
         """
         try:
-            # 보고서 생성 설정
-            config = ReportGenerationConfig(
-                report_type=request.report_type,
-                sections=request.include_sections,
-                language="korean",
-                format="markdown"
-            )
-            
-            # 모델 결과 데이터 준비
-            report_data = {}
-            if request.model_results:
-                report_data = {
-                    "model_info": {
-                        "model_name": request.model_results.model_name,
-                        "model_type": request.model_results.model_type,
-                        "target_variable": request.model_results.target_variable,
-                        "training_time": request.model_results.training_time,
-                        "data_shape": request.model_results.data_shape
-                    },
-                    "performance_metrics": request.model_results.metrics,
-                    "feature_importance": (
-                        request.model_results.feature_importance.to_dict()
-                        if request.model_results.feature_importance is not None
-                        else {}
-                    ),
-                    "predictions_summary": {
-                        "test_samples": len(request.model_results.predictions.get('test_actual', [])),
-                        "prediction_range": self._get_prediction_range(request.model_results.predictions)
-                    }
-                }
-            
-            # 추가 데이터 병합
-            if request.additional_data:
-                report_data.update(request.additional_data)
-            
-            # 보고서 생성 (실제 AI 생성기 사용)
-            report_result = self.report_generator.generate_report(config)
-            
-            return {
-                "success": True,
-                "report_content": report_result.content,
-                "report_metadata": report_result.metadata,
-                "message": "AI 보고서가 성공적으로 생성되었습니다."
-            }
-            
-        except Exception as e:
-            logger.error(f"AI 보고서 생성 실패: {e}")
-            
             # 폴백: 기본 보고서 생성
             fallback_report = self._generate_fallback_report(request)
             
@@ -508,6 +460,19 @@ class ProductModelingEngine:
                     "timestamp": datetime.now().isoformat()
                 },
                 "message": "기본 템플릿으로 보고서가 생성되었습니다."
+            }
+            
+        except Exception as e:
+            logger.error(f"AI 보고서 생성 실패: {e}")
+            
+            return {
+                "success": False,
+                "report_content": "보고서 생성에 실패했습니다.",
+                "report_metadata": {
+                    "generator": "error",
+                    "timestamp": datetime.now().isoformat()
+                },
+                "message": f"보고서 생성 중 오류가 발생했습니다: {str(e)}"
             }
     
     def get_model_recommendations(self, data: pd.DataFrame, target_col: str) -> List[Dict[str, Any]]:

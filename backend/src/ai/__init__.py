@@ -17,17 +17,7 @@ from .core import (
     get_chatbot_client,
     get_classification_client,
     get_report_client,
-    get_context_client,
-    EnhancedAIReportGenerator,
-    AIReportGenerator,
-    ReportGenerationConfig,
-    ReportGenerationState,
-    create_report_generator,
-    generate_production_report,
-    generate_quality_report,
-    generate_cost_report,
-    generate_equipment_report,
-    generate_report_async
+    get_context_client
 )
 
 __version__ = "2.0.0"
@@ -55,17 +45,7 @@ __all__ = [
     "get_report_client", 
     "get_context_client",
     
-    # AI Report Generator components
-    "EnhancedAIReportGenerator",
-    "AIReportGenerator",
-    "ReportGenerationConfig",
-    "ReportGenerationState",
-    "create_report_generator",
-    "generate_production_report",
-    "generate_quality_report",
-    "generate_cost_report",
-    "generate_equipment_report",
-    "generate_report_async",
+    # AI Report Generator components - 제거됨
     
     # Version
     "__version__"
@@ -76,14 +56,13 @@ def get_ai_module_info():
     """AI 모듈 정보 반환"""
     return {
         "version": __version__,
-        "services": ["chatbot", "classification", "report_generation"],
+        "services": ["chatbot", "classification"],
         "llm_providers": ["ollama"],
         "features": [
             "context_engineering",
             "service_optimization", 
             "batch_processing",
             "async_support",
-            "performance_monitoring",
-            "ai_report_generation"
+            "performance_monitoring"
         ]
     } 

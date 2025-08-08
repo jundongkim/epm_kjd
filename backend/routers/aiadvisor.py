@@ -24,19 +24,19 @@ from src.aiadvisor import (
     AdvisorAgent, AdvisorAgentManager,
     AIAdvisorConfig, get_config, AIAdvisorException
 )
-from src.aiadvisor.agent_hybrid import HybridAdvisorAgent, HybridAdvisorAgentManager
+from src.aiadvisor.agent_hybrid import AdvancedManufacturingAdvisorAgent, AdvancedManufacturingAdvisorAgentManager
 
 logger = logging.getLogger(__name__)
 
-# 하이브리드 에이전트 매니저 (Dify + Ollama)
-_hybrid_agent_manager: Optional[HybridAdvisorAgentManager] = None
+# 고급 제조업 특화 에이전트 매니저
+_advanced_agent_manager: Optional[AdvancedManufacturingAdvisorAgentManager] = None
 
-def get_hybrid_agent_manager() -> HybridAdvisorAgentManager:
-    """하이브리드 에이전트 매니저 인스턴스 반환"""
-    global _hybrid_agent_manager
-    if _hybrid_agent_manager is None:
-        _hybrid_agent_manager = HybridAdvisorAgentManager()
-    return _hybrid_agent_manager
+def get_advanced_agent_manager() -> AdvancedManufacturingAdvisorAgentManager:
+    """고급 제조업 특화 에이전트 매니저 인스턴스 반환"""
+    global _advanced_agent_manager
+    if _advanced_agent_manager is None:
+        _advanced_agent_manager = AdvancedManufacturingAdvisorAgentManager()
+    return _advanced_agent_manager
 
 # 라우터 생성
 router = APIRouter(
@@ -160,7 +160,6 @@ async def get_system_config(config: AIAdvisorConfig = Depends(get_config)):
         "default_llm_model": config.default_llm_model,
         "available_llm_models": config.available_llm_models,
         "supported_document_types": config.supported_document_types,
-        "default_report_sections": config.default_report_sections,
         "max_file_size_mb": config.max_file_size_mb
     }
 
@@ -173,7 +172,6 @@ async def get_system_status():
             "timestamp": datetime.now().isoformat(),
             "components": {
                 "agent_manager": "active",
-                "report_generator": "active",
                 "document_processor": "active",
                 "ontology_manager": "active",
                 "embedding_manager": "active"
@@ -1053,18 +1051,18 @@ async def search_ontology(query: str = Form(...), ontology_manager: OntologyMana
 
 
 # =============================================================================
-# 하이브리드 AI 에이전트 엔드포인트 (Dify + Ollama)
+# 제조업 특화 고급 AI 에이전트 엔드포인트
 # =============================================================================
 
-@router.post("/hybrid/query")
-async def hybrid_query(
+@router.post("/advanced/query")
+async def advanced_query(
     request: dict,
-    hybrid_manager: HybridAdvisorAgentManager = Depends(get_hybrid_agent_manager)
+    advanced_manager: AdvancedManufacturingAdvisorAgentManager = Depends(get_advanced_agent_manager)
 ):
-    """하이브리드 AI 에이전트 질의 (Dify 또는 Ollama)"""
+    """고급 제조업 특화 AI 에이전트 질의"""
     try:
         user_query = request.get("query", "")
-        use_dify = request.get("use_dify", False)
+        analysis_mode = request.get("analysis_mode", "standard")
         conversation_id = request.get("conversation_id")
         agent_id = request.get("agent_id", "default")
         
@@ -1072,16 +1070,16 @@ async def hybrid_query(
             raise HTTPException(status_code=400, detail="질의 내용이 없습니다.")
         
         # 에이전트 가져오기 또는 생성
-        agent = await hybrid_manager.get_agent(agent_id)
+        agent = await advanced_manager.get_agent(agent_id)
         if not agent:
-            agent = await hybrid_manager.create_agent(
+            agent = await advanced_manager.create_agent(
                 agent_id=agent_id, 
-                use_dify=use_dify
+                analysis_mode=analysis_mode
             )
         
-        # 모드 전환 (필요한 경우)
-        if agent.use_dify != use_dify:
-            await agent.switch_mode(use_dify)
+        # 분석 모드 전환 (필요한 경우)
+        if agent.analysis_mode != analysis_mode:
+            await agent.switch_analysis_mode(analysis_mode)
         
         # 질의 처리
         result = await agent.query(user_query, conversation_id)
@@ -1089,22 +1087,22 @@ async def hybrid_query(
         return {
             "status": "success",
             "result": result,
-            "agent_mode": agent.get_current_mode()
+            "agent_config": agent.get_current_config()
         }
         
     except Exception as e:
-        logger.error(f"하이브리드 질의 오류: {str(e)}")
+        logger.error(f"고급 질의 오류: {str(e)}")
         raise HTTPException(status_code=500, detail=f"질의 처리 실패: {str(e)}")
 
-@router.post("/hybrid/stream")
-async def hybrid_stream_query(
+@router.post("/advanced/stream")
+async def advanced_stream_query(
     request: dict,
-    hybrid_manager: HybridAdvisorAgentManager = Depends(get_hybrid_agent_manager)
+    advanced_manager: AdvancedManufacturingAdvisorAgentManager = Depends(get_advanced_agent_manager)
 ):
-    """하이브리드 AI 에이전트 스트리밍 질의"""
+    """고급 제조업 특화 AI 에이전트 스트리밍 질의"""
     try:
         user_query = request.get("query", "")
-        use_dify = request.get("use_dify", False)
+        analysis_mode = request.get("analysis_mode", "standard")
         conversation_id = request.get("conversation_id")
         agent_id = request.get("agent_id", "default")
         
@@ -1112,17 +1110,17 @@ async def hybrid_stream_query(
             raise HTTPException(status_code=400, detail="질의 내용이 없습니다.")
         
         # 에이전트 가져오기 또는 생성
-        agent = await hybrid_manager.get_agent(agent_id)
+        agent = await advanced_manager.get_agent(agent_id)
         if not agent:
-            agent = await hybrid_manager.create_agent(
+            agent = await advanced_manager.create_agent(
                 agent_id=agent_id, 
-                use_dify=use_dify,
+                analysis_mode=analysis_mode,
                 streaming=True
             )
         
-        # 모드 전환 (필요한 경우)
-        if agent.use_dify != use_dify:
-            await agent.switch_mode(use_dify)
+        # 분석 모드 전환 (필요한 경우)
+        if agent.analysis_mode != analysis_mode:
+            await agent.switch_analysis_mode(analysis_mode)
         
         # 스트리밍 응답 생성
         async def generate_response():
@@ -1142,46 +1140,47 @@ async def hybrid_stream_query(
         )
         
     except Exception as e:
-        logger.error(f"하이브리드 스트리밍 오류: {str(e)}")
+        logger.error(f"고급 스트리밍 오류: {str(e)}")
         raise HTTPException(status_code=500, detail=f"스트리밍 처리 실패: {str(e)}")
 
-@router.get("/hybrid/modes")
-async def get_hybrid_modes(
-    hybrid_manager: HybridAdvisorAgentManager = Depends(get_hybrid_agent_manager)
+@router.get("/advanced/modes")
+async def get_advanced_modes(
+    advanced_manager: AdvancedManufacturingAdvisorAgentManager = Depends(get_advanced_agent_manager)
 ):
-    """하이브리드 에이전트 모드 상태 조회"""
+    """고급 에이전트 분석 모드 상태 조회"""
     try:
-        agents = hybrid_manager.list_agents()
+        agents = advanced_manager.list_agents()
         return {
             "status": "success",
             "agents": agents,
             "available_modes": [
-                {"mode": "ollama", "name": "Ollama 단독 모드", "description": "로컬 Ollama LLM 사용"},
-                {"mode": "dify", "name": "Dify 하이브리드 모드", "description": "Dify 플랫폼과 연동한 고도화된 AI"}
+                {"mode": "standard", "name": "Standard 모드", "description": "기본 분석 모드 - 빠른 응답"},
+                {"mode": "advanced", "name": "Advanced 모드", "description": "고급 분석 모드 - 상세 분석"},
+                {"mode": "expert", "name": "Expert 모드", "description": "전문가 분석 모드 - 종합 분석"}
             ]
         }
     except Exception as e:
         logger.error(f"모드 조회 오류: {str(e)}")
         raise HTTPException(status_code=500, detail=f"모드 조회 실패: {str(e)}")
 
-@router.post("/hybrid/switch-mode")
-async def switch_hybrid_mode(
+@router.post("/advanced/switch-mode")
+async def switch_advanced_mode(
     request: dict,
-    hybrid_manager: HybridAdvisorAgentManager = Depends(get_hybrid_agent_manager)
+    advanced_manager: AdvancedManufacturingAdvisorAgentManager = Depends(get_advanced_agent_manager)
 ):
-    """하이브리드 에이전트 모드 전환"""
+    """고급 에이전트 분석 모드 전환"""
     try:
         agent_id = request.get("agent_id", "default")
-        use_dify = request.get("use_dify", False)
+        analysis_mode = request.get("analysis_mode", "standard")
         
-        success = await hybrid_manager.switch_agent_mode(agent_id, use_dify)
+        success = await advanced_manager.switch_agent_analysis_mode(agent_id, analysis_mode)
         
         if success:
-            agent = await hybrid_manager.get_agent(agent_id)
+            agent = await advanced_manager.get_agent(agent_id)
             return {
                 "status": "success",
-                "message": f"{'Dify' if use_dify else 'Ollama'} 모드로 전환 성공",
-                "agent_mode": agent.get_current_mode() if agent else None
+                "message": f"{analysis_mode} 모드로 전환 성공",
+                "agent_config": agent.get_current_config() if agent else None
             }
         else:
             raise HTTPException(status_code=500, detail="모드 전환 실패")
@@ -1190,22 +1189,10 @@ async def switch_hybrid_mode(
         logger.error(f"모드 전환 오류: {str(e)}")
         raise HTTPException(status_code=500, detail=f"모드 전환 실패: {str(e)}")
 
-@router.get("/hybrid/status")
-async def get_hybrid_status():
-    """하이브리드 시스템 상태 확인"""
+@router.get("/advanced/status")
+async def get_advanced_status():
+    """고급 시스템 상태 확인"""
     try:
-        # Dify 연결 상태 확인
-        dify_available = False
-        dify_error = None
-        try:
-            from src.aiadvisor.dify_client import DifyAIAdvisorClient
-            dify_client = DifyAIAdvisorClient()
-            if await dify_client._test_connection():
-                dify_available = True
-            await dify_client.close()
-        except Exception as e:
-            dify_error = str(e)
-        
         # Ollama 연결 상태 확인
         ollama_available = False
         ollama_error = None
@@ -1219,15 +1206,11 @@ async def get_hybrid_status():
         
         return {
             "status": "success",
-            "dify": {
-                "available": dify_available,
-                "error": dify_error
-            },
             "ollama": {
                 "available": ollama_available,
                 "error": ollama_error
             },
-            "hybrid_ready": dify_available or ollama_available
+            "analysis_ready": ollama_available
         }
         
     except Exception as e:

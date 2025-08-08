@@ -1,6 +1,7 @@
-'use client'
+// Dify Service Hook - AI Advisor 외부 기능용
+// AI Advisor에서는 사용하지 않음
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   DifyServiceConfig,
   DifyApp,
@@ -23,52 +24,27 @@ export function useDify() {
     currentService: null,
     apps: [],
     conversations: [],
-    isLoading: false,
+    loading: false,
     error: null
   })
 
-  // Load services from localStorage on mount
+  // Load services from localStorage
   useEffect(() => {
-    const loadServices = () => {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY)
-        if (stored) {
-          const parsed = JSON.parse(stored)
-          if (Array.isArray(parsed)) {
-            const services = parsed.map((service: any) => ({
-              ...service,
-              createdAt: new Date(service.createdAt),
-              updatedAt: new Date(service.updatedAt)
-            }))
-            setState(prev => ({ 
-              ...prev, 
-              services,
-              currentService: services.find((s: DifyServiceConfig) => s.isActive) || services[0] || null,
-              error: null
-            }))
-          } else {
-            // Invalid format, clear storage
-            localStorage.removeItem(STORAGE_KEY)
-          }
-        }
-      } catch (error) {
-        console.error('Failed to load Dify services:', error)
-        // Clear corrupted data
-        localStorage.removeItem(STORAGE_KEY)
-        setState(prev => ({ 
-          ...prev, 
-          error: {
-            code: 'STORAGE_ERROR',
-            message: 'Failed to load saved services. Starting fresh.',
-            status: 500
-          }
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const services: DifyServiceConfig[] = JSON.parse(stored)
+        setState(prev => ({
+          ...prev,
+          services,
+          currentService: services.find((s: DifyServiceConfig) => s.isActive) || services[0] || null
         }))
       }
+    } catch (error) {
+      console.error('Failed to load Dify services:', error)
     }
-    loadServices()
   }, [])
 
-  // Save services to localStorage
   const saveServices = useCallback((services: DifyServiceConfig[]) => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(services))
@@ -77,122 +53,100 @@ export function useDify() {
     }
   }, [])
 
-  // API call wrapper with error handling
-  const apiCall = useCallback(async <T>(
-    url: string, 
-    options: RequestInit, 
+  const apiCall = async <T>(
+    endpoint: string,
+    options: RequestInit = {},
     service?: DifyServiceConfig
   ): Promise<T> => {
-    const currentSvc = service || state.currentService
-    if (!currentSvc) {
+    const targetService = service || state.currentService
+
+    if (!targetService) {
       throw {
         code: 'NO_SERVICE',
         message: 'No Dify service configured',
-        status: 400
+        details: 'Please configure a Dify service first'
       } as DifyApiError
+    }
+
+    const url = `${targetService.baseUrl}/v1${endpoint}`
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${targetService.apiKey}`,
+      ...options.headers
     }
 
     try {
-      // Create timeout controller for better browser compatibility
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
-      
-      const response = await fetch(`${currentSvc.apiUrl}${url}`, {
+      const response = await fetch(url, {
         ...options,
-        headers: {
-          'Authorization': `Bearer ${currentSvc.apiKey}`,
-          'Content-Type': 'application/json',
-          ...options.headers
-        },
-        signal: controller.signal
+        headers
       })
-      
-      clearTimeout(timeoutId)
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ 
-          message: `HTTP ${response.status}: ${response.statusText}` 
-        }))
-        
+        const errorData = await response.json().catch(() => ({}))
         throw {
-          code: errorData.code || `HTTP_${response.status}`,
-          message: errorData.message || `Request failed with status ${response.status}`,
-          status: response.status
+          code: response.status.toString(),
+          message: errorData.message || `HTTP ${response.status}`,
+          details: errorData.details || response.statusText
         } as DifyApiError
       }
 
-      return response.json()
-    } catch (error: any) {
-      // Handle network errors, CORS, timeouts, etc.
-      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      return await response.json()
+    } catch (error) {
+      if (error instanceof TypeError) {
         throw {
-          code: 'TIMEOUT_ERROR',
-          message: 'Request timed out. Please check your connection and try again.',
-          status: 408
+          code: 'NETWORK_ERROR',
+          message: error.message || 'Network error. Please check if the Dify service is running and accessible.',
+          details: 'Failed to connect to Dify service'
         } as DifyApiError
       }
-      
-      if (error.code && error.message && error.status) {
-        throw error // Re-throw our custom errors
-      }
-      
-      // Handle network/CORS errors
-      throw {
-        code: 'NETWORK_ERROR',
-        message: error.message || 'Network error. Please check if the Dify service is running and accessible.',
-        status: 0
-      } as DifyApiError
+      throw error
     }
-  }, [state.currentService])
+  }
 
-  // Test service connection
   const testService = useCallback(async (
     serviceConfig: Omit<DifyServiceConfig, 'id' | 'isActive' | 'createdAt' | 'updatedAt'>
   ): Promise<DifyServiceTestResult> => {
-    const startTime = Date.now()
-    
     try {
       const testSvc: DifyServiceConfig = {
         ...serviceConfig,
         id: 'test',
-        isActive: false,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       }
 
       const response = await apiCall<DifyAppsResponse>('/apps', { method: 'GET' }, testSvc)
-      const latency = Date.now() - startTime
-
+      
       return {
         success: true,
-        latency,
-        appsCount: response.total
+        message: 'Service connection successful',
+        appsCount: response.data?.length || 0
       }
-    } catch (error: any) {
+    } catch (error) {
       return {
         success: false,
-        error: error.message || 'Connection failed'
+        message: (error as DifyApiError).message || 'Connection failed',
+        error: error as DifyApiError
       }
     }
-  }, [apiCall])
+  }, [])
 
-  // Create new service
   const createService = useCallback(async (request: CreateDifyServiceRequest): Promise<void> => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }))
+    setState(prev => ({ ...prev, loading: true, error: null }))
 
     try {
-      // Test connection first
+      // Test the service first
       const testResult = await testService(request)
       if (!testResult.success) {
-        throw new Error(testResult.error || 'Service connection test failed')
+        throw testResult.error
       }
 
       const newService: DifyServiceConfig = {
         id: Date.now().toString(),
         ...request,
-        isActive: state.services.length === 0, // First service becomes active
-        createdAt: new Date(),
-        updatedAt: new Date()
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       }
 
       const updatedServices = [...state.services, newService]
@@ -201,204 +155,195 @@ export function useDify() {
       setState(prev => ({
         ...prev,
         services: updatedServices,
-        currentService: newService.isActive ? newService : prev.currentService,
-        isLoading: false
+        currentService: newService,
+        loading: false
       }))
-    } catch (error: any) {
+    } catch (error) {
       setState(prev => ({
         ...prev,
-        isLoading: false,
-        error: {
-          code: 'CREATE_SERVICE_ERROR',
-          message: error.message || 'Failed to create service',
-          status: 500
-        }
+        loading: false,
+        error: error as DifyApiError
       }))
       throw error
     }
   }, [state.services, testService, saveServices])
 
-  // Update service
   const updateService = useCallback(async (request: UpdateDifyServiceRequest): Promise<void> => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }))
+    setState(prev => ({ ...prev, loading: true, error: null }))
 
     try {
-      const existingService = state.services.find(s => s.id === request.id)
-      if (!existingService) {
-        throw new Error('Service not found')
-      }
-
-      // Test connection if API details changed
-      if (request.apiUrl || request.apiKey) {
-        const testConfig = {
-          name: request.name || existingService.name,
-          description: request.description || existingService.description,
-          apiUrl: request.apiUrl || existingService.apiUrl,
-          apiKey: request.apiKey || existingService.apiKey
-        }
-        
-        const testResult = await testService(testConfig)
-        if (!testResult.success) {
-          throw new Error(testResult.error || 'Service connection test failed')
-        }
+      const { id, ...updateData } = request
+      const serviceIndex = state.services.findIndex(s => s.id === id)
+      
+      if (serviceIndex === -1) {
+        throw {
+          code: 'NOT_FOUND',
+          message: 'Service not found',
+          details: `Service with ID ${id} does not exist`
+        } as DifyApiError
       }
 
       const updatedService: DifyServiceConfig = {
-        ...existingService,
-        ...request,
-        updatedAt: new Date()
+        ...state.services[serviceIndex],
+        ...updateData,
+        updatedAt: new Date().toISOString()
       }
 
-      const updatedServices = state.services.map(s => 
-        s.id === request.id ? updatedService : s
-      )
+      const updatedServices = [...state.services]
+      updatedServices[serviceIndex] = updatedService
       saveServices(updatedServices)
 
       setState(prev => ({
         ...prev,
         services: updatedServices,
-        currentService: prev.currentService?.id === request.id ? updatedService : prev.currentService,
-        isLoading: false
+        currentService: prev.currentService?.id === id ? updatedService : prev.currentService,
+        loading: false
       }))
-    } catch (error: any) {
+    } catch (error) {
       setState(prev => ({
         ...prev,
-        isLoading: false,
-        error: {
-          code: 'UPDATE_SERVICE_ERROR',
-          message: error.message || 'Failed to update service',
-          status: 500
-        }
+        loading: false,
+        error: error as DifyApiError
       }))
       throw error
     }
-  }, [state.services, testService, saveServices])
-
-  // Delete service
-  const deleteService = useCallback(async (serviceId: string): Promise<void> => {
-    const updatedServices = state.services.filter(s => s.id !== serviceId)
-    saveServices(updatedServices)
-
-    setState(prev => ({
-      ...prev,
-      services: updatedServices,
-      currentService: prev.currentService?.id === serviceId 
-        ? (updatedServices[0] || null) 
-        : prev.currentService
-    }))
   }, [state.services, saveServices])
 
-  // Set active service
-  const setActiveService = useCallback((serviceId: string) => {
-    const service = state.services.find(s => s.id === serviceId)
-    if (service) {
-      const updatedServices = state.services.map(s => ({
-        ...s,
-        isActive: s.id === serviceId
-      }))
+  const deleteService = useCallback(async (id: string): Promise<void> => {
+    setState(prev => ({ ...prev, loading: true, error: null }))
+
+    try {
+      const updatedServices = state.services.filter(s => s.id !== id)
       saveServices(updatedServices)
 
       setState(prev => ({
         ...prev,
         services: updatedServices,
-        currentService: service
+        currentService: prev.currentService?.id === id ? (updatedServices[0] || null) : prev.currentService,
+        loading: false
       }))
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error as DifyApiError
+      }))
+      throw error
     }
   }, [state.services, saveServices])
 
-  // Fetch apps from current service
-  const fetchApps = useCallback(async (): Promise<void> => {
+  const setActiveService = useCallback(async (id: string): Promise<void> => {
+    setState(prev => ({ ...prev, loading: true, error: null }))
+
+    try {
+      const updatedServices = state.services.map(s => ({
+        ...s,
+        isActive: s.id === id
+      }))
+      saveServices(updatedServices)
+
+      const newCurrentService = updatedServices.find(s => s.id === id) || null
+
+      setState(prev => ({
+        ...prev,
+        services: updatedServices,
+        currentService: newCurrentService,
+        loading: false
+      }))
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error as DifyApiError
+      }))
+      throw error
+    }
+  }, [state.services, saveServices])
+
+  const loadApps = useCallback(async (): Promise<void> => {
     if (!state.currentService) return
 
-    setState(prev => ({ ...prev, isLoading: true, error: null }))
+    setState(prev => ({ ...prev, loading: true, error: null }))
 
     try {
       const response = await apiCall<DifyAppsResponse>('/apps', { method: 'GET' })
+      
       setState(prev => ({
         ...prev,
-        apps: response.data,
-        isLoading: false
+        apps: response.data || [],
+        loading: false
       }))
-    } catch (error: any) {
+    } catch (error) {
       setState(prev => ({
         ...prev,
-        isLoading: false,
-        error
+        loading: false,
+        error: error as DifyApiError
       }))
     }
-  }, [state.currentService, apiCall])
+  }, [state.currentService])
 
-  // Create new app
   const createApp = useCallback(async (request: DifyCreateAppRequest): Promise<DifyApp> => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }))
-
-    try {
-      const newApp = await apiCall<DifyApp>('/apps', {
-        method: 'POST',
-        body: JSON.stringify(request)
-      })
-
-      setState(prev => ({
-        ...prev,
-        apps: [...prev.apps, newApp],
-        isLoading: false
-      }))
-
-      return newApp
-    } catch (error: any) {
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error
-      }))
-      throw error
+    if (!state.currentService) {
+      throw {
+        code: 'NO_SERVICE',
+        message: 'No active Dify service',
+        details: 'Please select an active Dify service'
+      } as DifyApiError
     }
-  }, [apiCall])
 
-  // Send chat message
-  const sendChat = useCallback(async (
-    appId: string, 
+    const newApp = await apiCall<DifyApp>('/apps', {
+      method: 'POST',
+      body: JSON.stringify(request)
+    })
+
+    // Refresh apps list
+    await loadApps()
+
+    return newApp
+  }, [state.currentService, loadApps])
+
+  const deleteApp = useCallback(async (appId: string): Promise<void> => {
+    if (!state.currentService) {
+      throw {
+        code: 'NO_SERVICE',
+        message: 'No active Dify service',
+        details: 'Please select an active Dify service'
+      } as DifyApiError
+    }
+
+    await apiCall(`/apps/${appId}`, { method: 'DELETE' })
+
+    // Refresh apps list
+    await loadApps()
+  }, [state.currentService, loadApps])
+
+  const sendChatMessage = useCallback(async (
     request: DifyChatRequest
   ): Promise<DifyChatResponse> => {
-    try {
-      return await apiCall<DifyChatResponse>(`/chat-messages`, {
-        method: 'POST',
-        body: JSON.stringify(request),
-        headers: {
-          'Authorization': `Bearer ${state.currentService?.apiKey}`,
-          'Content-Type': 'application/json'
-        }
-      })
-    } catch (error: any) {
-      setState(prev => ({ ...prev, error }))
-      throw error
+    if (!state.currentService) {
+      throw {
+        code: 'NO_SERVICE',
+        message: 'No active Dify service',
+        details: 'Please select an active Dify service'
+      } as DifyApiError
     }
-  }, [apiCall, state.currentService])
 
-  // Clear error
-  const clearError = useCallback(() => {
-    setState(prev => ({ ...prev, error: null }))
-  }, [])
+    return await apiCall<DifyChatResponse>(`/chat-messages`, {
+      method: 'POST',
+      body: JSON.stringify(request)
+    })
+  }, [state.currentService])
 
   return {
-    // State
     ...state,
-    
-    // Service management
+    testService,
     createService,
     updateService,
     deleteService,
     setActiveService,
-    testService,
-    
-    // App management
-    fetchApps,
+    loadApps,
     createApp,
-    
-    // Chat
-    sendChat,
-    
-    // Utilities
-    clearError
+    deleteApp,
+    sendChatMessage
   }
-} 
+}

@@ -31,8 +31,8 @@ from src.copilot.product_data_analysis_engine import ProductDataAnalysisEngine
 from src.copilot.experimental_design_engine import ExperimentalDesignEngine
 from src.copilot.cost_management_engine import CostManagementEngine
 from src.copilot.cost_optimization_engine import CostOptimizationEngine
-# AI 보고서 생성기는 이제 AI 모듈에서 import
-from src.ai.core.ai_report_generator import AIReportGenerator
+# AI 보고서 생성기 제거됨
+# from src.ai.core.ai_report_generator import AIReportGenerator
 from src.copilot.advanced_optimization import AdvancedOptimizationEngine
 # from src.copilot.config import settings
 # LLM Client는 이제 AI 모듈에서 import  
@@ -170,13 +170,14 @@ async def startup_event():
             logger.error(f"❌ 원가 최적화 엔진 초기화 실패: {e}")
             engine_init_success["cost_optimization"] = False
         
-        try:
-            engines["ai_report"] = AIReportGenerator(llm_client=None)
-            engine_init_success["ai_report"] = True
-            logger.info("✅ AI 보고서 생성 엔진 초기화 완료")
-        except Exception as e:
-            logger.error(f"❌ AI 보고서 생성 엔진 초기화 실패: {e}")
-            engine_init_success["ai_report"] = False
+        # AI 보고서 생성 엔진 제거됨
+        # try:
+        #     engines["ai_report"] = AIReportGenerator(llm_client=None)
+        #     engine_init_success["ai_report"] = True
+        #     logger.info("✅ AI 보고서 생성 엔진 초기화 완료")
+        # except Exception as e:
+        #     logger.error(f"❌ AI 보고서 생성 엔진 초기화 실패: {e}")
+        #     engine_init_success["ai_report"] = False
         
         try:
             if engine_init_success.get("cost_optimization", False):
@@ -1656,21 +1657,21 @@ async def optimize_cost(request: Dict[str, Any]):
         logger.error(f"원가 최적화 오류: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# AI 보고서 생성 엔드포인트들
-@app.post("/api/report/generate")
-async def generate_report(request: Dict[str, Any]):
-    """AI 보고서 생성"""
-    try:
-        engine = engines.get("ai_report")
-        if not engine:
-            raise HTTPException(status_code=500, detail="AI report engine not available")
-        
-        result = engine.generate_comprehensive_report(request)
-        
-        return {"status": "success", "report": result}
-    except Exception as e:
-        logger.error(f"AI 보고서 생성 오류: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+# AI 보고서 생성 엔드포인트들 - 제거됨
+# @app.post("/api/report/generate")
+# async def generate_report(request: Dict[str, Any]):
+#     """AI 보고서 생성"""
+#     try:
+#         engine = engines.get("ai_report")
+#         if not engine:
+#             raise HTTPException(status_code=500, detail="AI report engine not available")
+#         
+#         result = engine.generate_comprehensive_report(request)
+#         
+#         return {"status": "success", "report": result}
+#     except Exception as e:
+#         logger.error(f"AI 보고서 생성 오류: {e}")
+#         raise HTTPException(status_code=500, detail=str(e))
 
 # 고급 최적화 엔드포인트들
 @app.post("/api/optimization/advanced")

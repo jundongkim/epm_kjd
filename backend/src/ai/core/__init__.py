@@ -15,18 +15,19 @@ from .llm_client import (
     get_report_client,
     get_context_client
 )
-from .ai_report_generator import (
-    EnhancedAIReportGenerator,
-    AIReportGenerator,
-    ReportGenerationConfig,
-    ReportGenerationState,
-    create_report_generator,
-    generate_production_report,
-    generate_quality_report,
-    generate_cost_report,
-    generate_equipment_report,
-    generate_report_async
-)
+# 보고서 생성기 제거됨
+# from .ai_report_generator import (
+#     EnhancedAIReportGenerator,
+#     AIReportGenerator,
+#     ReportGenerationConfig,
+#     ReportGenerationState,
+#     create_report_generator,
+#     generate_production_report,
+#     generate_quality_report,
+#     generate_cost_report,
+#     generate_equipment_report,
+#     generate_report_async
+# )
 
 __all__ = [
     "BaseAIService",
@@ -41,14 +42,5 @@ __all__ = [
     "get_classification_client", 
     "get_report_client",
     "get_context_client",
-    "EnhancedAIReportGenerator",
-    "AIReportGenerator",
-    "ReportGenerationConfig",
-    "ReportGenerationState",
-    "create_report_generator",
-    "generate_production_report",
-    "generate_quality_report",
-    "generate_cost_report",
-    "generate_equipment_report",
-    "generate_report_async"
+    # 보고서 생성기 관련 항목들 제거됨
 ] 

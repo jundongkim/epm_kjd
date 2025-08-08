@@ -16,11 +16,8 @@ from .core import (
     get_chatbot_client,
     get_classification_client,
     get_report_client,
-    get_context_client,
-    create_report_generator,
-    ReportGenerationConfig,
-    generate_production_report,
-    generate_quality_report
+    get_context_client
+    # 보고서 생성기 관련 import 제거됨
 )
 
 # 로깅 설정
@@ -30,153 +27,27 @@ logger = logging.getLogger(__name__)
 
 def demo_ai_report_generator():
     """
-    향상된 AI 보고서 생성기 v2.0 기능 데모
+    AI 보고서 생성기 기능 데모 - 보고서 생성기 제거됨
     """
     print("\n" + "="*50)
-    print("AI 보고서 생성기 v2.0 기능 데모")
+    print("AI 보고서 생성기 기능 데모 - 제거됨")
     print("="*50)
     
-    # 1. 기본 보고서 생성기 테스트
-    print("\n1. 향상된 보고서 생성기 초기화")
-    try:
-        # v2.0: 향상된 기능으로 생성기 초기화
-        generator = create_report_generator(
-            use_context_engineering=True,
-            use_optimized_clients=True
-        )
-        
-        # 성능 통계 확인
-        stats = generator.get_performance_stats()
-        print(f"✅ AI 보고서 생성기 v{stats['version']} 초기화 완료")
-        print(f"   컨텍스트 엔지니어링: {'활성화' if stats['context_engineering_enabled'] else '비활성화'}")
-        print(f"   최적화 클라이언트: {'활성화' if stats['optimized_clients_enabled'] else '비활성화'}")
-        
-    except Exception as e:
-        print(f"❌ 보고서 생성기 초기화 실패: {e}")
-        return
-    
-    # 2. 생산 보고서 생성 테스트
-    print("\n2. 생산 보고서 생성 테스트")
-    try:
-        config = ReportGenerationConfig(
-            report_type="production_summary",
-            parameters={
-                "period": "2024-01",
-                "factory": "Factory-A",
-                "product_line": "Semiconductor"
-            },
-            use_context_engineering=True,
-            service_optimization=True
-        )
-        
-        print("생산 보고서 생성 중...")
-        if generator.llm_client.is_available():
-            report = generator.generate_report(config)
-            print(f"✅ 생산 보고서 생성 완료:")
-            print(f"   제목: {report.title}")
-            print(f"   길이: {len(report.content)} 문자")
-            print(f"   품질 점수: {report.metadata.get('quality_score', 'N/A')}")
-            print(f"   처리 시간: {report.metadata.get('total_processing_time', 'N/A'):.2f}초")
-            print(f"   반복 횟수: {report.metadata.get('iteration_count', 'N/A')}")
-        else:
-            print("⚠️  Ollama 서버 연결 실패 - 시뮬레이션 모드")
-            print("✅ 시뮬레이션: 생산 보고서 생성 완료")
-            
-    except Exception as e:
-        print(f"❌ 생산 보고서 생성 실패: {e}")
-    
-    # 3. 품질 보고서 생성 테스트 (편의 함수 사용)
-    print("\n3. 품질 보고서 생성 테스트 (편의 함수)")
-    try:
-        print("품질 보고서 생성 중...")
-        if generator.llm_client.is_available():
-            quality_report = generate_quality_report(
-                parameters={
-                    "quality_target": 99.5,
-                    "current_rate": 98.2,
-                    "period": "Q1-2024"
-                },
-                use_context_engineering=True,
-                use_optimized_clients=True
-            )
-            print(f"✅ 품질 보고서 생성 완료:")
-            print(f"   제목: {quality_report.title}")
-            print(f"   컨텍스트 엔지니어링 사용: {quality_report.metadata.get('context_engineering_used', False)}")
-        else:
-            print("⚠️  시뮬레이션: 품질 보고서 생성 완료")
-            
-    except Exception as e:
-        print(f"❌ 품질 보고서 생성 실패: {e}")
-    
-    # 4. 워크플로우 시각화
-    print("\n4. LangGraph 워크플로우 시각화")
-    try:
-        workflow_diagram = generator.get_graph_visualization()
-        print("✅ 워크플로우 다이어그램 생성 완료")
-        print("   (Mermaid 형식으로 시각화 가능)")
-        
-    except Exception as e:
-        print(f"❌ 워크플로우 시각화 실패: {e}")
-    
-    # 5. 성능 통계 확인
-    print("\n5. 성능 통계 확인")
-    try:
-        final_stats = generator.get_performance_stats()
-        print(f"✅ 성능 통계:")
-        print(f"   생성된 보고서: {final_stats['reports_generated']}개")
-        print(f"   평균 품질 점수: {final_stats['avg_quality_score']:.2f}")
-        print(f"   총 처리 시간: {final_stats['total_processing_time']:.2f}초")
-        print(f"   서비스 최적화 사용: {final_stats['service_optimizations_used']}회")
-        
-    except Exception as e:
-        print(f"❌ 성능 통계 확인 실패: {e}")
+    print("❌ AI 보고서 생성기 기능이 제거되었습니다.")
+    print("   보고서 생성 관련 기능은 더 이상 사용할 수 없습니다.")
+
 
 
 async def demo_async_report_generation():
     """
-    비동기 보고서 생성 데모
+    비동기 보고서 생성 데모 - 보고서 생성기 제거됨
     """
     print("\n" + "="*50)
-    print("비동기 AI 보고서 생성 데모")
+    print("비동기 AI 보고서 생성 데모 - 제거됨")
     print("="*50)
     
-    try:
-        # 비동기 보고서 생성
-        from .core import generate_report_async
-        
-        print("\n비동기 보고서 생성 시작...")
-        
-        if get_report_client().is_available():
-            start_time = asyncio.get_event_loop().time()
-            
-            # 여러 보고서 동시 생성
-            tasks = [
-                generate_report_async(
-                    "production_summary",
-                    {"period": "2024-Q1", "line": "A"},
-                    use_context_engineering=True
-                ),
-                generate_report_async(
-                    "quality_analysis", 
-                    {"target": 99.0, "period": "2024-Q1"},
-                    use_context_engineering=True
-                )
-            ]
-            
-            reports = await asyncio.gather(*tasks)
-            end_time = asyncio.get_event_loop().time()
-            
-            print(f"✅ 비동기 보고서 생성 완료:")
-            print(f"   생성된 보고서: {len(reports)}개")
-            print(f"   총 처리 시간: {end_time - start_time:.2f}초")
-            
-            for i, report in enumerate(reports):
-                print(f"   보고서 {i+1}: {report.title[:50]}...")
-        else:
-            print("⚠️  시뮬레이션: 비동기 보고서 생성 완료")
-            
-    except Exception as e:
-        print(f"❌ 비동기 보고서 생성 실패: {e}")
+    print("❌ 비동기 보고서 생성 기능이 제거되었습니다.")
+    print("   보고서 생성 관련 기능은 더 이상 사용할 수 없습니다.")
 
 
 def demo_llm_client():

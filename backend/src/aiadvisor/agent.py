@@ -3,6 +3,7 @@ DX-AI Advisor - AI 어드바이저 에이전트 모듈
 
 LangChain과 LangGraph를 활용한 지능형 어드바이저 에이전트 시스템
 온톨로지 기반 지식 그래프와 벡터 검색을 통합한 하이브리드 검색 및 분석 기능
+제조업 특화 AI 어드바이저 시스템
 """
 
 import os
@@ -31,7 +32,6 @@ from .utils import AIAdvisorConfig, get_config, AIAdvisorException
 from .document_processor import DocumentProcessor
 from .ontology import OntologyManager
 from .embedding import EmbeddingManager, VectorSearchEngine
-from .dify_client import DifyAIAdvisorClient
 from ..ai.core.llm_client import get_ollama_client, create_ollama_client
 from ..ai.providers.ollama import OllamaProvider
 
@@ -49,16 +49,15 @@ class AdvisorState(TypedDict):
     metadata: Dict[str, Any]
 
 
-class AdvisorAgent:
-    """AI 어드바이저 에이전트 - 하이브리드 지능형 분석 시스템 (Ollama + Dify 지원)"""
+class ManufacturingAdvisorAgent:
+    """제조업 특화 AI 어드바이저 에이전트 - 고성능 지능형 분석 시스템"""
     
     def __init__(self, 
                  config: Optional[AIAdvisorConfig] = None,
                  embedding_manager: Optional[EmbeddingManager] = None,
                  ontology_manager: Optional[OntologyManager] = None,
                  model_name: str = None,
-                 streaming: bool = True,
-                 use_dify: bool = False):
+                 streaming: bool = True):
         
         # config가 코루틴인 경우 처리
         if config is not None and hasattr(config, '__await__'):
@@ -69,15 +68,11 @@ class AdvisorAgent:
             
         self.model_name = model_name or self.config.default_llm_model
         self.streaming = streaming
-        self.use_dify = use_dify
         
         # 컴포넌트 초기화
         self.embedding_manager = embedding_manager or EmbeddingManager(config)
         self.ontology_manager = ontology_manager or OntologyManager(config)
         self.search_engine = VectorSearchEngine(self.embedding_manager)
-        
-        # Dify 클라이언트 초기화 (use_dify가 True인 경우)
-        self.dify_client = DifyAIAdvisorClient(config) if use_dify else None
         
         # LLM 클라이언트 초기화
         self.llm_client = None
@@ -93,6 +88,12 @@ class AdvisorAgent:
         # 에이전트 초기화
         self.agent_executor = None
         self.workflow_graph = None
+        
+        # 제조업 특화 설정
+        self.manufacturing_domains = [
+            'chemical', 'electronics', 'automotive', 'machinery', 
+            'textile', 'food', 'pharmaceutical', 'general'
+        ]
         
         # 초기화
         asyncio.create_task(self._initialize_async_components())
@@ -113,30 +114,126 @@ class AdvisorAgent:
                     temperature=self.config.llm_temperature
                 )
             
-            # Dify 클라이언트 초기화
-            if self.dify_client:
-                dify_initialized = await self.dify_client.initialize()
-                if dify_initialized:
-                    logger.info("✅ Dify 클라이언트 초기화 성공")
-                else:
-                    logger.warning("⚠️ Dify 클라이언트 초기화 실패 - Ollama 모드로 대체")
-                    self.use_dify = False
-            
-            mode_info = "Dify 하이브리드" if self.use_dify else "Ollama 단독"
-            logger.info(f"AI 어드바이저 에이전트 초기화 완료 - 모델: {self.model_name} ({mode_info})")
+            logger.info(f"제조업 특화 AI 어드바이저 에이전트 초기화 완료 - 모델: {self.model_name}")
             
         except Exception as e:
             logger.error(f"어드바이저 에이전트 초기화 오류: {str(e)}")
             raise AIAdvisorException(f"어드바이저 에이전트 초기화 실패: {str(e)}")
     
+    async def _analyze_manufacturing_context(self, user_query: str, search_results: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """제조업 컨텍스트 분석"""
+        try:
+            context_analysis = {
+                "domain": "general",
+                "keywords": [],
+                "process_related": False,
+                "quality_related": False,
+                "safety_related": False,
+                "efficiency_related": False
+            }
+            
+            # 검색 결과에서 도메인 정보 추출
+            if search_results:
+                domains = []
+                for result in search_results:
+                    domain = result.get("metadata", {}).get("manufacturing_domain", "general")
+                    if domain != "general":
+                        domains.append(domain)
+                
+                if domains:
+                    # 가장 빈번한 도메인 선택
+                    from collections import Counter
+                    domain_counts = Counter(domains)
+                    context_analysis["domain"] = domain_counts.most_common(1)[0][0]
+            
+            # 질문 키워드 분석
+            query_lower = user_query.lower()
+            manufacturing_keywords = {
+                "process": ["공정", "프로세스", "제조", "생산", "조업", "가공"],
+                "quality": ["품질", "검사", "테스트", "불량", "결함", "스펙"],
+                "safety": ["안전", "사고", "위험", "보호", "환경", "폐기물"],
+                "efficiency": ["효율", "생산성", "원가", "비용", "최적화", "개선"]
+            }
+            
+            for category, keywords in manufacturing_keywords.items():
+                if any(keyword in query_lower for keyword in keywords):
+                    context_analysis[f"{category}_related"] = True
+                    context_analysis["keywords"].extend(keywords)
+            
+            return context_analysis
+            
+        except Exception as e:
+            logger.warning(f"컨텍스트 분석 중 오류: {str(e)}")
+            return {"domain": "general", "keywords": [], "process_related": False, 
+                   "quality_related": False, "safety_related": False, "efficiency_related": False}
+    
+    async def _generate_manufacturing_response(self, user_query: str, context_analysis: Dict[str, Any], 
+                                             search_results: List[Dict[str, Any]]) -> str:
+        """제조업 특화 응답 생성"""
+        try:
+            # 도메인별 전문 프롬프트 구성
+            domain_prompts = {
+                "chemical": "화학공정 전문가로서",
+                "electronics": "전자제품 제조 전문가로서",
+                "automotive": "자동차 제조 전문가로서",
+                "machinery": "기계제조 전문가로서",
+                "textile": "섬유제조 전문가로서",
+                "food": "식품제조 전문가로서",
+                "pharmaceutical": "제약제조 전문가로서",
+                "general": "제조업 전문가로서"
+            }
+            
+            domain_expert = domain_prompts.get(context_analysis["domain"], "제조업 전문가로서")
+            
+            # 컨텍스트 구성
+            context_parts = []
+            if search_results:
+                context_parts.append("관련 문서 정보:")
+                for i, result in enumerate(search_results[:3], 1):
+                    filename = result["metadata"].get("filename", f"문서{i}")
+                    content_preview = result["content"][:300] + "..." if len(result["content"]) > 300 else result["content"]
+                    context_parts.append(f"[{filename}] {content_preview}")
+            
+            context = "\n".join(context_parts) if context_parts else "현재 업로드된 문서가 없습니다. 일반적인 제조업 지식을 바탕으로 답변드리겠습니다."
+            
+            # 전문 응답 프롬프트
+            response_prompt = f"""
+            {domain_expert} 다음 질문에 대해 전문적이고 실용적인 답변을 제공해주세요.
+            
+            질문: {user_query}
+            
+            참고 정보:
+            {context}
+            
+            답변 지침:
+            1. 검색된 정보의 출처를 명시하세요 (예: "[문서명]에 따르면...")
+            2. 제조업 전문가 관점에서 기술적으로 정확한 정보를 제공하세요
+            3. 근본원인 분석과 구체적인 해결 방안을 제시하세요
+            4. 실현 가능한 실행 계획과 권장사항을 포함하세요
+            5. 관련된 위험 요소나 고려사항을 언급하세요
+            6. 전문 용어는 쉽게 설명하여 이해하기 쉽게 하세요
+            7. 제조업 표준과 규정을 고려한 답변을 제공하세요
+            8. 데이터 기반의 객관적인 분석을 포함하세요
+            
+            전문적이면서도 이해하기 쉬운 답변을 제공해주세요.
+            """
+            
+            response = await self.llm_client.llm.ainvoke(response_prompt)
+            response_text = response.content if hasattr(response, 'content') else str(response)
+            
+            return response_text
+            
+        except Exception as e:
+            logger.error(f"응답 생성 중 오류: {str(e)}")
+            return f"응답 생성 중 오류가 발생했습니다: {str(e)}"
+    
     # 메인 실행 메서드들
     async def query(self, user_query: str, conversation_id: str = None) -> Dict[str, Any]:
-        """사용자 질의 처리 (하이브리드 모드)"""
+        """사용자 질의 처리 (제조업 특화)"""
         try:
-            # 공통: 관련 문서 검색 (강화된 처리)
+            # 관련 문서 검색 (강화된 처리)
             search_results = []
             try:
-                # 임베딩 매니저 초기화 확인
                 await self.embedding_manager.ensure_initialized()
                 search_results = await self.embedding_manager.search_similar_documents(user_query, k=5)
                 logger.info(f"문서 검색 결과: {len(search_results)}개")
@@ -144,66 +241,22 @@ class AdvisorAgent:
                 logger.warning(f"문서 검색 중 오류 (무시하고 계속): {str(search_error)}")
                 search_results = []
             
-            # Dify 모드 vs Ollama 모드 분기
-            if self.use_dify and self.dify_client:
-                logger.info("🤖 Dify 하이브리드 모드로 응답 생성")
-                return await self.dify_client.generate_response(
-                    user_query=user_query,
-                    search_results=search_results,
-                    conversation_id=conversation_id
-                )
+            # 제조업 컨텍스트 분석
+            context_analysis = await self._analyze_manufacturing_context(user_query, search_results)
             
-            # 기존 Ollama 모드
-            elif self.llm_client:
-                logger.info("🤖 Ollama 단독 모드로 응답 생성")
-                
-                # 컨텍스트 구성
-                context_parts = []
-                if search_results:
-                    context_parts.append("관련 문서 정보:")
-                    for i, result in enumerate(search_results[:3], 1):
-                        filename = result["metadata"].get("filename", f"문서{i}")
-                        content_preview = result["content"][:300] + "..." if len(result["content"]) > 300 else result["content"]
-                        context_parts.append(f"[{filename}] {content_preview}")
-                    logger.info(f"문서 컨텍스트 포함: {len(search_results)}개 문서")
-                else:
-                    logger.info("사용 가능한 문서가 없어 일반 답변 모드로 진행")
-                    context_parts.append("현재 업로드된 문서가 없거나 검색할 수 없습니다. 일반적인 제조업 지식을 바탕으로 답변드리겠습니다.")
-                
-                context = "\n".join(context_parts)
-                
-                # 응답 생성 프롬프트
-                response_prompt = f"""
-                당신은 제조업 전문 AI 어드바이저입니다. 다음 질문에 대해 전문적이고 실용적인 답변을 제공해주세요.
-                
-                질문: {user_query}
-                
-                참고 정보:
-                {context}
-                
-                답변 지침:
-                1. 검색된 정보의 출처를 명시하세요 (예: "[문서명]에 따르면...")
-                2. 제조업 전문가 관점에서 기술적으로 정확한 정보를 제공하세요
-                3. 근본원인 분석과 구체적인 해결 방안을 제시하세요
-                4. 실현 가능한 실행 계획과 권장사항을 포함하세요
-                5. 관련된 위험 요소나 고려사항을 언급하세요
-                6. 전문 용어는 쉽게 설명하여 이해하기 쉽게 하세요
-                
-                전문적이면서도 이해하기 쉬운 답변을 제공해주세요.
-                """
-                
-                response = await self.llm_client.llm.ainvoke(response_prompt)
-                response_text = response.content if hasattr(response, 'content') else str(response)
-                
-                return {
-                    "query": user_query,
-                    "response": response_text,
-                    "mode": "direct_llm",
-                    "search_results": search_results,
-                    "timestamp": datetime.now().isoformat()
-                }
-            else:
-                raise AIAdvisorException("LLM 클라이언트가 초기화되지 않았습니다.")
+            # 응답 생성
+            response_text = await self._generate_manufacturing_response(user_query, context_analysis, search_results)
+            
+            return {
+                "query": user_query,
+                "response": response_text,
+                "mode": "manufacturing_advisor",
+                "domain": context_analysis["domain"],
+                "context_analysis": context_analysis,
+                "search_results": search_results,
+                "conversation_id": conversation_id,
+                "timestamp": datetime.now().isoformat()
+            }
                 
         except Exception as e:
             logger.error(f"질의 처리 오류: {str(e)}")
@@ -215,10 +268,9 @@ class AdvisorAgent:
             }
     
     async def stream_response(self, user_query: str, conversation_id: str = None) -> AsyncGenerator[str, None]:
-        """스트리밍 응답 생성 (하이브리드 모드)"""
+        """스트리밍 응답 생성 (제조업 특화)"""
         try:
-            
-            # 컨텍스트 수집 (강화된 처리)
+            # 컨텍스트 수집
             search_results = []
             try:
                 await self.embedding_manager.ensure_initialized()
@@ -228,6 +280,10 @@ class AdvisorAgent:
                 logger.warning(f"스트리밍 - 문서 검색 중 오류 (무시하고 계속): {str(search_error)}")
                 search_results = []
             
+            # 제조업 컨텍스트 분석
+            context_analysis = await self._analyze_manufacturing_context(user_query, search_results)
+            
+            # 컨텍스트 구성
             context_parts = []
             if search_results:
                 context_parts.append("관련 문서 정보:")
@@ -240,9 +296,23 @@ class AdvisorAgent:
             
             context = "\n".join(context_parts)
             
+            # 도메인별 전문 프롬프트
+            domain_prompts = {
+                "chemical": "화학공정 전문가로서",
+                "electronics": "전자제품 제조 전문가로서",
+                "automotive": "자동차 제조 전문가로서",
+                "machinery": "기계제조 전문가로서",
+                "textile": "섬유제조 전문가로서",
+                "food": "식품제조 전문가로서",
+                "pharmaceutical": "제약제조 전문가로서",
+                "general": "제조업 전문가로서"
+            }
+            
+            domain_expert = domain_prompts.get(context_analysis["domain"], "제조업 전문가로서")
+            
             # 스트리밍 프롬프트
             streaming_prompt = f"""
-            제조업 전문 AI 어드바이저로서 다음 질문에 답변해주세요.
+            {domain_expert} 다음 질문에 답변해주세요.
             
             질문: {user_query}
             
@@ -258,10 +328,12 @@ class AdvisorAgent:
                     
         except Exception as e:
             yield f"스트리밍 응답 생성 중 오류 발생: {str(e)}"
+    
 
 
-class AdvisorAgentManager:
-    """어드바이저 에이전트 관리자 - 여러 에이전트 인스턴스 관리"""
+
+class ManufacturingAdvisorAgentManager:
+    """제조업 특화 어드바이저 에이전트 관리자"""
     
     def __init__(self, config: Optional[AIAdvisorConfig] = None):
         self.config = config or get_config()
@@ -272,10 +344,10 @@ class AdvisorAgentManager:
                           agent_id: str, 
                           model_name: str = None, 
                           streaming: bool = True,
-                          **kwargs) -> AdvisorAgent:
+                          **kwargs) -> ManufacturingAdvisorAgent:
         """새로운 에이전트 인스턴스 생성"""
         try:
-            agent = AdvisorAgent(
+            agent = ManufacturingAdvisorAgent(
                 config=self.config,
                 model_name=model_name,
                 streaming=streaming,
@@ -286,7 +358,7 @@ class AdvisorAgentManager:
             await agent._initialize_async_components()
             
             self.agents[agent_id] = agent
-            logger.info(f"에이전트 생성됨: {agent_id}")
+            logger.info(f"제조업 특화 에이전트 생성됨: {agent_id}")
             
             return agent
             
@@ -294,7 +366,7 @@ class AdvisorAgentManager:
             logger.error(f"에이전트 생성 오류 - {agent_id}: {str(e)}")
             raise AIAdvisorException(f"에이전트 생성 실패: {str(e)}")
     
-    async def get_agent(self, agent_id: str = None) -> Optional[AdvisorAgent]:
+    async def get_agent(self, agent_id: str = None) -> Optional[ManufacturingAdvisorAgent]:
         """에이전트 인스턴스 조회"""
         agent_id = agent_id or self.default_agent_id
         
@@ -307,7 +379,7 @@ class AdvisorAgentManager:
         
         return self.agents[agent_id]
 
-    async def get_default_agent(self) -> AdvisorAgent:
+    async def get_default_agent(self) -> ManufacturingAdvisorAgent:
         """기본 에이전트 인스턴스 조회"""
         return await self.get_agent(self.default_agent_id)
     
@@ -333,8 +405,7 @@ class AdvisorAgentManager:
     
     async def query_agent(self, 
                          user_query: str, 
-                         agent_id: str = None, 
-                         use_workflow: bool = False) -> Dict[str, Any]:
+                         agent_id: str = None) -> Dict[str, Any]:
         """특정 에이전트에게 질의"""
         agent = await self.get_agent(agent_id)
         
@@ -342,3 +413,10 @@ class AdvisorAgentManager:
             raise AIAdvisorException(f"에이전트를 찾을 수 없습니다: {agent_id}")
         
         return await agent.query(user_query)
+    
+
+
+
+# 하위 호환성을 위한 별칭
+AdvisorAgent = ManufacturingAdvisorAgent
+AdvisorAgentManager = ManufacturingAdvisorAgentManager

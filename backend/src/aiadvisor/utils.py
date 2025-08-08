@@ -43,7 +43,7 @@ class AIAdvisorConfig(BaseModel):
     documents_dir: Path = Field(default_factory=lambda: Path("data/aiadvisor/documents"))
     vector_db_dir: Path = Field(default_factory=lambda: Path("data/aiadvisor/vector_db"))
     ontology_dir: Path = Field(default_factory=lambda: Path("data/aiadvisor/ontology"))
-    reports_dir: Path = Field(default_factory=lambda: Path("data/aiadvisor/reports"))
+
     
     # LLM 설정
     default_llm_model: str = "gemma3:4b-it-qat"
@@ -88,15 +88,7 @@ class AIAdvisorConfig(BaseModel):
         "maintained_by", "replaced_by", "calibrated_by"
     ])
     
-    # 보고서 설정
-    default_report_sections: List[str] = Field(default_factory=lambda: [
-        "executive_summary",
-        "situation_analysis", 
-        "root_cause_analysis",
-        "improvement_recommendations",
-        "implementation_plan",
-        "risk_assessment"
-    ])
+
     
     def __init__(self, **data):
         super().__init__(**data)
@@ -111,7 +103,7 @@ class AIAdvisorConfig(BaseModel):
             self.documents_dir,
             self.vector_db_dir,
             self.ontology_dir,
-            self.reports_dir
+
         ]
         
         for directory in directories:
