@@ -2,7 +2,6 @@
 DX-AI Advisor - 온톨로지 관리 모듈
 
 TTL 형식의 온톨로지 생성, 관리 및 SPARQL 쿼리 기능을 제공합니다.
-제조업 전반에 적용 가능한 범용적 온톨로지 구조를 지원합니다.
 """
 
 import os
@@ -53,8 +52,8 @@ class OntologyGenerator:
         ontology_uri = URIRef(self.config.ontology_namespace.rstrip('#'))
         self.graph.add((ontology_uri, RDF.type, OWL.Ontology))
         self.graph.add((ontology_uri, RDFS.label, Literal("DX-AI Advisor Manufacturing Ontology")))
-        self.graph.add((ontology_uri, RDFS.comment, Literal("제조업 특화 온톨로지 - 범용 제조업 도메인 지원")))
-        self.graph.add((ontology_uri, OWL.versionInfo, Literal("2.0.0")))
+        self.graph.add((ontology_uri, RDFS.comment, Literal("제조업 특화 온톨로지 - 공정, 설비, 품질 관리 도메인")))
+        self.graph.add((ontology_uri, OWL.versionInfo, Literal("1.0.0")))
         
         # 기본 클래스 정의
         self._define_base_classes()
@@ -63,77 +62,26 @@ class OntologyGenerator:
         self._define_base_properties()
     
     def _define_base_classes(self):
-        """기본 클래스들을 정의 - 제조업 전반에 적용 가능한 범용 구조"""
+        """기본 클래스들을 정의"""
         base_classes = {
-            # 기본 엔티티
             "Entity": "기본 엔티티 클래스",
             "ManufacturingEntity": "제조업 엔티티",
-            
-            # 제품/자재 관련
             "Product": "제품",
             "Material": "원자재/소재",
-            "Component": "부품/구성요소",
-            "RawMaterial": "원자재",
-            "SemiProduct": "반제품",
-            "FinishedProduct": "완제품",
-            
-            # 설비/장비 관련
-            "Equipment": "설비/장비",
-            "Machine": "기계",
-            "Tool": "공구/도구",
-            "Fixture": "지그/고정구",
-            "Mold": "금형",
-            "Die": "다이",
-            
-            # 공정 관련
+            "Component": "부품",
+            "Chemical": "화학물질",
+            "Equipment": "설비",
             "Process": "공정",
-            "ProcessStep": "공정 단계",
             "ProcessLine": "공정 라인",
-            "WorkStation": "작업장",
-            "Operation": "작업",
-            
-            # 품질 관련
             "Quality": "품질",
-            "QualityCharacteristic": "품질 특성",
             "Defect": "결함",
             "FailureMode": "고장 모드",
             "RootCause": "근본 원인",
-            "NonConformity": "부적합",
-            
-            # 측정/검사 관련
-            "Measurement": "측정",
-            "Inspection": "검사",
             "TestMethod": "시험 방법",
-            "TestEquipment": "시험 장비",
-            "SamplePoint": "샘플링 포인트",
-            
-            # 위치/환경 관련
+            "Measurement": "측정",
             "Location": "위치",
-            "Area": "구역",
-            "Zone": "지역",
-            "Environment": "환경",
-            
-            # 인적 자원 관련
             "Person": "사람",
-            "Role": "역할",
-            "Department": "부서",
-            "Team": "팀",
-            
-            # 문서/정보 관련
-            "Document": "문서",
-            "Standard": "표준",
-            "Procedure": "절차",
-            "Specification": "사양",
-            
-            # 시간/일정 관련
-            "Schedule": "일정",
-            "TimeSlot": "시간대",
-            "Shift": "교대",
-            
-            # 비용/경제 관련
-            "Cost": "비용",
-            "Budget": "예산",
-            "Resource": "자원"
+            "Role": "역할"
         }
         
         for class_name, description in base_classes.items():
@@ -142,151 +90,51 @@ class OntologyGenerator:
             self.graph.add((class_uri, RDFS.label, Literal(class_name)))
             self.graph.add((class_uri, RDFS.comment, Literal(description)))
         
-        # 클래스 계층 구조 정의 - 더 유연한 구조
+        # 클래스 계층 구조 정의
         hierarchies = [
-            # 기본 계층
             ("ManufacturingEntity", "Entity"),
-            
-            # 제품/자재 계층
             ("Product", "ManufacturingEntity"),
             ("Material", "ManufacturingEntity"),
             ("Component", "ManufacturingEntity"),
-            ("RawMaterial", "Material"),
-            ("SemiProduct", "Product"),
-            ("FinishedProduct", "Product"),
-            
-            # 설비/장비 계층
+            ("Chemical", "Material"),
             ("Equipment", "ManufacturingEntity"),
-            ("Machine", "Equipment"),
-            ("Tool", "Equipment"),
-            ("Fixture", "Equipment"),
-            ("Mold", "Equipment"),
-            ("Die", "Equipment"),
-            
-            # 공정 계층
             ("Process", "ManufacturingEntity"),
-            ("ProcessStep", "Process"),
             ("ProcessLine", "Process"),
-            ("WorkStation", "ManufacturingEntity"),
-            ("Operation", "Process"),
-            
-            # 품질 계층
             ("Quality", "ManufacturingEntity"),
-            ("QualityCharacteristic", "Quality"),
             ("Defect", "Quality"),
             ("FailureMode", "Quality"),
             ("RootCause", "Quality"),
-            ("NonConformity", "Quality"),
-            
-            # 측정/검사 계층
-            ("Measurement", "ManufacturingEntity"),
-            ("Inspection", "Measurement"),
             ("TestMethod", "ManufacturingEntity"),
-            ("TestEquipment", "Equipment"),
-            ("SamplePoint", "ManufacturingEntity"),
-            
-            # 위치/환경 계층
-            ("Location", "ManufacturingEntity"),
-            ("Area", "Location"),
-            ("Zone", "Location"),
-            ("Environment", "ManufacturingEntity"),
-            
-            # 인적 자원 계층
-            ("Person", "ManufacturingEntity"),
-            ("Role", "ManufacturingEntity"),
-            ("Department", "ManufacturingEntity"),
-            ("Team", "ManufacturingEntity"),
-            
-            # 문서/정보 계층
-            ("Document", "ManufacturingEntity"),
-            ("Standard", "Document"),
-            ("Procedure", "Document"),
-            ("Specification", "Document"),
-            
-            # 시간/일정 계층
-            ("Schedule", "ManufacturingEntity"),
-            ("TimeSlot", "Schedule"),
-            ("Shift", "Schedule"),
-            
-            # 비용/경제 계층
-            ("Cost", "ManufacturingEntity"),
-            ("Budget", "Cost"),
-            ("Resource", "ManufacturingEntity")
+            ("Measurement", "ManufacturingEntity")
         ]
         
         for subclass, superclass in hierarchies:
             self.graph.add((self.namespace[subclass], RDFS.subClassOf, self.namespace[superclass]))
     
     def _define_base_properties(self):
-        """기본 속성들을 정의 - 제조업 전반에 적용 가능한 범용 속성"""
-        # Object Properties (관계) - 더 범용적인 관계들
+        """기본 속성들을 정의"""
+        # Object Properties (관계)
         object_properties = {
-            # 기본 관계
-            "hasPart": ("has part", "구성 요소 관계"),
-            "isPartOf": ("is part of", "부분 관계"),
-            "contains": ("contains", "포함 관계"),
-            "isContainedIn": ("is contained in", "포함됨 관계"),
-            
-            # 공정 관계
-            "processedIn": ("processed in", "처리 관계"),
-            "processedBy": ("processed by", "처리자 관계"),
-            "feedsInto": ("feeds into", "공급 관계"),
-            "follows": ("follows", "후속 관계"),
-            "precedes": ("precedes", "선행 관계"),
-            "operatesIn": ("operates in", "운영 관계"),
-            "operatesOn": ("operates on", "작동 대상 관계"),
-            
-            # 품질 관계
             "causedBy": ("caused by", "원인 관계"),
             "resultedIn": ("resulted in", "결과 관계"),
             "contributesTo": ("contributes to", "기여 관계"),
-            "affects": ("affects", "영향 관계"),
+            "processedIn": ("processed in", "처리 관계"),
+            "usedIn": ("used in", "사용 관계"),
+            "feedsInto": ("feeds into", "공급 관계"),
+            "operatesWith": ("operates with", "운영 관계"),
             "detectedIn": ("detected in", "탐지 관계"),
-            "measuredIn": ("measured in", "측정 관계"),
-            "inspectedIn": ("inspected in", "검사 관계"),
-            
-            # 위치 관계
-            "locatedAt": ("located at", "위치 관계"),
-            "movesTo": ("moves to", "이동 관계"),
-            "storedIn": ("stored in", "보관 관계"),
-            
-            # 인적 관계
-            "performedBy": ("performed by", "수행자 관계"),
-            "responsibleFor": ("responsible for", "책임 관계"),
-            "reportsTo": ("reports to", "보고 관계"),
-            "supervises": ("supervises", "감독 관계"),
-            
-            # 시간 관계
-            "scheduledIn": ("scheduled in", "일정 관계"),
-            "startsAt": ("starts at", "시작 관계"),
-            "endsAt": ("ends at", "종료 관계"),
-            "overlapsWith": ("overlaps with", "중복 관계"),
-            
-            # 문서 관계
-            "documentedIn": ("documented in", "문서화 관계"),
-            "specifiedIn": ("specified in", "사양 관계"),
-            "definedIn": ("defined in", "정의 관계"),
-            
-            # 비용 관계
-            "costs": ("costs", "비용 관계"),
-            "budgetedFor": ("budgeted for", "예산 관계"),
-            "allocatedTo": ("allocated to", "할당 관계"),
-            
-            # 유지보수 관계
+            "exceedsLimit": ("exceeds limit", "한계 초과 관계"),
+            "causesDefect": ("causes defect", "결함 유발 관계"),
+            "reactsWith": ("reacts with", "반응 관계"),
+            "dissolvesIn": ("dissolves in", "용해 관계"),
+            "catalyzes": ("catalyzes", "촉매 관계"),
             "maintainedBy": ("maintained by", "유지보수 관계"),
             "replacedBy": ("replaced by", "교체 관계"),
             "calibratedBy": ("calibrated by", "보정 관계"),
-            "servicedBy": ("serviced by", "서비스 관계"),
-            
-            # 공급사슬 관계
-            "suppliedBy": ("supplied by", "공급 관계"),
-            "deliveredTo": ("delivered to", "배송 관계"),
-            "orderedFrom": ("ordered from", "주문 관계"),
-            
-            # 표준/규격 관계
-            "conformsTo": ("conforms to", "준수 관계"),
-            "certifiedBy": ("certified by", "인증 관계"),
-            "approvedBy": ("approved by", "승인 관계")
+            "hasComponent": ("has component", "구성 요소 관계"),
+            "partOf": ("part of", "부분 관계"),
+            "locatedAt": ("located at", "위치 관계"),
+            "performedBy": ("performed by", "수행 관계")
         }
         
         for prop_name, (label, comment) in object_properties.items():
@@ -295,65 +143,22 @@ class OntologyGenerator:
             self.graph.add((prop_uri, RDFS.label, Literal(label)))
             self.graph.add((prop_uri, RDFS.comment, Literal(comment)))
         
-        # Data Properties (속성) - 더 범용적인 속성들
+        # Data Properties (속성)
         data_properties = {
-            # 기본 속성
             "hasName": ("has name", "이름 속성", XSD.string),
             "hasDescription": ("has description", "설명 속성", XSD.string),
-            "hasID": ("has ID", "식별자 속성", XSD.string),
-            "hasCode": ("has code", "코드 속성", XSD.string),
+            "hasValue": ("has value", "값 속성", XSD.float),
+            "hasUnit": ("has unit", "단위 속성", XSD.string),
+            "hasDate": ("has date", "날짜 속성", XSD.dateTime),
             "hasVersion": ("has version", "버전 속성", XSD.string),
-            
-            # 상태 속성
             "hasStatus": ("has status", "상태 속성", XSD.string),
             "hasPriority": ("has priority", "우선순위 속성", XSD.integer),
             "hasConfidence": ("has confidence", "신뢰도 속성", XSD.float),
-            "hasRisk": ("has risk", "위험도 속성", XSD.string),
-            
-            # 수량 속성
-            "hasValue": ("has value", "값 속성", XSD.float),
-            "hasUnit": ("has unit", "단위 속성", XSD.string),
-            "hasQuantity": ("has quantity", "수량 속성", XSD.float),
-            "hasWeight": ("has weight", "무게 속성", XSD.float),
-            "hasLength": ("has length", "길이 속성", XSD.float),
-            "hasWidth": ("has width", "폭 속성", XSD.float),
-            "hasHeight": ("has height", "높이 속성", XSD.float),
-            "hasDiameter": ("has diameter", "직경 속성", XSD.float),
-            "hasThickness": ("has thickness", "두께 속성", XSD.float),
-            
-            # 시간 속성
-            "hasDate": ("has date", "날짜 속성", XSD.dateTime),
-            "hasStartTime": ("has start time", "시작 시간 속성", XSD.dateTime),
-            "hasEndTime": ("has end time", "종료 시간 속성", XSD.dateTime),
-            "hasDuration": ("has duration", "지속 시간 속성", XSD.float),
-            
-            # 품질 속성
-            "hasTolerance": ("has tolerance", "허용오차 속성", XSD.float),
-            "hasSpecification": ("has specification", "사양 속성", XSD.string),
-            "hasGrade": ("has grade", "등급 속성", XSD.string),
-            "hasPurity": ("has purity", "순도 속성", XSD.float),
-            "hasYield": ("has yield", "수율 속성", XSD.float),
-            "hasEfficiency": ("has efficiency", "효율 속성", XSD.float),
-            
-            # 환경 속성
             "hasTemperature": ("has temperature", "온도 속성", XSD.float),
             "hasPressure": ("has pressure", "압력 속성", XSD.float),
-            "hasHumidity": ("has humidity", "습도 속성", XSD.float),
             "hasFlow": ("has flow", "유량 속성", XSD.float),
-            "hasSpeed": ("has speed", "속도 속성", XSD.float),
-            "hasPower": ("has power", "전력 속성", XSD.float),
-            
-            # 비용 속성
-            "hasCost": ("has cost", "비용 속성", XSD.float),
-            "hasPrice": ("has price", "가격 속성", XSD.float),
-            "hasBudget": ("has budget", "예산 속성", XSD.float),
-            
-            # 기타 속성
-            "hasColor": ("has color", "색상 속성", XSD.string),
-            "hasMaterial": ("has material", "재질 속성", XSD.string),
-            "hasFinish": ("has finish", "마감 속성", XSD.string),
-            "hasCapacity": ("has capacity", "용량 속성", XSD.float),
-            "hasLifespan": ("has lifespan", "수명 속성", XSD.float)
+            "hasPurity": ("has purity", "순도 속성", XSD.float),
+            "hasYield": ("has yield", "수율 속성", XSD.float)
         }
         
         for prop_name, (label, comment, datatype) in data_properties.items():
@@ -1002,77 +807,3 @@ class OntologyManager:
         except Exception as e:
             logger.error(f"문서 엔티티 제거 오류: {str(e)}")
             return False 
-
-    async def analyze_domain_from_documents(self, documents: List[str]) -> Dict[str, Any]:
-        """문서에서 도메인 특성을 자동 분석하여 온톨로지 확장"""
-        try:
-            # LLM을 사용하여 도메인 분석 (실제 구현에서는 LLM 클라이언트 필요)
-            domain_analysis = await self._perform_domain_analysis(documents)
-            
-            # 분석 결과를 바탕으로 온톨로지 확장
-            await self._extend_ontology_from_analysis(domain_analysis)
-            
-            return {
-                "analysis_status": "success",
-                "domain_characteristics": domain_analysis,
-                "extended_classes": len(domain_analysis.get("additional_classes", [])),
-                "extended_relations": len(domain_analysis.get("additional_relations", []))
-            }
-            
-        except Exception as e:
-            logger.error(f"도메인 분석 오류: {str(e)}")
-            raise AIAdvisorException(f"도메인 분석 중 오류 발생: {str(e)}")
-    
-    async def _perform_domain_analysis(self, documents: List[str]) -> Dict[str, Any]:
-        """LLM을 사용한 도메인 특성 분석"""
-        # 실제 구현에서는 LLM 클라이언트를 사용하여 분석
-        # 여기서는 기본적인 분석 로직만 구현
-        
-        analysis = {
-            "domain_type": "manufacturing",
-            "industry_sector": "general",
-            "main_processes": [],
-            "key_equipment": [],
-            "quality_focus": [],
-            "additional_classes": [],
-            "additional_relations": []
-        }
-        
-        # 문서 내용에서 키워드 추출 (간단한 구현)
-        for doc in documents[:3]:  # 처음 3개 문서만 분석
-            if "화학" in doc or "chemical" in doc.lower():
-                analysis["industry_sector"] = "chemical"
-                analysis["additional_classes"].extend(["Chemical", "Reactor", "Catalyst"])
-            elif "전자" in doc or "electronic" in doc.lower():
-                analysis["industry_sector"] = "electronics"
-                analysis["additional_classes"].extend(["Circuit", "Component", "PCB"])
-            elif "자동차" in doc or "automotive" in doc.lower():
-                analysis["industry_sector"] = "automotive"
-                analysis["additional_classes"].extend(["Vehicle", "Engine", "Transmission"])
-        
-        return analysis
-    
-    async def _extend_ontology_from_analysis(self, analysis: Dict[str, Any]):
-        """분석 결과를 바탕으로 온톨로지 확장"""
-        try:
-            # 추가 클래스 정의
-            for class_name in analysis.get("additional_classes", []):
-                if class_name not in [str(c).split('#')[-1] for c in self.graph.subjects(RDF.type, OWL.Class)]:
-                    class_uri = self.namespace[class_name]
-                    self.graph.add((class_uri, RDF.type, OWL.Class))
-                    self.graph.add((class_uri, RDFS.label, Literal(class_name)))
-                    self.graph.add((class_uri, RDFS.comment, Literal(f"{class_name} 클래스")))
-                    self.graph.add((class_uri, RDFS.subClassOf, self.namespace.ManufacturingEntity))
-            
-            # 추가 관계 정의
-            for relation_name in analysis.get("additional_relations", []):
-                if relation_name not in [str(p).split('#')[-1] for p in self.graph.subjects(RDF.type, OWL.ObjectProperty)]:
-                    prop_uri = self.namespace[relation_name]
-                    self.graph.add((prop_uri, RDF.type, OWL.ObjectProperty))
-                    self.graph.add((prop_uri, RDFS.label, Literal(relation_name.replace('_', ' '))))
-                    self.graph.add((prop_uri, RDFS.comment, Literal(f"{relation_name} 관계")))
-            
-            logger.info(f"온톨로지 확장 완료: {len(analysis.get('additional_classes', []))} 클래스, {len(analysis.get('additional_relations', []))} 관계")
-            
-        except Exception as e:
-            logger.error(f"온톨로지 확장 오류: {str(e)}") 

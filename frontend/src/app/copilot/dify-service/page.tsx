@@ -1,436 +1,633 @@
-// Dify Service Page - AI Advisor 외부 기능용
-// AI Advisor에서는 사용하지 않음
-
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Settings, Trash2, Edit, Check, X, AlertCircle, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { useToast } from '@/hooks/use-toast'
+import { 
+  Plus, 
+  Settings, 
+  Play, 
+  Pause, 
+  Edit, 
+  Trash2, 
+  TestTube, 
+  CheckCircle, 
+  XCircle, 
+  Clock,
+  Bot,
+  Zap,
+  Database,
+  AlertCircle,
+  Activity,
+  Target,
+  Server
+} from 'lucide-react'
+import { useTranslation } from '@/hooks/useTranslation'
 import { useDify } from '@/hooks/useDify'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+import { CreateDifyServiceRequest, DifyServiceConfig } from '@/types/dify'
 
-interface ServiceFormData {
-  name: string
-  baseUrl: string
-  apiKey: string
+// ============================
+// StatusCard 컴포넌트 (다른 페이지와 동일)
+// ============================
+
+interface StatusCardProps {
+  title: string
+  value: string | number
+  icon: React.ReactNode
+  trend?: string
+  color: string
+}
+
+function StatusCard({ title, value, icon, trend, color }: StatusCardProps) {
+  return (
+    <div className="bg-card backdrop-blur-sm border border-border rounded-lg p-6 hover:bg-muted/50 transition-all duration-300 shadow-sm">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-muted-foreground text-sm mb-1">{title}</p>
+          <p className="text-2xl font-bold text-foreground">{value}</p>
+          {trend && (
+            <p className={`text-sm ${trend.includes('↑') ? 'text-accent-cyan' : trend.includes('↓') ? 'text-accent-orange' : 'text-muted-foreground'}`}>
+              {trend}
+            </p>
+          )}
+        </div>
+        <div 
+          className="p-3 rounded-lg"
+          style={{ backgroundColor: color }}
+        >
+          {icon}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default function DifyServicePage() {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [editingService, setEditingService] = useState<any>(null)
-  const [deletingService, setDeletingService] = useState<any>(null)
-  const [formData, setFormData] = useState<ServiceFormData>({
-    name: '',
-    baseUrl: '',
-    apiKey: ''
-  })
-  const [isTesting, setIsTesting] = useState(false)
-  const [testResult, setTestResult] = useState<any>(null)
-
-  const { toast } = useToast()
+  const { t } = useTranslation()
   const {
     services,
     currentService,
-    loading,
+    apps,
+    isLoading,
     error,
     createService,
     updateService,
     deleteService,
     setActiveService,
-    testService
+    testService,
+    fetchApps,
+    createApp,
+    clearError
   } = useDify()
 
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      baseUrl: '',
-      apiKey: ''
-    })
-    setTestResult(null)
-  }
+  const [showCreateForm, setShowCreateForm] = useState(false)
+  const [editingService, setEditingService] = useState<DifyServiceConfig | null>(null)
+  const [showAppForm, setShowAppForm] = useState(false)
+  const [testResults, setTestResults] = useState<{ [key: string]: any }>({})
 
-  const handleCreate = async () => {
+  const [serviceForm, setServiceForm] = useState<CreateDifyServiceRequest>({
+    name: '',
+    description: '',
+    apiUrl: 'http://localhost:5001/v1',
+    apiKey: ''
+  })
+
+  const [appForm, setAppForm] = useState({
+    name: '',
+    description: '',
+    mode: 'chatbot' as const
+  })
+
+  useEffect(() => {
+    if (currentService) {
+      fetchApps()
+    }
+  }, [currentService, fetchApps])
+
+  const handleCreateService = async (e: React.FormEvent) => {
+    e.preventDefault()
     try {
-      await createService(formData)
-      toast({
-        title: "서비스 생성됨",
-        description: "Dify 서비스가 성공적으로 생성되었습니다.",
+      await createService(serviceForm)
+      setServiceForm({
+        name: '',
+        description: '',
+        apiUrl: 'http://localhost:5001/v1',
+        apiKey: ''
       })
-      setIsCreateDialogOpen(false)
-      resetForm()
-    } catch (error: any) {
-      toast({
-        title: "오류",
-        description: error.message || "서비스 생성에 실패했습니다.",
-        variant: "destructive",
-      })
+      setShowCreateForm(false)
+    } catch (error) {
+      console.error('Failed to create service:', error)
     }
   }
 
-  const handleEdit = async () => {
+  const handleEditService = async (e: React.FormEvent) => {
+    e.preventDefault()
     if (!editingService) return
 
     try {
       await updateService({
         id: editingService.id,
-        ...formData
+        ...serviceForm
       })
-      toast({
-        title: "서비스 업데이트됨",
-        description: "Dify 서비스가 성공적으로 업데이트되었습니다.",
-      })
-      setIsEditDialogOpen(false)
       setEditingService(null)
-      resetForm()
-    } catch (error: any) {
-      toast({
-        title: "오류",
-        description: error.message || "서비스 업데이트에 실패했습니다.",
-        variant: "destructive",
-      })
+      setShowCreateForm(false)
+    } catch (error) {
+      console.error('Failed to update service:', error)
     }
   }
 
-  const handleDelete = async () => {
-    if (!deletingService) return
-
+  const handleTestConnection = async (service: DifyServiceConfig) => {
+    setTestResults(prev => ({ ...prev, [service.id]: { testing: true } }))
+    
     try {
-      await deleteService(deletingService.id)
-      toast({
-        title: "서비스 삭제됨",
-        description: "Dify 서비스가 성공적으로 삭제되었습니다.",
+      const result = await testService({
+        name: service.name,
+        description: service.description,
+        apiUrl: service.apiUrl,
+        apiKey: service.apiKey
       })
-      setIsDeleteDialogOpen(false)
-      setDeletingService(null)
-    } catch (error: any) {
-      toast({
-        title: "오류",
-        description: error.message || "서비스 삭제에 실패했습니다.",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const handleTest = async () => {
-    setIsTesting(true)
-    setTestResult(null)
-
-    try {
-      const result = await testService(formData)
-      setTestResult(result)
       
-      if (result.success) {
-        toast({
-          title: "연결 성공",
-          description: `서비스에 성공적으로 연결되었습니다. (${result.appsCount}개 앱 발견)`,
-        })
-      } else {
-        toast({
-          title: "연결 실패",
-          description: result.message,
-          variant: "destructive",
-        })
-      }
+      setTestResults(prev => ({ ...prev, [service.id]: result }))
     } catch (error: any) {
-      toast({
-        title: "테스트 오류",
-        description: error.message || "서비스 테스트에 실패했습니다.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsTesting(false)
+      setTestResults(prev => ({ 
+        ...prev, 
+        [service.id]: { 
+          success: false, 
+          error: error.message 
+        } 
+      }))
     }
   }
 
-  const openEditDialog = (service: any) => {
+  const handleCreateApp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      await createApp(appForm)
+      setAppForm({
+        name: '',
+        description: '',
+        mode: 'chatbot'
+      })
+      setShowAppForm(false)
+    } catch (error) {
+      console.error('Failed to create app:', error)
+    }
+  }
+
+  const startEdit = (service: DifyServiceConfig) => {
     setEditingService(service)
-    setFormData({
+    setServiceForm({
       name: service.name,
-      baseUrl: service.baseUrl,
+      description: service.description || '',
+      apiUrl: service.apiUrl,
       apiKey: service.apiKey
     })
-    setIsEditDialogOpen(true)
+    setShowCreateForm(true)
   }
 
-  const openDeleteDialog = (service: any) => {
-    setDeletingService(service)
-    setIsDeleteDialogOpen(true)
+  const cancelEdit = () => {
+    setEditingService(null)
+    setShowCreateForm(false)
+    setServiceForm({
+      name: '',
+      description: '',
+      apiUrl: 'http://localhost:5001/v1',
+      apiKey: ''
+    })
+  }
+
+  const getStatusIcon = (service: DifyServiceConfig) => {
+    const result = testResults[service.id]
+    
+    if (result?.testing) return <Clock className="w-4 h-4 text-yellow-500 animate-spin" />
+    if (result?.success) return <CheckCircle className="w-4 h-4 text-green-500" />
+    if (result?.success === false) return <XCircle className="w-4 h-4 text-red-500" />
+    if (service.isActive) return <Play className="w-4 h-4 text-blue-500" />
+    return <Pause className="w-4 h-4 text-gray-400" />
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Dify 서비스 관리</h1>
-          <p className="text-muted-foreground">
-            Dify AI 플랫폼 서비스를 관리하고 설정합니다.
-          </p>
-        </div>
-        <Button onClick={() => setIsCreateDialogOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          새 서비스 추가
-        </Button>
-      </div>
-
-      {error && (
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-2">
-              <AlertCircle className="w-4 h-4 text-red-600" />
-              <span className="text-red-800">{error.message}</span>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      <div className="grid gap-4">
-        {services.map((service) => (
-          <Card key={service.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <Settings className="w-5 h-5" />
-                    <div>
-                      <h3 className="font-semibold">{service.name}</h3>
-                      <p className="text-sm text-muted-foreground">{service.baseUrl}</p>
-                    </div>
-                  </div>
-                  {service.isActive && (
-                    <Badge variant="default">활성</Badge>
-                  )}
-                </div>
-                <div className="flex items-center space-x-2">
-                  {!service.isActive && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setActiveService(service.id)}
-                    >
-                      활성화
-                    </Button>
-                  )}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openEditDialog(service)}
-                  >
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openDeleteDialog(service)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-
-        {services.length === 0 && !loading && (
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center py-8">
-                <Settings className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">서비스가 없습니다</h3>
-                <p className="text-muted-foreground mb-4">
-                  첫 번째 Dify 서비스를 추가해보세요.
-                </p>
-                <Button onClick={() => setIsCreateDialogOpen(true)}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  서비스 추가
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      {/* Create Service Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 Dify 서비스 추가</DialogTitle>
-            <DialogDescription>
-              Dify 서비스의 연결 정보를 입력하세요.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
+    <div className="p-6 space-y-8">
+        {/* Header */}
+      <div>
+          <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="name">서비스 이름</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="My Dify Service"
-              />
+              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+                <Bot className="w-8 h-8 text-accent-blue" />
+                {t('nav.aiAgent')}
+              </h1>
+              <p className="text-muted-foreground mt-2 text-lg">
+                {t('difyService.subtitle')}
+              </p>
             </div>
-            <div>
-              <Label htmlFor="baseUrl">기본 URL</Label>
-              <Input
-                id="baseUrl"
-                value={formData.baseUrl}
-                onChange={(e) => setFormData({ ...formData, baseUrl: e.target.value })}
-                placeholder="http://localhost:5001"
-              />
-            </div>
-            <div>
-              <Label htmlFor="apiKey">API 키</Label>
-              <Input
-                id="apiKey"
-                type="password"
-                value={formData.apiKey}
-                onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
-                placeholder="sk-..."
-              />
-            </div>
-            {testResult && (
-              <div className={`p-3 rounded-md ${
-                testResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
-              }`}>
-                <div className="flex items-center space-x-2">
-                  {testResult.success ? (
-                    <Check className="w-4 h-4 text-green-600" />
-                  ) : (
-                    <X className="w-4 h-4 text-red-600" />
-                  )}
-                  <span className={testResult.success ? 'text-green-800' : 'text-red-800'}>
-                    {testResult.message}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={handleTest}
-              disabled={isTesting || !formData.name || !formData.baseUrl || !formData.apiKey}
+            <button
+              onClick={() => setShowCreateForm(true)}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-primary hover:opacity-90 text-white font-semibold rounded-lg transition-all duration-300 shadow-sm"
             >
-              {isTesting ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  테스트 중...
-                </>
-              ) : (
-                '연결 테스트'
-              )}
-            </Button>
-            <Button onClick={handleCreate} disabled={loading || !formData.name || !formData.baseUrl || !formData.apiKey}>
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  생성 중...
-                </>
-              ) : (
-                '서비스 생성'
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              <Plus className="w-5 h-5" />
+              {t('difyService.buttons.addService')}
+            </button>
+          </div>
+        </div>
 
-      {/* Edit Service Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>서비스 편집</DialogTitle>
-            <DialogDescription>
-              Dify 서비스 정보를 수정하세요.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="edit-name">서비스 이름</Label>
-              <Input
-                id="edit-name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="My Dify Service"
-              />
+        {/* Status Dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatusCard
+            title={t('difyService.statusCards.totalServices') || "등록된 서비스"}
+            value={services.length}
+            icon={<Server className="w-6 h-6 text-white" />}
+            color="#3b82f6"
+          />
+          <StatusCard
+            title={t('difyService.statusCards.activeServices') || "활성 서비스"}
+            value={services.filter(s => s.isActive).length}
+            icon={<Activity className="w-6 h-6 text-white" />}
+            color="#22c55e"
+          />
+          <StatusCard
+            title={t('difyService.statusCards.totalApps') || "총 앱 수"}
+            value={apps.length}
+            icon={<Bot className="w-6 h-6 text-white" />}
+            color="#f97316"
+          />
+          <StatusCard
+            title={t('difyService.statusCards.connectionStatus') || "연결 상태"}
+            value={currentService ? (t('difyService.statusCards.connected') || "연결됨") : (t('difyService.statusCards.disconnected') || "미연결")}
+            icon={<Target className="w-6 h-6 text-white" />}
+            color={currentService ? "#22c55e" : "#ef4444"}
+          />
+        </div>
+
+        {/* Error Alert */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-500" />
+            <div className="flex-1">
+              <p className="text-red-700 dark:text-red-300 font-medium">{error.message}</p>
             </div>
-            <div>
-              <Label htmlFor="edit-baseUrl">기본 URL</Label>
-              <Input
-                id="edit-baseUrl"
-                value={formData.baseUrl}
-                onChange={(e) => setFormData({ ...formData, baseUrl: e.target.value })}
-                placeholder="http://localhost:5001"
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit-apiKey">API 키</Label>
-              <Input
-                id="edit-apiKey"
-                type="password"
-                value={formData.apiKey}
-                onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
-                placeholder="sk-..."
-              />
+            <button
+              onClick={clearError}
+              className="text-red-500 hover:text-red-700 dark:hover:text-red-300"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Services List */}
+          <div className="lg:col-span-2">
+            <div className="bg-card backdrop-blur-sm border border-border rounded-lg shadow-sm">
+              <div className="p-6 border-b border-border">
+                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                  <Settings className="w-5 h-5 text-accent-blue" />
+                  {t('difyService.sections.serviceManagement')}
+                </h2>
+              </div>
+              
+              <div className="p-6">
+                {services.length === 0 ? (
+                  <div className="text-center py-16">
+                    <div className="mb-6">
+                      <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 opacity-60">
+                        <Bot className="w-10 h-10 text-white" />
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">{t('difyService.emptyStates.noServicesTitle') || "No Services Yet"}</h3>
+                    <p className="text-muted-foreground mb-6">{t('difyService.messages.noServices')}</p>
+                    <button
+                      onClick={() => setShowCreateForm(true)}
+                      className="px-6 py-3 bg-gradient-primary hover:opacity-90 text-white font-semibold rounded-lg transition-all duration-300 shadow-sm"
+                    >
+                      <Plus className="w-4 h-4 inline mr-2" />
+                      {t('difyService.buttons.addService')}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {services.map((service) => (
+                      <div
+                        key={service.id}
+                        className={`p-6 border border-border rounded-lg transition-all duration-300 hover:bg-muted/50 hover:shadow-sm ${
+                          service.isActive 
+                            ? 'bg-accent-blue/5 border-accent-blue/30 shadow-sm' 
+                            : 'bg-card backdrop-blur-sm'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            {getStatusIcon(service)}
+                            <div>
+                              <h3 className="font-medium text-foreground">{service.name}</h3>
+                              <p className="text-sm text-muted-foreground">{service.description}</p>
+                              <p className="text-xs text-muted-foreground mt-1">{service.apiUrl}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            {testResults[service.id]?.success && (
+                              <span className="text-xs text-green-600 dark:text-green-400">
+                                {testResults[service.id].latency}ms | {testResults[service.id].appsCount} apps
+                              </span>
+                            )}
+                            
+                            <button
+                              onClick={() => handleTestConnection(service)}
+                              className="p-2 hover:bg-muted rounded-lg border border-border transition-all duration-300 hover:border-accent-blue/50 group"
+                              title={t('difyService.buttons.testConnection')}
+                            >
+                              <TestTube className="w-4 h-4 text-muted-foreground group-hover:text-accent-blue transition-colors" />
+                            </button>
+                            
+                            <button
+                              onClick={() => startEdit(service)}
+                              className="p-2 hover:bg-muted rounded-lg border border-border transition-all duration-300 hover:border-accent-yellow/50 group"
+                              title={t('difyService.buttons.editService')}
+                            >
+                              <Edit className="w-4 h-4 text-muted-foreground group-hover:text-accent-yellow transition-colors" />
+                            </button>
+                            
+                            <button
+                              onClick={() => setActiveService(service.id)}
+                              className="p-2 hover:bg-muted rounded-lg border border-border transition-all duration-300 hover:border-accent-green/50 group disabled:opacity-50 disabled:cursor-not-allowed"
+                              title={service.isActive ? t('difyService.buttons.deactivate') : t('difyService.buttons.activate')}
+                              disabled={service.isActive}
+                            >
+                              {service.isActive ? 
+                                <Pause className="w-4 h-4 text-accent-green" /> : 
+                                <Play className="w-4 h-4 text-muted-foreground group-hover:text-accent-green transition-colors" />
+                              }
+                            </button>
+                            
+                            <button
+                              onClick={() => deleteService(service.id)}
+                              className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border border-border hover:border-red-300 dark:hover:border-red-700 transition-all duration-300 group"
+                              title={t('difyService.buttons.deleteService')}
+                            >
+                              <Trash2 className="w-4 h-4 text-red-500 group-hover:text-red-600 transition-colors" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              취소
-            </Button>
-            <Button onClick={handleEdit} disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  업데이트 중...
-                </>
-              ) : (
-                '업데이트'
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* Delete Service Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>서비스 삭제</AlertDialogTitle>
-            <AlertDialogDescription>
-              "{deletingService?.name}" 서비스를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-              삭제
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+          {/* Apps Panel */}
+          <div>
+            <div className="bg-card backdrop-blur-sm border border-border rounded-lg shadow-sm">
+              <div className="p-6 border-b border-border">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                    <Database className="w-5 h-5 text-accent-green" />
+                    {t('difyService.sections.appStore')}
+                  </h2>
+                  {currentService && (
+                    <button
+                      onClick={() => setShowAppForm(true)}
+                      className="p-2 hover:bg-muted rounded-lg border border-border transition-all duration-300 hover:border-accent-green/50"
+                      title={t('difyService.buttons.createApp')}
+                    >
+                      <Plus className="w-4 h-4 text-accent-green" />
+                    </button>
+                  )}
+                </div>
+              </div>
+              
+              <div className="p-6">
+                {!currentService ? (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Settings className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <h4 className="font-semibold text-foreground mb-2">{t('difyService.emptyStates.noActiveServiceTitle') || "No Active Service"}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {t('difyService.emptyStates.selectActiveService') || "Select an active service to view apps"}
+                    </p>
+                  </div>
+                ) : apps.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-accent-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Database className="w-8 h-8 text-accent-green" />
+                    </div>
+                    <h4 className="font-semibold text-foreground mb-2">{t('difyService.emptyStates.noAppsTitle') || "No Apps Found"}</h4>
+                    <p className="text-sm text-muted-foreground mb-4">{t('difyService.messages.noApps')}</p>
+                    <button
+                      onClick={() => setShowAppForm(true)}
+                      className="px-4 py-2 bg-accent-green hover:bg-accent-green/90 text-white font-medium rounded-lg transition-all duration-300 text-sm"
+                    >
+                      <Plus className="w-3 h-3 inline mr-1" />
+                      {t('difyService.emptyStates.createFirstApp') || "Create First App"}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {apps.map((app) => (
+                      <div
+                        key={app.id}
+                        className="p-4 bg-card backdrop-blur-sm border border-border rounded-lg hover:bg-muted/50 transition-all duration-300 hover:shadow-sm group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`p-3 rounded-lg transition-all duration-300 group-hover:scale-110 ${
+                            app.mode === 'chatbot' ? 'bg-blue-500 text-white' :
+                            app.mode === 'agent' ? 'bg-green-500 text-white' :
+                            'bg-purple-500 text-white'
+                          }`}>
+                            {app.mode === 'chatbot' ? <Bot className="w-5 h-5" /> :
+                             app.mode === 'agent' ? <Zap className="w-5 h-5" /> :
+                             <Settings className="w-5 h-5" />}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-sm text-foreground group-hover:text-accent-blue transition-colors">
+                              {app.name}
+                            </h4>
+                            <p className="text-xs text-muted-foreground">
+                              {t(`difyService.appTypes.${app.mode}`)}
+                            </p>
+                          </div>
+                          <span className={`text-xs px-3 py-1 rounded-lg font-medium transition-all duration-300 ${
+                            app.status === 'active' 
+                              ? 'bg-green-100 dark:bg-green-900/20 text-green-600 border border-green-200 dark:border-green-800'
+                              : 'bg-gray-100 dark:bg-gray-900/20 text-gray-600 border border-gray-200 dark:border-gray-800'
+                          }`}>
+                            {app.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Create/Edit Service Modal */}
+        {showCreateForm && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-card backdrop-blur-sm border border-border rounded-lg shadow-xl w-full max-w-md">
+              <div className="p-6 border-b border-border">
+                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  {editingService ? (
+                    <>
+                      <Edit className="w-5 h-5 text-accent-blue" />
+                      {t('difyService.buttons.editService')}
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-5 h-5 text-accent-green" />
+                      {t('difyService.buttons.addService')}
+                    </>
+                  )}
+                </h3>
+              </div>
+              
+              <form onSubmit={editingService ? handleEditService : handleCreateService} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    {t('difyService.serviceForm.name')}
+                  </label>
+                  <input
+                    type="text"
+                    value={serviceForm.name}
+                    onChange={(e) => setServiceForm(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 transition-all duration-300"
+                    placeholder={t('difyService.serviceForm.placeholders.name')}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    {t('difyService.serviceForm.description')}
+                  </label>
+                  <textarea
+                    value={serviceForm.description}
+                    onChange={(e) => setServiceForm(prev => ({ ...prev, description: e.target.value }))}
+                    className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 transition-all duration-300 resize-none"
+                    placeholder={t('difyService.serviceForm.placeholders.description')}
+                    rows={3}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    {t('difyService.serviceForm.apiUrl')}
+                  </label>
+                  <input
+                    type="url"
+                    value={serviceForm.apiUrl}
+                    onChange={(e) => setServiceForm(prev => ({ ...prev, apiUrl: e.target.value }))}
+                    className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 transition-all duration-300"
+                    placeholder={t('difyService.serviceForm.placeholders.apiUrl')}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    {t('difyService.serviceForm.apiKey')}
+                  </label>
+                  <input
+                    type="password"
+                    value={serviceForm.apiKey}
+                    onChange={(e) => setServiceForm(prev => ({ ...prev, apiKey: e.target.value }))}
+                    className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 transition-all duration-300"
+                    placeholder={t('difyService.serviceForm.placeholders.apiKey')}
+                    required
+                  />
+                </div>
+                
+                <div className="flex gap-3 pt-6">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex-1 px-6 py-3 bg-gradient-primary hover:opacity-90 text-white font-semibold rounded-lg transition-all duration-300 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? (t('common.saving') || 'Saving...') : editingService ? (t('common.update') || 'Update') : (t('common.create') || 'Create')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={cancelEdit}
+                    className="px-6 py-3 border border-border rounded-lg hover:bg-muted transition-all duration-300 text-foreground"
+                  >
+                    {t('common.cancel') || 'Cancel'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Create App Modal */}
+        {showAppForm && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-card backdrop-blur-sm border border-border rounded-lg shadow-xl w-full max-w-md">
+              <div className="p-6 border-b border-border">
+                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <Bot className="w-5 h-5 text-accent-purple" />
+                  {t('difyService.buttons.createApp')}
+                </h3>
+              </div>
+              
+              <form onSubmit={handleCreateApp} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">{t('difyService.appForm.name') || "App Name"}</label>
+                  <input
+                    type="text"
+                    value={appForm.name}
+                    onChange={(e) => setAppForm(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 transition-all duration-300"
+                    placeholder={t('difyService.appForm.placeholders.name') || "Enter app name"}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">{t('difyService.appForm.description') || "Description"}</label>
+                  <textarea
+                    value={appForm.description}
+                    onChange={(e) => setAppForm(prev => ({ ...prev, description: e.target.value }))}
+                    className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 transition-all duration-300 resize-none"
+                    placeholder={t('difyService.appForm.placeholders.description') || "Enter app description"}
+                    rows={3}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">{t('difyService.appForm.type') || "App Type"}</label>
+                  <select
+                    value={appForm.mode}
+                    onChange={(e) => setAppForm(prev => ({ ...prev, mode: e.target.value as any }))}
+                    className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 transition-all duration-300"
+                  >
+                    <option value="chatbot">{t('difyService.appTypes.chatbot')}</option>
+                    <option value="agent">{t('difyService.appTypes.agent')}</option>
+                    <option value="workflow">{t('difyService.appTypes.workflow')}</option>
+                  </select>
+                </div>
+                
+                <div className="flex gap-3 pt-6">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex-1 px-6 py-3 bg-gradient-primary hover:opacity-90 text-white font-semibold rounded-lg transition-all duration-300 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? (t('common.creating') || 'Creating...') : (t('difyService.buttons.createApp') || 'Create App')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAppForm(false)}
+                    className="px-6 py-3 border border-border rounded-lg hover:bg-muted transition-all duration-300 text-foreground"
+                  >
+                    {t('common.cancel') || 'Cancel'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
     </div>
   )
-}
+} 

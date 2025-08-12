@@ -10,19 +10,17 @@ from datetime import datetime
 import json
 import logging
 
-# 보고서 생성기 제거됨
-# from src.ai.core.ai_report_generator import (
-#     EnhancedAIReportGenerator, 
-#     ReportGenerationConfig,
-#     ReportQualityMetrics
-# )
+from src.ai.core.ai_report_generator import (
+    EnhancedAIReportGenerator, 
+    ReportGenerationConfig,
+    ReportQualityMetrics
+)
 from src.ai.core.llm_client import EnhancedOllamaClient
 from src.ai.core.context_engineering import ContextEngineer
 
 logger = logging.getLogger(__name__)
 
-class ExperimentalDesignReportGenerator:
-    # EnhancedAIReportGenerator 상속 제거됨
+class ExperimentalDesignReportGenerator(EnhancedAIReportGenerator):
     """
     실험 설계 전용 AI 보고서 생성기 v2.0
     
@@ -38,8 +36,8 @@ class ExperimentalDesignReportGenerator:
     def __init__(self, 
                  llm_client: Optional[EnhancedOllamaClient] = None,
                  context_engineer: Optional[ContextEngineer] = None):
-        """실험 설계 전용 보고서 생성기 초기화 - 보고서 생성기 제거됨"""
-        # super().__init__(llm_client, context_engineer, use_optimized_clients=True)  # 제거됨
+        """실험 설계 전용 보고서 생성기 초기화"""
+        super().__init__(llm_client, context_engineer, use_optimized_clients=True)
         
         # 실험 설계 전용 보고서 템플릿
         self.experiment_report_types = {

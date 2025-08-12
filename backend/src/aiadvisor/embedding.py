@@ -2,7 +2,6 @@
 DX-AI Advisor - 임베딩 및 벡터 검색 모듈
 
 FAISS 기반 벡터 데이터베이스 구축 및 의미론적 검색 기능을 제공합니다.
-제조업 전반에 적용 가능한 범용적 벡터 검색 시스템을 지원합니다.
 """
 
 import os
@@ -84,18 +83,6 @@ class EmbeddingManager:
         self.index_metadata = {}
         self._initialization_complete = False
         
-        # 제조업 도메인별 검색 최적화 설정
-        self.manufacturing_keywords = {
-            "general": ["제조", "생산", "공정", "품질", "설비", "장비", "검사", "측정"],
-            "chemical": ["화학", "반응", "촉매", "용매", "순도", "농도", "pH", "온도", "압력"],
-            "electronics": ["전자", "회로", "반도체", "PCB", "IC", "전압", "전류", "저항"],
-            "automotive": ["자동차", "엔진", "변속기", "브레이크", "연료", "배기", "진동"],
-            "machinery": ["기계", "베어링", "기어", "모터", "펌프", "컴프레서", "진동"],
-            "textile": ["섬유", "직물", "염색", "가공", "강도", "신축성", "색상"],
-            "food": ["식품", "원료", "가공", "살균", "포장", "유통기한", "위생"],
-            "pharmaceutical": ["제약", "약물", "임상", "효능", "안전성", "순도", "균일성"]
-        }
-        
         # 임베딩 모델 초기화
         self._initialize_embedding_model()
         
@@ -142,7 +129,7 @@ class EmbeddingManager:
             await self._auto_load_index()
     
     def _initialize_embedding_model(self):
-        """임베딩 모델 초기화 - 제조업 도메인 최적화"""
+        """임베딩 모델 초기화"""
         try:
             logger.info(f"임베딩 모델 초기화 시작: {self.config.embedding_model}")
             
@@ -151,33 +138,21 @@ class EmbeddingManager:
                 logger.warning("sentence-transformers를 사용할 수 없어 더미 임베딩 모델을 사용합니다.")
                 self.embedding_model = DummyEmbeddings()
             else:
-                # HuggingFace 임베딩 모델 초기화 (제조업 최적화)
-                model_kwargs = {
-                    'device': 'cpu',  # CPU 사용 (GPU 사용 시 'cuda')
-                    'trust_remote_code': True
-                }
-                
-                # 제조업 도메인에 특화된 모델 선택 (한국어 + 기술 용어)
-                if "ko-sroberta" in self.config.embedding_model:
-                    # 한국어 최적화 모델
-                    model_kwargs.update({
-                        'max_length': 512,  # 제조업 문서에 적합한 길이
-                        'padding': True,
-                        'truncation': True
-                    })
-                
+                # HuggingFace 임베딩 모델 초기화
                 self.embedding_model = HuggingFaceEmbeddings(
                     model_name=self.config.embedding_model,
-                    model_kwargs=model_kwargs,
+                    model_kwargs={
+                        'device': 'cpu',  # CPU 사용 (GPU 사용 시 'cuda')
+                        'trust_remote_code': True
+                    },
                     encode_kwargs={
                         'normalize_embeddings': True,
-                        'batch_size': 32,
-                        'show_progress_bar': False  # 배치 처리 시 진행률 표시 비활성화
+                        'batch_size': 32
                     }
                 )
             
             # 모델 테스트
-            test_text = "제조업 품질 관리 테스트"
+            test_text = "테스트 임베딩"
             test_embedding = self.embedding_model.embed_query(test_text)
             
             logger.info(f"임베딩 모델 초기화 완료: {self.config.embedding_model}")
@@ -195,7 +170,7 @@ class EmbeddingManager:
                 raise AIAdvisorException(f"임베딩 모델 초기화 실패: {str(e)}, 더미 모델도 실패: {str(fallback_error)}")
     
     async def create_embeddings(self, processed_documents: List[Dict[str, Any]], index_name: str = "default") -> Dict[str, Any]:
-        """처리된 문서들로부터 임베딩 생성 및 FAISS 인덱스 구축 - 제조업 최적화"""
+        """처리된 문서들로부터 임베딩 생성 및 FAISS 인덱스 구축"""
         try:
             logger.info(f"임베딩 생성 시작: {len(processed_documents)}개 문서, 인덱스명: {index_name}")
             
@@ -206,7 +181,7 @@ class EmbeddingManager:
             if not self.embedding_model:
                 raise AIAdvisorException("임베딩 모델이 초기화되지 않았습니다.")
             
-            # Document 객체 생성 (제조업 도메인 메타데이터 추가)
+            # Document 객체 생성
             documents = []
             metadatas = []
             
@@ -229,24 +204,10 @@ class EmbeddingManager:
                 for chunk_index, chunk in enumerate(chunks):
                     content = chunk.get("content", "")
                     if content and content.strip():
-                        # 메타데이터에 문서 정보 추가 (제조업 특화)
+                        # 메타데이터에 문서 정보 추가
                         metadata = chunk.get("metadata", {})
                         metadata["document_id"] = document_id
                         metadata["chunk_index"] = chunk_index
-                        
-                        # 제조업 도메인 분류 추가
-                        domain = self._classify_manufacturing_domain(content)
-                        metadata["manufacturing_domain"] = domain
-                        
-                        # 품질 관련 키워드 감지
-                        quality_keywords = self._extract_quality_keywords(content)
-                        if quality_keywords:
-                            metadata["quality_keywords"] = quality_keywords
-                        
-                        # 공정 관련 키워드 감지
-                        process_keywords = self._extract_process_keywords(content)
-                        if process_keywords:
-                            metadata["process_keywords"] = process_keywords
                         
                         # Document 객체 생성
                         doc = Document(
@@ -264,7 +225,7 @@ class EmbeddingManager:
             
             logger.info(f"총 {len(documents)}개의 문서 청크로 벡터 임베딩 생성 시작")
             
-            # FAISS 벡터 스토어 생성 (제조업 최적화)
+            # FAISS 벡터 스토어 생성
             logger.info("FAISS 벡터 스토어 생성 중...")
             self.vector_store = await asyncio.to_thread(
                 FAISS.from_documents,
@@ -279,14 +240,12 @@ class EmbeddingManager:
             else:
                 raise AIAdvisorException("벡터 스토어 생성 실패")
             
-            # 인덱스 메타데이터 저장 (제조업 특화 정보 추가)
+            # 인덱스 메타데이터 저장
             self.index_metadata = {
                 "index_name": index_name,
                 "total_documents": len(documents),
                 "embedding_model": self.config.embedding_model,
                 "created_at": datetime.now().isoformat(),
-                "manufacturing_optimized": True,
-                "domain_distribution": self._get_domain_distribution(metadatas),
                 "config": {
                     "chunk_size": self.config.chunk_size,
                     "chunk_overlap": self.config.chunk_overlap,
@@ -307,8 +266,7 @@ class EmbeddingManager:
                 "index_path": index_path,
                 "total_documents": len(documents),
                 "vector_count": vector_count,
-                "metadata": self.index_metadata,
-                "manufacturing_domains": self._get_domain_distribution(metadatas)
+                "metadata": self.index_metadata
             }
             
         except Exception as e:
@@ -317,65 +275,6 @@ class EmbeddingManager:
             logger.error(f"상세 오류: {traceback.format_exc()}")
             raise AIAdvisorException(f"임베딩 생성 중 오류 발생: {str(e)}")
     
-    def _classify_manufacturing_domain(self, content: str) -> str:
-        """제조업 도메인 분류"""
-        try:
-            content_lower = content.lower()
-            
-            # 각 도메인별 키워드 매칭
-            domain_scores = {}
-            for domain, keywords in self.manufacturing_keywords.items():
-                score = sum(1 for keyword in keywords if keyword.lower() in content_lower)
-                domain_scores[domain] = score
-            
-            # 가장 높은 점수의 도메인 반환
-            if domain_scores:
-                best_domain = max(domain_scores, key=domain_scores.get)
-                if domain_scores[best_domain] > 0:
-                    return best_domain
-            
-            return "general"  # 기본값
-            
-        except Exception as e:
-            logger.error(f"도메인 분류 오류: {str(e)}")
-            return "general"
-    
-    def _extract_quality_keywords(self, content: str) -> List[str]:
-        """품질 관련 키워드 추출"""
-        quality_keywords = [
-            "품질", "QC", "QA", "검사", "테스트", "측정", "규격", "사양", "허용오차",
-            "불량", "결함", "부적합", "개선", "최적화", "표준", "인증", "승인"
-        ]
-        
-        found_keywords = []
-        for keyword in quality_keywords:
-            if keyword in content:
-                found_keywords.append(keyword)
-        
-        return found_keywords[:5]  # 최대 5개만 반환
-    
-    def _extract_process_keywords(self, content: str) -> List[str]:
-        """공정 관련 키워드 추출"""
-        process_keywords = [
-            "공정", "프로세스", "작업", "생산", "제조", "가공", "조립", "포장",
-            "설비", "장비", "기계", "자동화", "라인", "스테이션", "작업장"
-        ]
-        
-        found_keywords = []
-        for keyword in process_keywords:
-            if keyword in content:
-                found_keywords.append(keyword)
-        
-        return found_keywords[:5]  # 최대 5개만 반환
-    
-    def _get_domain_distribution(self, metadatas: List[Dict[str, Any]]) -> Dict[str, int]:
-        """도메인 분포 통계"""
-        domain_counts = {}
-        for metadata in metadatas:
-            domain = metadata.get("manufacturing_domain", "general")
-            domain_counts[domain] = domain_counts.get(domain, 0) + 1
-        return domain_counts
-
     async def _save_index(self, index_name: str) -> str:
         """FAISS 인덱스를 디스크에 저장"""
         try:
@@ -573,7 +472,7 @@ class EmbeddingManager:
             return []
     
     def _preprocess_query(self, query: str) -> str:
-        """검색 쿼리 전처리 (제조업 도메인 최적화)"""
+        """검색 쿼리 전처리 (한국어 최적화)"""
         try:
             import re
             
@@ -593,9 +492,6 @@ class EmbeddingManager:
             if len(processed) < 2:
                 return query
             
-            # 제조업 도메인별 검색 최적화
-            processed = self._optimize_manufacturing_query(processed)
-            
             # 검색 향상을 위한 키워드 확장 (선택적)
             if len(processed) < 10:
                 # 짧은 쿼리의 경우 관련 키워드 추가
@@ -610,135 +506,21 @@ class EmbeddingManager:
             logger.error(f"쿼리 전처리 오류: {str(e)}")
             return query
     
-    def _optimize_manufacturing_query(self, query: str) -> str:
-        """제조업 도메인별 쿼리 최적화"""
-        try:
-            # 도메인별 동의어 및 관련어 매핑
-            manufacturing_synonyms = {
-                # 품질 관련
-                "qc": "품질관리 QC 검사",
-                "qa": "품질보증 QA 검증",
-                "불량": "불량 결함 부적합",
-                "개선": "개선 향상 최적화",
-                
-                # 공정 관련
-                "공정": "공정 프로세스 제조공정",
-                "생산": "생산 제조 가공",
-                "라인": "라인 라인업 생산라인",
-                
-                # 설비 관련
-                "설비": "설비 장비 기계",
-                "장비": "설비 장비 기계",
-                "기계": "설비 장비 기계",
-                
-                # 측정 관련
-                "측정": "측정 검사 테스트",
-                "검사": "측정 검사 테스트",
-                "테스트": "측정 검사 테스트",
-                
-                # 화학공정 관련
-                "반응": "반응 화학반응 촉매",
-                "촉매": "촉매 촉매반응",
-                "용매": "용매 용액",
-                "순도": "순도 농도",
-                
-                # 전자공정 관련
-                "회로": "회로 전자회로 PCB",
-                "반도체": "반도체 IC 칩",
-                "전압": "전압 전류 저항",
-                
-                # 자동차 관련
-                "엔진": "엔진 모터",
-                "변속기": "변속기 기어",
-                "브레이크": "브레이크 제동",
-                
-                # 기계 관련
-                "베어링": "베어링 축",
-                "기어": "기어 변속",
-                "모터": "모터 엔진",
-                
-                # 섬유 관련
-                "섬유": "섬유 직물",
-                "염색": "염색 색상",
-                "강도": "강도 인장",
-                
-                # 식품 관련
-                "식품": "식품 원료",
-                "살균": "살균 멸균",
-                "포장": "포장 패키징",
-                
-                # 제약 관련
-                "약물": "약물 의약품",
-                "임상": "임상 시험",
-                "효능": "효능 효과"
-            }
-            
-            # 동의어 확장
-            expanded_terms = []
-            for term in query.split():
-                if term.lower() in manufacturing_synonyms:
-                    expanded_terms.append(manufacturing_synonyms[term.lower()])
-                else:
-                    expanded_terms.append(term)
-            
-            return " ".join(expanded_terms)
-            
-        except Exception as e:
-            logger.error(f"제조업 쿼리 최적화 오류: {str(e)}")
-            return query
-    
     def _expand_short_query(self, query: str) -> str:
-        """짧은 쿼리 확장 - 제조업 도메인 특화"""
+        """짧은 쿼리 확장"""
         try:
-            # 제조업 관련 키워드 매핑 (도메인별 확장)
+            # 제조업 관련 키워드 매핑
             expansion_map = {
-                # 일반 제조업
-                "품질": "품질 관리 QC QA 검사",
-                "공정": "공정 프로세스 제조 생산",
-                "불량": "불량 결함 품질문제 부적합",
+                "품질": "품질 관리 QC",
+                "공정": "공정 프로세스 제조",
+                "불량": "불량 결함 품질문제",
                 "개선": "개선 향상 최적화",
                 "분석": "분석 평가 검토",
                 "설비": "설비 장비 기계",
                 "생산": "생산 제조 공정",
                 "검사": "검사 테스트 품질확인",
-                
-                # 화학공정
-                "온도": "온도 열처리 가열 냉각",
+                "온도": "온도 열처리 가열",
                 "압력": "압력 가압 압축",
-                "반응": "반응 화학반응 촉매",
-                "순도": "순도 농도 정제",
-                
-                # 전자공정
-                "전압": "전압 전류 저항",
-                "회로": "회로 전자회로 PCB",
-                "반도체": "반도체 IC 칩",
-                
-                # 자동차
-                "엔진": "엔진 모터 동력",
-                "변속": "변속 기어",
-                "브레이크": "브레이크 제동",
-                
-                # 기계
-                "베어링": "베어링 축 지지",
-                "기어": "기어 변속",
-                "모터": "모터 엔진 동력",
-                
-                # 섬유
-                "섬유": "섬유 직물 원단",
-                "염색": "염색 색상",
-                "강도": "강도 인장 신축",
-                
-                # 식품
-                "식품": "식품 원료 가공",
-                "살균": "살균 멸균",
-                "포장": "포장 패키징",
-                
-                # 제약
-                "약물": "약물 의약품",
-                "임상": "임상 시험",
-                "효능": "효능 효과",
-                
-                # AI/데이터
                 "AI": "AI 인공지능 머신러닝",
                 "데이터": "데이터 정보 분석"
             }
@@ -753,7 +535,7 @@ class EmbeddingManager:
             return query
     
     async def search_with_metadata_filter(self, query: str, metadata_filter: Dict[str, Any], k: int = 5) -> List[Dict[str, Any]]:
-        """메타데이터 필터를 적용한 검색 - 제조업 도메인 최적화"""
+        """메타데이터 필터를 적용한 검색"""
         try:
             # 벡터 스토어가 없으면 자동 로드 시도
             if not self.vector_store:
@@ -805,89 +587,6 @@ class EmbeddingManager:
         except Exception as e:
             logger.error(f"메타데이터 필터링 검색 오류: {str(e)}")
             raise AIAdvisorException(f"메타데이터 필터링 검색 중 오류 발생: {str(e)}")
-    
-    async def search_by_manufacturing_domain(self, query: str, domain: str = None, k: int = 5) -> List[Dict[str, Any]]:
-        """제조업 도메인별 검색"""
-        try:
-            if domain and domain in self.manufacturing_keywords:
-                # 특정 도메인으로 필터링
-                metadata_filter = {"manufacturing_domain": domain}
-                results = await self.search_with_metadata_filter(query, metadata_filter, k)
-                
-                # 도메인별 키워드 가중치 적용
-                domain_keywords = self.manufacturing_keywords[domain]
-                for result in results:
-                    # 도메인 키워드가 포함된 결과에 가중치 부여
-                    content_lower = result["content"].lower()
-                    keyword_score = sum(1 for keyword in domain_keywords if keyword.lower() in content_lower)
-                    result["domain_relevance_score"] = keyword_score / len(domain_keywords)
-                    result["search_domain"] = domain
-                
-                # 도메인 관련성 점수로 재정렬
-                results.sort(key=lambda x: x.get("domain_relevance_score", 0), reverse=True)
-                
-                return results
-            else:
-                # 모든 도메인에서 검색
-                return await self.search_similar_documents(query, k)
-                
-        except Exception as e:
-            logger.error(f"도메인별 검색 오류: {str(e)}")
-            return []
-    
-    async def search_by_quality_keywords(self, query: str, quality_keywords: List[str] = None, k: int = 5) -> List[Dict[str, Any]]:
-        """품질 관련 키워드 기반 검색"""
-        try:
-            if quality_keywords:
-                # 품질 키워드가 포함된 문서만 검색
-                metadata_filter = {"quality_keywords": {"$in": quality_keywords}}
-                results = await self.search_with_metadata_filter(query, metadata_filter, k)
-                
-                # 품질 관련성 점수 계산
-                for result in results:
-                    content_lower = result["content"].lower()
-                    quality_score = sum(1 for keyword in quality_keywords if keyword.lower() in content_lower)
-                    result["quality_relevance_score"] = quality_score / len(quality_keywords)
-                    result["matched_quality_keywords"] = [kw for kw in quality_keywords if kw.lower() in content_lower]
-                
-                # 품질 관련성 점수로 재정렬
-                results.sort(key=lambda x: x.get("quality_relevance_score", 0), reverse=True)
-                
-                return results
-            else:
-                # 기본 검색
-                return await self.search_similar_documents(query, k)
-                
-        except Exception as e:
-            logger.error(f"품질 키워드 검색 오류: {str(e)}")
-            return []
-    
-    async def search_by_process_keywords(self, query: str, process_keywords: List[str] = None, k: int = 5) -> List[Dict[str, Any]]:
-        """공정 관련 키워드 기반 검색"""
-        try:
-            if process_keywords:
-                # 공정 키워드가 포함된 문서만 검색
-                metadata_filter = {"process_keywords": {"$in": process_keywords}}
-                results = await self.search_with_metadata_filter(query, metadata_filter, k)
-                
-                # 공정 관련성 점수 계산
-                for result in results:
-                    content_lower = result["content"].lower()
-                    process_score = sum(1 for keyword in process_keywords if keyword.lower() in content_lower)
-                    result["process_relevance_score"] = process_score / len(process_keywords)
-                    result["matched_process_keywords"] = [kw for kw in process_keywords if kw.lower() in content_lower]
-                
-                # 공정 관련성 점수로 재정렬
-                results.sort(key=lambda x: x.get("process_relevance_score", 0), reverse=True)
-                
-                return results
-            else:
-                # 기본 검색
-                return await self.search_similar_documents(query, k)
-                
-        except Exception as e:
-            logger.error(f"공정 키워드 검색 오류: {str(e)}")
-            return []
     
     def get_index_statistics(self) -> Dict[str, Any]:
         """인덱스 통계 정보 반환"""
@@ -1145,20 +844,11 @@ class EmbeddingManager:
 
 
 class VectorSearchEngine:
-    """벡터 검색 엔진 클래스 - 제조업 도메인 최적화 고급 검색 기능 제공"""
+    """벡터 검색 엔진 클래스 - 고급 검색 기능 제공"""
     
     def __init__(self, embedding_manager: EmbeddingManager):
         self.embedding_manager = embedding_manager
         self.search_history = []
-        
-        # 제조업 특화 검색 설정
-        self.manufacturing_search_config = {
-            "quality_focus": ["품질", "QC", "QA", "검사", "테스트", "불량", "결함"],
-            "process_focus": ["공정", "프로세스", "생산", "제조", "작업", "라인"],
-            "equipment_focus": ["설비", "장비", "기계", "유지보수", "고장", "수리"],
-            "safety_focus": ["안전", "사고", "위험", "보호", "규정", "준수"],
-            "cost_focus": ["비용", "원가", "효율", "생산성", "낭비", "절약"]
-        }
     
     async def hybrid_search(self, query: str, ontology_context: Dict[str, Any] = None, k: int = 5) -> Dict[str, Any]:
         """하이브리드 검색 - 벡터 검색 + 온톨로지 컨텍스트"""
@@ -1345,7 +1035,7 @@ class VectorSearchEngine:
         self.search_history.clear()
 
     async def get_document_clusters(self, n_clusters: int = 5) -> Dict[str, Any]:
-        """문서 클러스터링 - 제조업 도메인 최적화"""
+        """문서 클러스터링"""
         try:
             if not self.embedding_manager.vector_store:
                 return {"clusters": [], "total_documents": 0}
@@ -1382,177 +1072,6 @@ class VectorSearchEngine:
         except Exception as e:
             logger.error(f"문서 클러스터링 오류: {str(e)}")
             return {"clusters": [], "total_documents": 0}
-    
-    async def manufacturing_focused_search(self, query: str, focus_area: str = None, k: int = 5) -> Dict[str, Any]:
-        """제조업 특화 검색 - 품질, 공정, 설비 등 특정 영역에 집중"""
-        try:
-            if focus_area and focus_area in self.manufacturing_search_config:
-                # 특정 영역에 집중한 검색
-                focus_keywords = self.manufacturing_search_config[focus_area]
-                expanded_query = f"{query} {' '.join(focus_keywords)}"
-                
-                results = await self.embedding_manager.search_similar_documents(expanded_query, k=k)
-                
-                # 집중 영역 관련성 점수 계산
-                for result in results:
-                    content_lower = result["content"].lower()
-                    focus_score = sum(1 for keyword in focus_keywords if keyword.lower() in content_lower)
-                    result["focus_relevance_score"] = focus_score / len(focus_keywords)
-                    result["focus_area"] = focus_area
-                    result["matched_focus_keywords"] = [kw for kw in focus_keywords if kw.lower() in content_lower]
-                
-                # 집중 영역 관련성 점수로 재정렬
-                results.sort(key=lambda x: x.get("focus_relevance_score", 0), reverse=True)
-                
-                return {
-                    "query": query,
-                    "focus_area": focus_area,
-                    "results": results,
-                    "search_type": "manufacturing_focused"
-                }
-            else:
-                # 일반 검색
-                results = await self.embedding_manager.search_similar_documents(query, k=k)
-                return {
-                    "query": query,
-                    "focus_area": "general",
-                    "results": results,
-                    "search_type": "general"
-                }
-                
-        except Exception as e:
-            logger.error(f"제조업 특화 검색 오류: {str(e)}")
-            return {"query": query, "results": [], "error": str(e)}
-    
-    async def multi_domain_search(self, query: str, domains: List[str] = None, k: int = 5) -> Dict[str, Any]:
-        """다중 제조업 도메인 검색"""
-        try:
-            if not domains:
-                domains = list(self.embedding_manager.manufacturing_keywords.keys())
-            
-            all_results = {}
-            combined_results = []
-            
-            for domain in domains:
-                if domain in self.embedding_manager.manufacturing_keywords:
-                    results = await self.embedding_manager.search_by_manufacturing_domain(query, domain, k=k)
-                    all_results[domain] = results
-                    
-                    # 도메인 정보 추가
-                    for result in results:
-                        result["source_domain"] = domain
-                        result["search_type"] = "multi_domain"
-                    
-                    combined_results.extend(results)
-            
-            # 중복 제거 및 점수 기반 정렬
-            unique_results = []
-            seen_contents = set()
-            
-            for result in combined_results:
-                content_hash = hash(result["content"][:200])
-                if content_hash not in seen_contents:
-                    unique_results.append(result)
-                    seen_contents.add(content_hash)
-            
-            # 종합 점수로 정렬 (유사도 + 도메인 관련성)
-            for result in unique_results:
-                similarity_score = result.get("similarity_score", 0)
-                domain_score = result.get("domain_relevance_score", 0)
-                result["combined_score"] = (similarity_score * 0.7) + (domain_score * 0.3)
-            
-            unique_results.sort(key=lambda x: x.get("combined_score", 0), reverse=True)
-            
-            return {
-                "query": query,
-                "searched_domains": domains,
-                "individual_results": all_results,
-                "combined_results": unique_results[:k*2],
-                "search_type": "multi_domain",
-                "total_unique_results": len(unique_results)
-            }
-            
-        except Exception as e:
-            logger.error(f"다중 도메인 검색 오류: {str(e)}")
-            return {"query": query, "results": [], "error": str(e)}
-    
-    async def quality_issue_search(self, issue_description: str, k: int = 5) -> Dict[str, Any]:
-        """품질 이슈 관련 문서 검색"""
-        try:
-            # 품질 관련 키워드로 검색 확장
-            quality_keywords = ["품질", "불량", "결함", "부적합", "개선", "해결"]
-            expanded_query = f"{issue_description} {' '.join(quality_keywords)}"
-            
-            results = await self.embedding_manager.search_similar_documents(expanded_query, k=k)
-            
-            # 품질 이슈 관련성 분석
-            for result in results:
-                content_lower = result["content"].lower()
-                
-                # 품질 이슈 관련 키워드 매칭
-                issue_keywords = ["불량", "결함", "부적합", "문제", "이슈", "개선", "해결"]
-                issue_score = sum(1 for keyword in issue_keywords if keyword in content_lower)
-                result["issue_relevance_score"] = issue_score / len(issue_keywords)
-                
-                # 해결 방법 관련 키워드 매칭
-                solution_keywords = ["해결", "개선", "수정", "조치", "대책", "방안"]
-                solution_score = sum(1 for keyword in solution_keywords if keyword in content_lower)
-                result["solution_relevance_score"] = solution_score / len(solution_keywords)
-                
-                result["search_type"] = "quality_issue"
-            
-            # 이슈 관련성 점수로 재정렬
-            results.sort(key=lambda x: x.get("issue_relevance_score", 0), reverse=True)
-            
-            return {
-                "issue_description": issue_description,
-                "results": results,
-                "search_type": "quality_issue",
-                "quality_keywords_used": quality_keywords
-            }
-            
-        except Exception as e:
-            logger.error(f"품질 이슈 검색 오류: {str(e)}")
-            return {"issue_description": issue_description, "results": [], "error": str(e)}
-    
-    async def process_optimization_search(self, optimization_target: str, k: int = 5) -> Dict[str, Any]:
-        """공정 최적화 관련 문서 검색"""
-        try:
-            # 공정 최적화 관련 키워드로 검색 확장
-            optimization_keywords = ["최적화", "개선", "효율", "생산성", "공정", "프로세스"]
-            expanded_query = f"{optimization_target} {' '.join(optimization_keywords)}"
-            
-            results = await self.embedding_manager.search_similar_documents(expanded_query, k=k)
-            
-            # 최적화 관련성 분석
-            for result in results:
-                content_lower = result["content"].lower()
-                
-                # 최적화 관련 키워드 매칭
-                opt_keywords = ["최적화", "개선", "효율", "생산성", "향상", "증대"]
-                opt_score = sum(1 for keyword in opt_keywords if keyword in content_lower)
-                result["optimization_relevance_score"] = opt_score / len(opt_keywords)
-                
-                # 공정 관련 키워드 매칭
-                process_keywords = ["공정", "프로세스", "작업", "생산", "라인"]
-                process_score = sum(1 for keyword in process_keywords if keyword in content_lower)
-                result["process_relevance_score"] = process_score / len(process_keywords)
-                
-                result["search_type"] = "process_optimization"
-            
-            # 최적화 관련성 점수로 재정렬
-            results.sort(key=lambda x: x.get("optimization_relevance_score", 0), reverse=True)
-            
-            return {
-                "optimization_target": optimization_target,
-                "results": results,
-                "search_type": "process_optimization",
-                "optimization_keywords_used": optimization_keywords
-            }
-            
-        except Exception as e:
-            logger.error(f"공정 최적화 검색 오류: {str(e)}")
-            return {"optimization_target": optimization_target, "results": [], "error": str(e)}
 
     async def add_document_to_index(self, document_result: Dict[str, Any]) -> bool:
         """문서를 벡터 인덱스에 추가 (EmbeddingManager를 통해 처리)"""

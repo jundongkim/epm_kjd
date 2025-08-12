@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Brain, MessageSquare, FileText, TrendingUp, Settings, Send, Download, Search, AlertCircle, Upload, Trash2, File, Database } from 'lucide-react'
 import { useTranslation } from '@/hooks/useTranslation'
-import { aiAdvisorService, Message, QueryRequest } from '@/services/aiadvisor'
+import { aiAdvisorService, Message, QueryRequest, ReportGenerationRequest } from '@/services/aiadvisor'
 import DocumentManager from '@/components/aiadvisor/DocumentManager'
 
 export default function AIAdvisorPage() {
@@ -19,7 +19,7 @@ export default function AIAdvisorPage() {
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [systemStatus, setSystemStatus] = useState<any>(null)
-
+  const [reportTypes, setReportTypes] = useState<any[]>([])
   const [agents, setAgents] = useState<any[]>([])
   const [selectedAgent, setSelectedAgent] = useState<string>('')
   const [activeTab, setActiveTab] = useState<'chat' | 'documents' | 'settings'>('chat')
@@ -48,7 +48,10 @@ export default function AIAdvisorPage() {
       console.log('System status:', status)
       setSystemStatus(status)
 
-
+      // 리포트 타입 가져오기
+      const types = await aiAdvisorService.getReportTypes()
+      console.log('Report types:', types)
+      setReportTypes(types)
 
       // 에이전트 목록 가져오기
       const agentList = await aiAdvisorService.listAgents()
@@ -226,7 +229,7 @@ export default function AIAdvisorPage() {
       performance: '제조 공정의 성능을 분석하고 개선 방안을 제시해주세요.',
       quality: '품질 관리 시스템을 개선하고 품질 향상 방안을 제시해주세요.',
       cost: '생산 비용을 절감할 수 있는 전략과 방안을 제시해주세요.',
-
+      report: '현재 상황에 대한 종합 분석 리포트를 생성해주세요.'
     }
 
     const query = actions[action as keyof typeof actions] || action
@@ -237,7 +240,39 @@ export default function AIAdvisorPage() {
 
 
 
+  const generateReport = async () => {
+    try {
+      const request: ReportGenerationRequest = {
+        topic: '제조업 최적화 종합 분석',
+        report_type: 'analysis',
+        sections: ['executive_summary', 'situation_analysis', 'recommendations']
+      }
 
+      const result = await aiAdvisorService.generateReport(request)
+      
+      if (result.generation_status === 'success') {
+        // 리포트 다운로드
+        await aiAdvisorService.downloadReport(result.report_filename)
+        
+        const successMessage: Message = {
+          id: Date.now().toString(),
+          type: 'assistant',
+          content: `리포트가 성공적으로 생성되었습니다. 파일명: ${result.report_filename}`,
+          timestamp: new Date()
+        }
+        setMessages(prev => [...prev, successMessage])
+      }
+    } catch (error) {
+      console.error('Report generation error:', error)
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        type: 'assistant',
+        content: `리포트 생성 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
+        timestamp: new Date()
+      }
+      setMessages(prev => [...prev, errorMessage])
+    }
+  }
 
   return (
     <div className="h-full flex flex-col bg-background">
@@ -530,11 +565,31 @@ export default function AIAdvisorPage() {
                     <span className="text-sm">비용 절감 전략</span>
                   </div>
                 </button>
-
+                <button 
+                  onClick={() => handleQuickAction('report')}
+                  className="w-full p-3 text-left bg-muted hover:bg-muted/80 rounded-lg transition-colors"
+                >
+                  <div className="flex items-center space-x-2">
+                    <FileText className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm">리포트 생성</span>
+                  </div>
+                </button>
               </div>
             </div>
 
-
+            {/* Report Types */}
+            {reportTypes.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-3">리포트 타입</h3>
+                <div className="space-y-2">
+                  {reportTypes.map((type) => (
+                    <div key={type.type} className="p-2 bg-muted/50 rounded-lg">
+                      <p className="text-sm font-medium text-foreground">{type.name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Statistics */}
             <div>
@@ -549,7 +604,10 @@ export default function AIAdvisorPage() {
                   <span className="text-sm font-medium text-foreground">{agents.length}</span>
                 </div>
 
-
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">리포트 타입</span>
+                  <span className="text-sm font-medium text-foreground">{reportTypes.length}</span>
+                </div>
               </div>
             </div>
           </div>

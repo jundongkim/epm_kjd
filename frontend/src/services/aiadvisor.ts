@@ -23,6 +23,12 @@ export interface QueryResponse {
   timestamp: string
 }
 
+export interface ReportGenerationRequest {
+  topic: string
+  report_type: string
+  sections: string[]
+}
+
 export interface DocumentUploadResponse {
   status: string
   document_id: string
@@ -38,7 +44,12 @@ export interface DocumentListResponse {
   timestamp: string
 }
 
-
+export interface ReportGenerationResponse {
+  generation_status: string
+  report_metadata: any
+  report_filename: string
+  sections: any[]
+}
 
 export interface SystemStatus {
   status: string
@@ -166,7 +177,47 @@ class AIAdvisorService {
     }
   }
 
+  async generateReport(request: ReportGenerationRequest): Promise<ReportGenerationResponse> {
+    const response = await fetch(`${this.baseUrl}/api/v1/aiadvisor/reports/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    })
 
+    if (!response.ok) {
+      throw new Error('Failed to generate report')
+    }
+
+    return response.json()
+  }
+
+  async getReportTypes(): Promise<any[]> {
+    const response = await fetch(`${this.baseUrl}/api/v1/aiadvisor/reports/types`)
+    if (!response.ok) {
+      throw new Error('Failed to get report types')
+    }
+    const data = await response.json()
+    return data.report_types || []
+  }
+
+  async getReportSections(): Promise<string[]> {
+    const response = await fetch(`${this.baseUrl}/api/v1/aiadvisor/reports/sections`)
+    if (!response.ok) {
+      throw new Error('Failed to get report sections')
+    }
+    const data = await response.json()
+    return data.sections || []
+  }
+
+  async downloadReport(filename: string): Promise<Blob> {
+    const response = await fetch(`${this.baseUrl}/api/v1/aiadvisor/reports/download/${filename}`)
+    if (!response.ok) {
+      throw new Error('Failed to download report')
+    }
+    return response.blob()
+  }
 
   async uploadDocument(formData: FormData): Promise<DocumentUploadResponse> {
     try {
