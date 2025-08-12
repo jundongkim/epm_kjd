@@ -300,3 +300,98 @@ async def download_document(
         raise HTTPException(status_code=500, detail=f"문서 다운로드 실패: {str(e)}")
 
 
+@router.get("/documents/{document_id}/view")
+async def view_document(
+    document_id: str,
+    document_processor: DocumentProcessor = Depends(get_document_processor),
+):
+    """브라우저 내에서 문서를 바로 볼 수 있도록 inline 응답으로 반환"""
+    try:
+        document = await document_processor.get_document(document_id)
+        if not document:
+            raise HTTPException(status_code=404, detail="문서를 찾을 수 없습니다.")
+
+        file_path_str = document.get("file_path", "")
+        filename = document.get("filename", f"document_{document_id}")
+        safe_filename = document.get("safe_filename", filename)
+
+        file_path: Path
+        if file_path_str:
+            file_path = Path(file_path_str)
+        else:
+            upload_dir = Path("data/aiadvisor/uploads")
+            upload_dir.mkdir(parents=True, exist_ok=True)
+            candidate = upload_dir / safe_filename
+            if candidate.exists():
+                file_path = candidate
+            else:
+                matches = list(upload_dir.glob(f"*{filename}")) or list(upload_dir.glob(f"*{filename.rsplit('.',1)[0]}*"))
+                if not matches:
+                    raise HTTPException(status_code=404, detail="원본 파일을 찾을 수 없습니다.")
+                file_path = matches[0]
+
+        if not file_path.exists() or not file_path.is_file():
+            # documents 디렉토리에서 메타 JSON을 스캔하여 다른 파일명을 찾는 폴백
+            try:
+                docs_dir = document_processor.config.documents_dir
+                for json_path in docs_dir.glob("*.json"):
+                    with open(json_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    fi = data.get('file_info', {})
+                    sf = fi.get('safe_filename')
+                    fp = fi.get('file_path')
+                    if sf:
+                        candidate = Path("data/aiadvisor/uploads") / sf
+                        if candidate.exists() and candidate.is_file():
+                            file_path = candidate
+                            break
+                    if fp:
+                        fp_path = Path(fp)
+                        if fp_path.exists() and fp_path.is_file():
+                            file_path = fp_path
+                            break
+            except Exception as scan_err:
+                logger.warning(f"문서 파일 폴백 스캔 실패: {str(scan_err)}")
+
+        if not file_path.exists() or not file_path.is_file():
+            raise HTTPException(status_code=404, detail="원본 파일을 찾을 수 없습니다.")
+
+        ext = file_path.suffix.lower()
+        media = "application/pdf" if ext == ".pdf" else "application/octet-stream"
+
+        return FileResponse(
+            path=str(file_path),
+            media_type=media,
+            headers={"Content-Disposition": "inline"},
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"문서 뷰 오류: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"문서 뷰 실패: {str(e)}")
+
+
+@router.get("/documents/view/by-safe/{safe_filename}")
+async def view_document_by_safe_filename(safe_filename: str):
+    """safe_filename 기준으로 업로드 폴더에서 바로 뷰"""
+    try:
+        upload_dir = Path("data/aiadvisor/uploads")
+        file_path = upload_dir / safe_filename
+        if not file_path.exists() or not file_path.is_file():
+            # 패턴 매칭 백업
+            matches = list(upload_dir.glob(f"*{safe_filename}"))
+            if matches:
+                file_path = matches[0]
+        if not file_path.exists() or not file_path.is_file():
+            raise HTTPException(status_code=404, detail="원본 파일을 찾을 수 없습니다.")
+
+        ext = file_path.suffix.lower()
+        media = "application/pdf" if ext == ".pdf" else "application/octet-stream"
+        return FileResponse(path=str(file_path), media_type=media, headers={"Content-Disposition": "inline"})
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"문서 뷰(by-safe) 오류: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"문서 뷰 실패: {str(e)}")
+
+

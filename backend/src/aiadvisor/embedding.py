@@ -168,6 +168,7 @@ class EmbeddingManager:
                 chunks = parsing_info.get("chunks", [])
                 logger.info(f"문서 {document_id}의 청크 수: {len(chunks)}")
                 valid_chunks = 0
+                file_info = doc_result.get("file_info", {})
                 for chunk_index, chunk in enumerate(chunks):
                     content = chunk.get("content", "")
                     if content and content.strip():
@@ -175,11 +176,18 @@ class EmbeddingManager:
                         metadata = chunk.get("metadata", {})
                         metadata["document_id"] = document_id
                         metadata["chunk_index"] = chunk_index
-                        
-                        # Add original filename from doc_result["file_info"]
-                        original_filename = doc_result.get("file_info", {}).get("original_filename")
+                        # 업로드 파일 기준 정보로 덮어쓰기
+                        original_filename = file_info.get("original_filename")
+                        safe_filename = file_info.get("safe_filename")
+                        upload_file_path = file_info.get("file_path")
                         if original_filename:
                             metadata["original_filename"] = original_filename
+                            metadata["filename"] = original_filename
+                        if safe_filename:
+                            metadata["safe_filename"] = safe_filename
+                        if upload_file_path:
+                            metadata["file_path"] = upload_file_path
+                        metadata["uploaded"] = True
                         
                         # Document 객체 생성
                         doc = Document(
@@ -685,6 +693,7 @@ class EmbeddingManager:
             
             # Document 객체 생성
             documents = []
+            file_info = document_result.get("file_info", {})
             for i, chunk in enumerate(chunks):
                 content = chunk.get("content", "")
                 if content and content.strip():
@@ -692,6 +701,18 @@ class EmbeddingManager:
                     metadata = chunk.get("metadata", {})
                     metadata["document_id"] = document_id
                     metadata["chunk_index"] = i
+                    # 업로드 파일 기준 정보로 덮어쓰기
+                    original_filename = file_info.get("original_filename")
+                    safe_filename = file_info.get("safe_filename")
+                    upload_file_path = file_info.get("file_path")
+                    if original_filename:
+                        metadata["original_filename"] = original_filename
+                        metadata["filename"] = original_filename
+                    if safe_filename:
+                        metadata["safe_filename"] = safe_filename
+                    if upload_file_path:
+                        metadata["file_path"] = upload_file_path
+                    metadata["uploaded"] = True
                     
                     doc = Document(
                         page_content=content.strip(),

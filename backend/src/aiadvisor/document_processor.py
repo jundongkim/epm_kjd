@@ -498,7 +498,7 @@ class DocumentProcessor:
             # 임시 파일도 생성 (파싱용)
             import tempfile
             temp_dir = Path(tempfile.gettempdir())
-            temp_file = temp_dir / f"temp_{document_id}_{filename}"
+            temp_file = temp_dir / f"temp_{document_id}_{Path(filename).name}"
             
             # 임시 파일에 내용 저장
             with open(temp_file, 'wb') as f:
@@ -518,8 +518,8 @@ class DocumentProcessor:
                 processed_result = {
                     "document_id": document_id,
                     "file_info": {
-                        "original_filename": filename,
-                        "filename": filename,
+                        "original_filename": Path(filename).name,
+                        "filename": Path(filename).name,
                         "safe_filename": safe_filename,  # 실제 저장된 파일명
                         "file_path": str(uploaded_file),  # 업로드된 파일 경로
                         "processed_at": datetime.now().isoformat(),
@@ -547,6 +547,7 @@ class DocumentProcessor:
                 
             finally:
                 # 임시 파일 삭제
+                # temp 파일은 유지하지 않고 제거
                 if temp_file.exists():
                     temp_file.unlink()
                 

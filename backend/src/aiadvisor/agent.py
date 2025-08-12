@@ -249,7 +249,8 @@ class AdvisorAgent:
             if search_results:
                 context_parts.append("관련 문서 정보:")
                 for i, result in enumerate(search_results[:3], 1):
-                    filename = result["metadata"].get("filename", f"문서{i}")
+                    meta = result.get("metadata", {})
+                    filename = meta.get("original_filename") or meta.get("filename") or f"문서{i}"
                     content_preview = result["content"][:300] + "..." if len(result["content"]) > 300 else result["content"]
                     context_parts.append(f"[{filename}] {content_preview}")
             else:
@@ -291,40 +292,7 @@ class AdvisorAgent:
                     yield chunk
                 
                 # 참고 문서 정보를 마지막에 사람이 읽을 수 있는 형식으로 추가 (SSE 프레임 미포함)
-                # 항상 출처 정보 블록 출력 (검색 결과가 없으면 안내 문구)
-                filename_to_pages = {}
-                for result in (search_results[:5] if search_results else []):
-                    source_info = result.get("source_info", {})
-                    metadata = result.get("metadata", {})
-                    page_info = result.get("page_info", {})
-
-                    filename = (
-                        source_info.get("filename")
-                        or metadata.get("original_filename")
-                        or metadata.get("filename")
-                        or "알 수 없는 파일"
-                    )
-                    pages = page_info.get("page_numbers") or metadata.get("page_numbers") or []
-                    if filename not in filename_to_pages:
-                        filename_to_pages[filename] = set()
-                    for p in pages:
-                        try:
-                            filename_to_pages[filename].add(int(p))
-                        except Exception:
-                            pass
-
-                lines = ["\n\n--- 출처 정보 ---"]
-                if filename_to_pages:
-                    for fname, pages in filename_to_pages.items():
-                        if pages:
-                            sorted_pages = sorted(list(pages))
-                            page_str = ", ".join([f"{p}페이지" for p in sorted_pages])
-                            lines.append(f"{fname} {page_str}")
-                        else:
-                            lines.append(f"{fname}")
-                else:
-                    lines.append("(검색 결과 없음)")
-                yield "\n".join(lines)
+                # 텍스트 기반 출처 블록은 제거 (JSON sources는 고급 스트리밍 라우터에서 송출)
                 
                 logger.info(f"✅ 스트리밍 응답 완료 - 총 {chunk_count}개 청크 생성")
                 logger.info(f"📏 최종 응답 길이: {len(total_content)} 문자")

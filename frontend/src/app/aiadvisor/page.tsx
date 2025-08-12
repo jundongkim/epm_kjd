@@ -5,6 +5,7 @@ import { Brain, MessageSquare, FileText, TrendingUp, Settings, Send, Download, S
 import { useTranslation } from '@/hooks/useTranslation'
 import { aiAdvisorService, Message, QueryRequest, ReportGenerationRequest } from '@/services/aiadvisor'
 import DocumentManager from '@/components/aiadvisor/DocumentManager'
+import SourceViewer from '@/components/aiadvisor/SourceViewer'
 
 export default function AIAdvisorPage() {
   const { t } = useTranslation()
@@ -21,6 +22,9 @@ export default function AIAdvisorPage() {
   const [systemStatus, setSystemStatus] = useState<any>(null)
   const [agents, setAgents] = useState<any[]>([])
   const [selectedAgent, setSelectedAgent] = useState<string>('default')
+  const [viewerOpen, setViewerOpen] = useState(false)
+  const [viewerSafe, setViewerSafe] = useState<string>('')
+  const [viewerPage, setViewerPage] = useState<number | undefined>(undefined)
   const [activeTab, setActiveTab] = useState<'chat' | 'documents' | 'settings'>('chat')
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -229,13 +233,13 @@ export default function AIAdvisorPage() {
 
   const handleQuickAction = async (action: string) => {
     const actions = {
-      performance: '제조 공정의 성능을 분석하고 개선 방안을 제시해주세요.',
-      quality: '품질 관리 시스템을 개선하고 품질 향상 방안을 제시해주세요.',
-      cost: '생산 비용을 절감할 수 있는 전략과 방안을 제시해주세요.',
-      report: '현재 상황에 대한 종합 분석 리포트를 생성해주세요.'
+      dust: '분진이 많은 작업 환경에서 작업자들이 따라야 할 안전 수칙은 무엇인가요?',
+      chemical: '유해 화학물질 취급 작업 시 필수 안전 수칙과 응급 대처 요령은 무엇인가요?',
+      loto: '설비 정비·청소 시 Lockout/Tagout(LOTO) 절차와 체크리스트를 알려주세요.',
+      ppe: '작업별 개인 보호구(PPE) 선택 기준과 착용 점검 항목을 알려주세요.'
     }
 
-    const query = actions[action as keyof typeof actions] || action
+    const query = (actions as any)[action] || action
     setInputMessage(query)
   }
 
@@ -387,7 +391,20 @@ export default function AIAdvisorPage() {
                                 {source.page_info && (source.page_info.page_numbers?.length > 0 || source.page_info.slide_numbers?.length > 0) && (
                                   <div className="text-muted-foreground mt-1">
                                     {source.page_info.page_numbers?.length > 0 && (
-                                      <span>페이지: {source.page_info.page_ranges?.join(', ') || source.page_info.page_numbers?.join(', ')}</span>
+                                      <button
+                                        className="underline hover:text-foreground"
+                                        onClick={() => {
+                                          const safe = source.metadata?.safe_filename || source.metadata?.filename
+                                          const firstPage = source.page_info.page_numbers?.[0]
+                                          if (safe) {
+                                            setViewerSafe(safe)
+                                            setViewerPage(firstPage)
+                                            setViewerOpen(true)
+                                          }
+                                        }}
+                                      >
+                                        페이지: {source.page_info.page_ranges?.join(', ') || source.page_info.page_numbers?.join(', ')} (출처 보기)
+                                      </button>
                                     )}
                                     {source.page_info.slide_numbers?.length > 0 && (
                                       <span className="ml-2">슬라이드: {source.page_info.slide_ranges?.join(', ') || source.page_info.slide_numbers?.join(', ')}</span>
@@ -425,6 +442,12 @@ export default function AIAdvisorPage() {
                   </div>
                 )}
                 <div ref={messagesEndRef} />
+                <SourceViewer
+                  open={viewerOpen}
+                  onClose={() => setViewerOpen(false)}
+                  safeFilename={viewerSafe}
+                  page={viewerPage}
+                />
               </div>
 
               {/* Input Area */}
@@ -561,39 +584,39 @@ export default function AIAdvisorPage() {
               <h3 className="text-lg font-semibold text-foreground mb-3">빠른 액션</h3>
               <div className="space-y-2">
                 <button 
-                  onClick={() => handleQuickAction('performance')}
+                  onClick={() => handleQuickAction('dust')}
                   className="w-full p-3 text-left bg-muted hover:bg-muted/80 rounded-lg transition-colors"
                 >
                   <div className="flex items-center space-x-2">
                     <TrendingUp className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm">성능 분석 요청</span>
+                    <span className="text-sm">분진 환경 안전 수칙</span>
                   </div>
                 </button>
                 <button 
-                  onClick={() => handleQuickAction('quality')}
+                  onClick={() => handleQuickAction('chemical')}
                   className="w-full p-3 text-left bg-muted hover:bg-muted/80 rounded-lg transition-colors"
                 >
                   <div className="flex items-center space-x-2">
                     <Search className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm">품질 관리 개선</span>
+                    <span className="text-sm">유해 화학물질 취급 안전</span>
                   </div>
                 </button>
                 <button 
-                  onClick={() => handleQuickAction('cost')}
+                  onClick={() => handleQuickAction('loto')}
                   className="w-full p-3 text-left bg-muted hover:bg-muted/80 rounded-lg transition-colors"
                 >
                   <div className="flex items-center space-x-2">
                     <MessageSquare className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm">비용 절감 전략</span>
+                    <span className="text-sm">LOTO(에너지 격리) 절차</span>
                   </div>
                 </button>
                 <button 
-                  onClick={() => handleQuickAction('report')}
+                  onClick={() => handleQuickAction('ppe')}
                   className="w-full p-3 text-left bg-muted hover:bg-muted/80 rounded-lg transition-colors"
                 >
                   <div className="flex items-center space-x-2">
                     <FileText className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm">리포트 생성</span>
+                    <span className="text-sm">개인 보호구(PPE) 선택</span>
                   </div>
                 </button>
               </div>

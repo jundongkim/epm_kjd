@@ -187,6 +187,23 @@ async def advanced_stream_query(
                 else:
                     yield f"end: {json.dumps(end_chunk, ensure_ascii=False)}\n"
 
+                # 최종 출처 정보(프론트가 파싱하여 message.sources로 반영)
+                # search_results에서 간단한 소스 정보만 추출
+                simplified_sources = []
+                try:
+                    for r in (search_results or [])[:5]:
+                        simplified_sources.append({
+                            "content": r.get("content", ""),
+                            "metadata": r.get("metadata", {}),
+                            "source_info": r.get("source_info", {}),
+                            "page_info": r.get("page_info", {}),
+                        })
+                except Exception:
+                    simplified_sources = []
+
+                if stream_format == "json":
+                    yield f"data: {json.dumps({"done": True, "sources": simplified_sources}, ensure_ascii=False)}\n\n"
+
             except Exception as e:
                 error_chunk = {
                     "type": "error",
