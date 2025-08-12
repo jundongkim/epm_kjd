@@ -12,11 +12,9 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple, Union
 from datetime import datetime
 import logging
-
 # Vector search libraries
 import faiss
 import numpy as np
-
 # sentence_transformers import with fallback
 try:
     from sentence_transformers import SentenceTransformer
@@ -25,12 +23,10 @@ except ImportError as e:
     print(f"Warning: sentence_transformers import failed: {e}")
     SentenceTransformer = None
     SENTENCE_TRANSFORMERS_AVAILABLE = False
-
 # LangChain libraries  
 from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
-
 # Internal imports
 from .utils import AIAdvisorConfig, get_config, AIAdvisorException
 
@@ -53,13 +49,11 @@ class DummyEmbeddings:
         import hashlib
         hash_obj = hashlib.md5(text.encode())
         hash_bytes = hash_obj.digest()
-        
         # 해시를 임베딩 벡터로 변환
         embedding = []
         for i in range(self.embedding_dim):
             byte_idx = i % len(hash_bytes)
             embedding.append((hash_bytes[byte_idx] - 128) / 128.0)
-        
         return embedding
     
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
@@ -77,15 +71,12 @@ class EmbeddingManager:
             self.config = get_config()
         else:
             self.config = config or get_config()
-            
         self.embedding_model = None
         self.vector_store = None
         self.index_metadata = {}
         self._initialization_complete = False
-        
         # 임베딩 모델 초기화
         self._initialize_embedding_model()
-        
         # 자동 초기화 태스크 저장 (나중에 대기할 수 있도록)
         self._init_task = None
         try:
@@ -123,7 +114,6 @@ class EmbeddingManager:
                 await self._init_task
             except Exception as e:
                 logger.error(f"초기화 대기 중 오류: {str(e)}")
-        
         if not self._initialization_complete:
             # 초기화 태스크가 없거나 실패한 경우 수동으로 초기화
             await self._auto_load_index()
@@ -132,32 +122,18 @@ class EmbeddingManager:
         """임베딩 모델 초기화"""
         try:
             logger.info(f"임베딩 모델 초기화 시작: {self.config.embedding_model}")
-            
             # sentence-transformers 사용 가능 여부 확인
             if not SENTENCE_TRANSFORMERS_AVAILABLE:
                 logger.warning("sentence-transformers를 사용할 수 없어 더미 임베딩 모델을 사용합니다.")
                 self.embedding_model = DummyEmbeddings()
             else:
                 # HuggingFace 임베딩 모델 초기화
-                self.embedding_model = HuggingFaceEmbeddings(
-                    model_name=self.config.embedding_model,
-                    model_kwargs={
-                        'device': 'cpu',  # CPU 사용 (GPU 사용 시 'cuda')
-                        'trust_remote_code': True
-                    },
-                    encode_kwargs={
-                        'normalize_embeddings': True,
-                        'batch_size': 32
-                    }
-                )
-            
+                self.embedding_model = HuggingFaceEmbeddings(model_name=self.config.embedding_model, model_kwargs={'device': 'cpu', 'trust_remote_code': True}, encode_kwargs={'normalize_embeddings': True, 'batch_size': 32})
             # 모델 테스트
             test_text = "테스트 임베딩"
             test_embedding = self.embedding_model.embed_query(test_text)
-            
             logger.info(f"임베딩 모델 초기화 완료: {self.config.embedding_model}")
             logger.info(f"임베딩 차원: {len(test_embedding)}")
-            
         except Exception as e:
             logger.error(f"임베딩 모델 초기화 실패: {str(e)}")
             # 더미 모델로 폴백
@@ -173,33 +149,24 @@ class EmbeddingManager:
         """처리된 문서들로부터 임베딩 생성 및 FAISS 인덱스 구축"""
         try:
             logger.info(f"임베딩 생성 시작: {len(processed_documents)}개 문서, 인덱스명: {index_name}")
-            
             if not processed_documents:
                 raise AIAdvisorException("처리된 문서가 없습니다.")
-            
             # 임베딩 모델 상태 확인
             if not self.embedding_model:
                 raise AIAdvisorException("임베딩 모델이 초기화되지 않았습니다.")
-            
             # Document 객체 생성
             documents = []
             metadatas = []
-            
             for doc_index, doc_result in enumerate(processed_documents):
                 processing_status = doc_result.get("processing_status")
                 document_id = doc_result.get("document_id", f"doc_{doc_index}")
-                
                 logger.info(f"문서 처리 중: {document_id}, 상태: {processing_status}")
-                
                 if processing_status != "completed":
                     logger.warning(f"문서 건너뜀 (미완료): {document_id}")
                     continue
-                
                 parsing_info = doc_result.get("parsing", {})
                 chunks = parsing_info.get("chunks", [])
-                
                 logger.info(f"문서 {document_id}의 청크 수: {len(chunks)}")
-                
                 valid_chunks = 0
                 for chunk_index, chunk in enumerate(chunks):
                     content = chunk.get("content", "")
@@ -208,6 +175,11 @@ class EmbeddingManager:
                         metadata = chunk.get("metadata", {})
                         metadata["document_id"] = document_id
                         metadata["chunk_index"] = chunk_index
+                        
+                        # Add original filename from doc_result["file_info"]
+                        original_filename = doc_result.get("file_info", {}).get("original_filename")
+                        if original_filename:
+                            metadata["original_filename"] = original_filename
                         
                         # Document 객체 생성
                         doc = Document(
@@ -274,7 +246,7 @@ class EmbeddingManager:
             import traceback
             logger.error(f"상세 오류: {traceback.format_exc()}")
             raise AIAdvisorException(f"임베딩 생성 중 오류 발생: {str(e)}")
-    
+
     async def _save_index(self, index_name: str) -> str:
         """FAISS 인덱스를 디스크에 저장"""
         try:
@@ -421,45 +393,76 @@ class EmbeddingManager:
             
             # 유사도 검색 수행 (더 많은 후보 검색)
             logger.info(f"유사도 검색 수행 중... (query: '{processed_query[:30]}...', k={k})")
+            # 더 많은 후보를 가져온 후 후처리로 정밀 필터링/정렬
+            candidate_k = max(k * 5, k)
             docs_with_scores = await asyncio.to_thread(
                 self.vector_store.similarity_search_with_score,
                 processed_query,
-                k=k
+                k=candidate_k
             )
             
             logger.info(f"원본 검색 결과: {len(docs_with_scores)}개")
             
             # 결과 필터링 및 품질 평가
+            # 주의: similarity_search_with_score가 반환하는 score는 '거리(distance)'. 낮을수록 유사
+            # 유사도 = 1 / (1 + distance)로 변환하여 임계값 및 정렬에 사용
             results = []
-            for i, (doc, score) in enumerate(docs_with_scores):
-                if score >= score_threshold:
-                    # 청크 품질 평가
+            for i, (doc, distance) in enumerate(docs_with_scores):
+                try:
+                    distance_val = float(distance)
+                except Exception:
+                    distance_val = 9999.0
+                similarity = 1.0 / (1.0 + distance_val)
+
+                if similarity >= score_threshold:
                     chunk_quality = doc.metadata.get('chunk_quality_score', 0.5)
-                    
-                    # 종합 점수 계산 (유사도 + 품질)
-                    combined_score = (score * 0.7) + (chunk_quality * 0.3)
-                    
+                    combined_score = (similarity * 0.7) + (chunk_quality * 0.3)
+
                     result = {
                         "content": doc.page_content,
                         "metadata": doc.metadata,
-                        "similarity_score": float(score),
+                        "similarity_score": float(similarity),
                         "chunk_quality_score": float(chunk_quality),
                         "combined_score": float(combined_score),
                         "search_query": processed_query,
-                        "original_query": query,
+                                "original_query": query,
                         "result_index": i,
-                        "content_length": len(doc.page_content)
+                        "content_length": len(doc.page_content),
+                        "page_info": self._extract_page_info(doc.metadata),
+                        "source_info": self._extract_source_info(doc.metadata)
                     }
                     results.append(result)
-                    logger.debug(f"결과 {i}: sim_score={score:.4f}, quality={chunk_quality:.4f}, combined={combined_score:.4f}")
+                    logger.debug(
+                        f"결과 {i}: similarity={similarity:.4f}, distance={distance_val:.4f}, "
+                        f"quality={chunk_quality:.4f}, combined={combined_score:.4f}"
+                    )
                 else:
-                    logger.debug(f"임계값 미달로 제외: score={score:.4f} < {score_threshold}")
+                    logger.debug(
+                        f"임계값 미달로 제외: similarity={similarity:.4f} < {score_threshold} (distance={distance_val:.4f})"
+                    )
             
             # 결과 재정렬 (종합 점수 기준)
-            results.sort(key=lambda x: x['combined_score'], reverse=True)
-            
-            # 상위 5개만 반환
-            final_results = results[:5]
+            # 파일명/페이지 기준 중복 제거 (동일 문서·페이지의 중복 청크 제거)
+            unique_map = {}
+            for item in results:
+                metadata = item.get('metadata', {})
+                source_info = item.get('source_info', {})
+                filename = (
+                    source_info.get('filename')
+                    or metadata.get('original_filename')
+                    or metadata.get('filename')
+                    or 'unknown'
+                )
+                page_numbers = tuple((item.get('page_info', {}).get('page_numbers') or metadata.get('page_numbers') or []))
+                key = (filename, page_numbers)
+                if key not in unique_map or item['combined_score'] > unique_map[key]['combined_score']:
+                    unique_map[key] = item
+
+            deduped_results = list(unique_map.values())
+            deduped_results.sort(key=lambda x: x['combined_score'], reverse=True)
+
+            # 상위 k개만 반환
+            final_results = deduped_results[:k]
             
             logger.info(f"검색 완료: {len(final_results)}개 결과 반환 (query: '{query[:50]}...')")
             return final_results
@@ -841,198 +844,117 @@ class EmbeddingManager:
         except Exception as e:
             logger.error(f"인덱스 크기 조회 오류: {str(e)}")
             return 0
+    
+    def _extract_page_info(self, metadata: Dict[str, Any]) -> Dict[str, Any]:
+        """메타데이터에서 페이지 정보 추출"""
+        page_info = {
+            "page_numbers": metadata.get("page_numbers", []),
+            "page_ranges": metadata.get("page_ranges", []),
+            "slide_numbers": metadata.get("slide_numbers", []),
+            "slide_ranges": metadata.get("slide_ranges", []),
+            "chunk_id": metadata.get("chunk_id", 0),
+            "total_chunks": metadata.get("total_chunks", 0)
+        }
+        return page_info
+    
+    def _extract_source_info(self, metadata: Dict[str, Any]) -> Dict[str, Any]:
+        """메타데이터에서 소스 문서 정보 추출"""
+        source_info = {
+                            "filename": metadata.get("original_filename", metadata.get("filename", "알 수 없는 파일")),
+            "title": metadata.get("title", ""),
+            "author": metadata.get("author", ""),
+            "document_id": metadata.get("document_id", ""),
+            "file_type": metadata.get("file_type", ""),
+            "created_at": metadata.get("created_at", ""),
+            "modified_at": metadata.get("modified_at", ""),
+            "page_count": metadata.get("page_count", 0)
+        }
+        return source_info
+
+    async def create_manufacturing_specialized_index(self, index_name: str = "manufacturing_specialized") -> Dict[str, Any]:
+        """제조업 특화 인덱스 생성"""
+        try:
+            logger.info(f"제조업 특화 인덱스 생성 시작: {index_name}")
+            
+            # 제조업 특화 프롬프트 템플릿
+            manufacturing_prompts = [
+                "제조업 품질 관리",
+                "생산 공정 최적화",
+                "설비 유지보수",
+                "원자재 품질 검사",
+                "제품 결함 분석",
+                "공정 안전 관리",
+                "환경 규제 준수",
+                "에너지 효율성",
+                "공급망 관리",
+                "고객 요구사항 분석"
+            ]
+            
+            # 제조업 특화 임베딩 생성
+            specialized_embeddings = []
+            for prompt in manufacturing_prompts:
+                try:
+                    embedding = self.embedding_model.embed_query(prompt)
+                    specialized_embeddings.append({
+                        "content": prompt,
+                        "metadata": {
+                            "type": "manufacturing_specialized",
+                            "category": "domain_knowledge",
+                            "source": "system_generated"
+                        },
+                        "embedding": embedding
+                    })
+                except Exception as e:
+                    logger.warning(f"제조업 프롬프트 임베딩 생성 실패: {prompt}, 오류: {str(e)}")
+            
+            if not specialized_embeddings:
+                raise Exception("제조업 특화 임베딩을 생성할 수 없습니다.")
+            
+            # 인덱스 생성
+            result = await self.create_embeddings(specialized_embeddings, index_name)
+            
+            logger.info(f"✅ 제조업 특화 인덱스 생성 완료: {index_name}")
+            return {
+                "status": "success",
+                "index_name": index_name,
+                "specialized_embeddings_count": len(specialized_embeddings),
+                "manufacturing_domains": manufacturing_prompts
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ 제조업 특화 인덱스 생성 실패: {str(e)}")
+            return {
+                "status": "error",
+                "error": str(e)
+            }
+
+    async def is_manufacturing_specialized(self, index_name: str = None) -> bool:
+        """인덱스가 제조업 특화인지 확인"""
+        try:
+            if index_name is None:
+                index_name = self.current_index_name or "default"
+            
+            # 인덱스 메타데이터 확인
+            if hasattr(self, 'index_metadata') and self.index_metadata:
+                return self.index_metadata.get("type") == "manufacturing_specialized"
+            
+            # 벡터 스토어에서 직접 확인
+            if self.vector_store:
+                # 샘플 검색으로 특성 확인
+                test_query = "제조업 품질 관리"
+                results = await self.search_similar_documents(test_query, k=1)
+                if results:
+                    metadata = results[0].get("metadata", {})
+                    return metadata.get("type") == "manufacturing_specialized"
+            
+            return False
+            
+        except Exception as e:
+            logger.warning(f"제조업 특화 여부 확인 실패: {str(e)}")
+            return False
 
 
-class VectorSearchEngine:
-    """벡터 검색 엔진 클래스 - 고급 검색 기능 제공"""
-    
-    def __init__(self, embedding_manager: EmbeddingManager):
-        self.embedding_manager = embedding_manager
-        self.search_history = []
-    
-    async def hybrid_search(self, query: str, ontology_context: Dict[str, Any] = None, k: int = 5) -> Dict[str, Any]:
-        """하이브리드 검색 - 벡터 검색 + 온톨로지 컨텍스트"""
-        try:
-            # 1. 기본 벡터 검색
-            vector_results = await self.embedding_manager.search_similar_documents(query, k=k)
-            
-            # 2. 온톨로지 컨텍스트가 있는 경우 컨텍스트 기반 검색
-            ontology_results = []
-            if ontology_context:
-                ontology_results = await self._search_with_ontology_context(query, ontology_context, k=k)
-            
-            # 3. 결과 통합 및 점수 조정
-            integrated_results = self._integrate_search_results(vector_results, ontology_results)
-            
-            # 4. 검색 기록 저장
-            search_record = {
-                "query": query,
-                "timestamp": datetime.now().isoformat(),
-                "vector_results_count": len(vector_results),
-                "ontology_results_count": len(ontology_results),
-                "integrated_results_count": len(integrated_results),
-                "used_ontology": ontology_context is not None
-            }
-            self.search_history.append(search_record)
-            
-            return {
-                "query": query,
-                "search_type": "hybrid",
-                "results": integrated_results[:k],
-                "vector_results": vector_results,
-                "ontology_results": ontology_results,
-                "search_metadata": search_record
-            }
-            
-        except Exception as e:
-            logger.error(f"하이브리드 검색 오류: {str(e)}")
-            raise AIAdvisorException(f"하이브리드 검색 중 오류 발생: {str(e)}")
-    
-    async def _search_with_ontology_context(self, query: str, ontology_context: Dict[str, Any], k: int = 5) -> List[Dict[str, Any]]:
-        """온톨로지 컨텍스트를 활용한 검색"""
-        try:
-            # 온톨로지에서 관련 엔티티 추출
-            related_entities = ontology_context.get("entities", [])
-            related_relations = ontology_context.get("relations", [])
-            
-            # 확장된 쿼리 생성
-            expanded_query_terms = [query]
-            
-            # 관련 엔티티 추가
-            for entity in related_entities[:5]:  # 최대 5개까지
-                if entity.get("name"):
-                    expanded_query_terms.append(entity["name"])
-            
-            # 확장된 쿼리로 검색
-            expanded_query = " ".join(expanded_query_terms)
-            
-            results = await self.embedding_manager.search_similar_documents(expanded_query, k=k)
-            
-            # 온톨로지 컨텍스트 정보 추가
-            for result in results:
-                result["search_type"] = "ontology_enhanced"
-                result["ontology_context"] = ontology_context
-                result["expanded_query"] = expanded_query
-            
-            return results
-            
-        except Exception as e:
-            logger.error(f"온톨로지 컨텍스트 검색 오류: {str(e)}")
-            return []
-    
-    def _integrate_search_results(self, vector_results: List[Dict[str, Any]], ontology_results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """검색 결과 통합"""
-        try:
-            # 결과 통합 전략: 
-            # 1. 벡터 검색 결과에 높은 가중치
-            # 2. 온톨로지 컨텍스트 결과는 보조적 역할
-            # 3. 중복 제거 (유사한 내용)
-            
-            integrated = []
-            seen_contents = set()
-            
-            # 벡터 검색 결과 우선 추가
-            for result in vector_results:
-                content_hash = hash(result["content"][:200])  # 첫 200자로 중복 체크
-                if content_hash not in seen_contents:
-                    result["integration_score"] = result["similarity_score"] * 1.0  # 원본 점수 유지
-                    result["source"] = "vector_search"
-                    integrated.append(result)
-                    seen_contents.add(content_hash)
-            
-            # 온톨로지 결과 추가 (중복되지 않는 것만)
-            for result in ontology_results:
-                content_hash = hash(result["content"][:200])
-                if content_hash not in seen_contents:
-                    result["integration_score"] = result["similarity_score"] * 0.8  # 가중치 조정
-                    result["source"] = "ontology_enhanced"
-                    integrated.append(result)
-                    seen_contents.add(content_hash)
-            
-            # 통합 점수로 정렬
-            integrated.sort(key=lambda x: x["integration_score"], reverse=True)
-            
-            return integrated
-            
-        except Exception as e:
-            logger.error(f"검색 결과 통합 오류: {str(e)}")
-            # 오류 발생 시 벡터 검색 결과만 반환
-            return vector_results
-    
-    async def semantic_search_with_expansion(self, query: str, expansion_terms: List[str] = None, k: int = 5) -> List[Dict[str, Any]]:
-        """의미론적 검색 with 쿼리 확장"""
-        try:
-            expanded_terms = [query]
-            
-            if expansion_terms:
-                expanded_terms.extend(expansion_terms)
-            
-            # 확장된 쿼리로 검색
-            expanded_query = " ".join(expanded_terms)
-            results = await self.embedding_manager.search_similar_documents(expanded_query, k=k)
-            
-            # 확장 정보 추가
-            for result in results:
-                result["original_query"] = query
-                result["expanded_query"] = expanded_query
-                result["expansion_terms"] = expansion_terms or []
-                result["search_type"] = "semantic_expanded"
-            
-            return results
-            
-        except Exception as e:
-            logger.error(f"의미론적 확장 검색 오류: {str(e)}")
-            raise AIAdvisorException(f"의미론적 확장 검색 중 오류 발생: {str(e)}")
-    
-    async def multi_query_search(self, queries: List[str], k: int = 5) -> Dict[str, Any]:
-        """다중 쿼리 검색"""
-        try:
-            all_results = {}
-            combined_results = []
-            
-            for query in queries:
-                results = await self.embedding_manager.search_similar_documents(query, k=k)
-                all_results[query] = results
-                
-                # 쿼리 정보 추가
-                for result in results:
-                    result["source_query"] = query
-                    result["search_type"] = "multi_query"
-                
-                combined_results.extend(results)
-            
-            # 중복 제거 및 점수 기반 정렬
-            unique_results = []
-            seen_contents = set()
-            
-            for result in combined_results:
-                content_hash = hash(result["content"][:200])
-                if content_hash not in seen_contents:
-                    unique_results.append(result)
-                    seen_contents.add(content_hash)
-            
-            # 유사도 점수로 정렬
-            unique_results.sort(key=lambda x: x["similarity_score"], reverse=True)
-            
-            return {
-                "queries": queries,
-                "individual_results": all_results,
-                "combined_results": unique_results[:k*2],  # 더 많이 반환
-                "search_type": "multi_query",
-                "total_unique_results": len(unique_results)
-            }
-            
-        except Exception as e:
-            logger.error(f"다중 쿼리 검색 오류: {str(e)}")
-            raise AIAdvisorException(f"다중 쿼리 검색 중 오류 발생: {str(e)}")
-    
-    def get_search_history(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """검색 기록 조회"""
-        return self.search_history[-limit:]
-    
-    def clear_search_history(self):
-        """검색 히스토리 초기화"""
-        self.search_history.clear()
+# VectorSearchEngine는 분리되어 src.aiadvisor.search_engine 모듈로 이동되었습니다.
 
     async def get_document_clusters(self, n_clusters: int = 5) -> Dict[str, Any]:
         """문서 클러스터링"""
@@ -1041,32 +963,34 @@ class VectorSearchEngine:
                 return {"clusters": [], "total_documents": 0}
             
             # 모든 임베딩 벡터 가져오기
-            embeddings = self.embedding_manager.vector_store.index.reconstruct_n(0, self.embedding_manager.vector_store.index.ntotal)
-            
+            embeddings = self.embedding_manager.vector_store.index.reconstruct_n(
+                0, self.embedding_manager.vector_store.index.ntotal
+            )
+
             # K-means 클러스터링
             from sklearn.cluster import KMeans
-            
+
             kmeans = KMeans(n_clusters=min(n_clusters, len(embeddings)), random_state=42)
             cluster_labels = kmeans.fit_predict(embeddings)
-            
+
             # 클러스터별 문서 그룹화
             clusters = {}
             for i, label in enumerate(cluster_labels):
                 if label not in clusters:
                     clusters[label] = []
                 clusters[label].append(i)
-            
+
             return {
                 "clusters": [
                     {
                         "cluster_id": cluster_id,
                         "document_indices": doc_indices,
-                        "size": len(doc_indices)
+                        "size": len(doc_indices),
                     }
                     for cluster_id, doc_indices in clusters.items()
                 ],
                 "total_documents": len(embeddings),
-                "n_clusters": len(clusters)
+                "n_clusters": len(clusters),
             }
             
         except Exception as e:

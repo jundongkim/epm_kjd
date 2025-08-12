@@ -178,45 +178,27 @@ class AIAdvisorService {
   }
 
   async generateReport(request: ReportGenerationRequest): Promise<ReportGenerationResponse> {
-    const response = await fetch(`${this.baseUrl}/api/v1/aiadvisor/reports/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    })
-
-    if (!response.ok) {
-      throw new Error('Failed to generate report')
-    }
-
-    return response.json()
+    // Reports 기능은 현재 지원되지 않음
+    console.warn('Reports 기능은 현재 지원되지 않습니다.')
+    throw new Error('Reports 기능은 현재 지원되지 않습니다.')
   }
 
   async getReportTypes(): Promise<any[]> {
-    const response = await fetch(`${this.baseUrl}/api/v1/aiadvisor/reports/types`)
-    if (!response.ok) {
-      throw new Error('Failed to get report types')
-    }
-    const data = await response.json()
-    return data.report_types || []
+    // Reports 기능은 현재 지원되지 않음
+    console.warn('Reports 기능은 현재 지원되지 않습니다.')
+    return []
   }
 
   async getReportSections(): Promise<string[]> {
-    const response = await fetch(`${this.baseUrl}/api/v1/aiadvisor/reports/sections`)
-    if (!response.ok) {
-      throw new Error('Failed to get report sections')
-    }
-    const data = await response.json()
-    return data.sections || []
+    // Reports 기능은 현재 지원되지 않음
+    console.warn('Reports 기능은 현재 지원되지 않습니다.')
+    return []
   }
 
   async downloadReport(filename: string): Promise<Blob> {
-    const response = await fetch(`${this.baseUrl}/api/v1/aiadvisor/reports/download/${filename}`)
-    if (!response.ok) {
-      throw new Error('Failed to download report')
-    }
-    return response.blob()
+    // Reports 기능은 현재 지원되지 않음
+    console.warn('Reports 기능은 현재 지원되지 않습니다.')
+    throw new Error('Reports 기능은 현재 지원되지 않습니다.')
   }
 
   async uploadDocument(formData: FormData): Promise<DocumentUploadResponse> {

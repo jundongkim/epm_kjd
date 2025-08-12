@@ -62,12 +62,6 @@ class DocumentParser:
             # 파일 타입별 파싱
             if file_extension == '.pdf':
                 content, metadata = await self._parse_pdf(file_path)
-            elif file_extension == '.docx':
-                content, metadata = await self._parse_docx(file_path)
-            elif file_extension == '.pptx':
-                content, metadata = await self._parse_pptx(file_path)
-            elif file_extension in ['.txt', '.md']:
-                content, metadata = await self._parse_text(file_path)
             else:
                 raise AIAdvisorException(f"지원하지 않는 파일 형식: {file_extension}")
             
@@ -139,119 +133,8 @@ class DocumentParser:
         
         return content.strip(), metadata
     
-    async def _parse_docx(self, file_path: Path) -> tuple[str, Dict[str, Any]]:
-        """DOCX 파일 파싱"""
-        try:
-            doc = DocxDocument(file_path)
-            
-            # 메타데이터 추출
-            core_props = doc.core_properties
-            metadata = {
-                "title": core_props.title or "",
-                "author": core_props.author or "",
-                "subject": core_props.subject or "",
-                "keywords": core_props.keywords or "",
-                "comments": core_props.comments or "",
-                "created": str(core_props.created) if core_props.created else "",
-                "modified": str(core_props.modified) if core_props.modified else "",
-                "paragraph_count": len(doc.paragraphs)
-            }
-            
-            # 텍스트 추출
-            content = ""
-            for para in doc.paragraphs:
-                if para.text.strip():
-                    content += para.text + "\n"
-            
-            # 표 데이터 추출
-            for table_idx, table in enumerate(doc.tables):
-                content += f"\n\n[표 {table_idx + 1}]\n"
-                for row in table.rows:
-                    row_data = [cell.text.strip() for cell in row.cells]
-                    if any(row_data):
-                        content += " | ".join(row_data) + "\n"
-            
-            return content.strip(), metadata
-            
-        except Exception as e:
-            raise AIAdvisorException(f"DOCX 파싱 실패: {str(e)}")
-    
-    async def _parse_pptx(self, file_path: Path) -> tuple[str, Dict[str, Any]]:
-        """PPTX 파일 파싱"""
-        try:
-            prs = Presentation(file_path)
-            
-            # 메타데이터 추출
-            core_props = prs.core_properties
-            metadata = {
-                "title": core_props.title or "",
-                "author": core_props.author or "",
-                "subject": core_props.subject or "",
-                "keywords": core_props.keywords or "",
-                "comments": core_props.comments or "",
-                "created": str(core_props.created) if core_props.created else "",
-                "modified": str(core_props.modified) if core_props.modified else "",
-                "slide_count": len(prs.slides)
-            }
-            
-            # 텍스트 추출
-            content = ""
-            for slide_idx, slide in enumerate(prs.slides, 1):
-                content += f"\n\n--- 슬라이드 {slide_idx} ---\n"
-                
-                for shape in slide.shapes:
-                    if hasattr(shape, "text") and shape.text.strip():
-                        content += shape.text + "\n"
-                    
-                    # 표 데이터 추출
-                    if shape.has_table:
-                        content += "\n[표]\n"
-                        table = shape.table
-                        for row in table.rows:
-                            row_data = [cell.text.strip() for cell in row.cells]
-                            if any(row_data):
-                                content += " | ".join(row_data) + "\n"
-            
-            return content.strip(), metadata
-            
-        except Exception as e:
-            raise AIAdvisorException(f"PPTX 파싱 실패: {str(e)}")
-    
-    async def _parse_text(self, file_path: Path) -> tuple[str, Dict[str, Any]]:
-        """텍스트 파일 파싱"""
-        try:
-            with open(file_path, 'r', encoding='utf-8') as file:
-                content = file.read()
-            
-            metadata = {
-                "character_count": len(content),
-                "line_count": len(content.splitlines()),
-                "word_count": len(content.split())
-            }
-            
-            return content, metadata
-            
-        except UnicodeDecodeError:
-            # UTF-8 실패 시 다른 인코딩 시도
-            try:
-                with open(file_path, 'r', encoding='cp949') as file:
-                    content = file.read()
-                
-                metadata = {
-                    "character_count": len(content),
-                    "line_count": len(content.splitlines()),
-                    "word_count": len(content.split()),
-                    "encoding": "cp949"
-                }
-                
-                return content, metadata
-            except Exception as e:
-                raise AIAdvisorException(f"텍스트 파일 인코딩 오류: {str(e)}")
-        except Exception as e:
-            raise AIAdvisorException(f"텍스트 파일 파싱 실패: {str(e)}")
-    
     async def _create_chunks(self, content: str, metadata: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """텍스트를 청크로 분할 (한국어 최적화)"""
+        """텍스트를 청크로 분할 (한국어 최적화, 페이지 정보 보존)"""
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=self.config.chunk_size,
             chunk_overlap=self.config.chunk_overlap,
@@ -279,11 +162,15 @@ class DocumentParser:
         chunk_documents = []
         for i, chunk in enumerate(filtered_chunks):
             chunk_metadata = metadata.copy()
+            
+            # 페이지 정보 추출 및 보존
+            page_info = self._extract_page_info(chunk)
             chunk_metadata.update({
                 "chunk_id": i,
                 "chunk_size": len(chunk),
                 "total_chunks": len(filtered_chunks),
-                "chunk_quality_score": self._calculate_chunk_quality(chunk)
+                "chunk_quality_score": self._calculate_chunk_quality(chunk),
+                **page_info  # 페이지 정보 추가
             })
             
             chunk_documents.append({
@@ -292,6 +179,39 @@ class DocumentParser:
             })
         
         return chunk_documents
+    
+    def _extract_page_info(self, chunk: str) -> Dict[str, Any]:
+        """청크에서 페이지 정보 추출"""
+        page_info = {
+            "page_numbers": [],
+            "page_ranges": []
+        }
+        
+        try:
+            # "--- 페이지 X ---" 패턴에서 페이지 번호 추출
+            import re
+            page_matches = re.findall(r'--- 페이지 (\d+) ---', chunk)
+            if page_matches:
+                page_numbers = [int(p) for p in page_matches]
+                page_info["page_numbers"] = page_numbers
+                
+                # 페이지 범위 계산
+                if len(page_numbers) > 1:
+                    page_info["page_ranges"] = [f"{min(page_numbers)}-{max(page_numbers)}"]
+                else:
+                    page_info["page_ranges"] = [str(page_numbers[0])]
+            
+            # 슬라이드 정보도 추출 (PPTX용)
+            slide_matches = re.findall(r'--- 슬라이드 (\d+) ---', chunk)
+            if slide_matches:
+                slide_numbers = [int(s) for s in slide_matches]
+                page_info["slide_numbers"] = slide_numbers
+                page_info["slide_ranges"] = [f"{min(slide_numbers)}-{max(slide_numbers)}"] if len(slide_numbers) > 1 else [str(slide_numbers[0])]
+                
+        except Exception as e:
+            logger.warning(f"페이지 정보 추출 실패: {str(e)}")
+        
+        return page_info
     
     def _calculate_chunk_quality(self, chunk: str) -> float:
         """청크 품질 점수 계산"""

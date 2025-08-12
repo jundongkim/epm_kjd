@@ -30,8 +30,8 @@ from typing_extensions import TypedDict
 from .utils import AIAdvisorConfig, get_config, AIAdvisorException
 from .document_processor import DocumentProcessor
 from .ontology import OntologyManager
-from .embedding import EmbeddingManager, VectorSearchEngine
-from .dify_client import DifyAIAdvisorClient
+from .embedding import EmbeddingManager
+from .search_engine import VectorSearchEngine
 from ..ai.core.llm_client import get_ollama_client, create_ollama_client
 from ..ai.providers.ollama import OllamaProvider
 
@@ -57,8 +57,7 @@ class AdvisorAgent:
                  embedding_manager: Optional[EmbeddingManager] = None,
                  ontology_manager: Optional[OntologyManager] = None,
                  model_name: str = None,
-                 streaming: bool = True,
-                 use_dify: bool = False):
+                 streaming: bool = True):
         
         # config가 코루틴인 경우 처리
         if config is not None and hasattr(config, '__await__'):
@@ -69,15 +68,11 @@ class AdvisorAgent:
             
         self.model_name = model_name or self.config.default_llm_model
         self.streaming = streaming
-        self.use_dify = use_dify
         
         # 컴포넌트 초기화
         self.embedding_manager = embedding_manager or EmbeddingManager(config)
         self.ontology_manager = ontology_manager or OntologyManager(config)
         self.search_engine = VectorSearchEngine(self.embedding_manager)
-        
-        # Dify 클라이언트 초기화 (use_dify가 True인 경우)
-        self.dify_client = DifyAIAdvisorClient(config) if use_dify else None
         
         # LLM 클라이언트 초기화
         self.llm_client = None
@@ -100,38 +95,56 @@ class AdvisorAgent:
     async def _initialize_async_components(self):
         """비동기 컴포넌트 초기화"""
         try:
-            # LLM 클라이언트 초기화
-            self.llm_client = create_ollama_client(
-                model=self.model_name,
-                temperature=self.config.llm_temperature
-            )
+            logger.info(f"AI 어드바이저 에이전트 초기화 시작 - 모델: {self.model_name}")
             
-            if self.streaming:
-                # 스트리밍을 위해 OllamaProvider 사용
-                self.streaming_llm_client = OllamaProvider(
+            # LLM 클라이언트 초기화
+            try:
+                self.llm_client = create_ollama_client(
                     model=self.model_name,
                     temperature=self.config.llm_temperature
                 )
+                logger.info(f"✅ 기본 LLM 클라이언트 초기화 성공: {self.model_name}")
+            except Exception as llm_error:
+                logger.error(f"❌ 기본 LLM 클라이언트 초기화 실패: {str(llm_error)}")
+                self.llm_client = None
             
-            # Dify 클라이언트 초기화
-            if self.dify_client:
-                dify_initialized = await self.dify_client.initialize()
-                if dify_initialized:
-                    logger.info("✅ Dify 클라이언트 초기화 성공")
-                else:
-                    logger.warning("⚠️ Dify 클라이언트 초기화 실패 - Ollama 모드로 대체")
-                    self.use_dify = False
+            if self.streaming:
+                try:
+                    # 스트리밍을 위해 OllamaProvider 사용
+                    self.streaming_llm_client = OllamaProvider(
+                        model=self.model_name,
+                        temperature=self.config.llm_temperature
+                    )
+                    logger.info(f"✅ 스트리밍 LLM 클라이언트 초기화 성공: {self.model_name}")
+                except Exception as stream_error:
+                    logger.error(f"❌ 스트리밍 LLM 클라이언트 초기화 실패: {str(stream_error)}")
+                    self.streaming_llm_client = None
+                    # 스트리밍 실패 시 기본 LLM으로 대체
+                    if self.llm_client:
+                        logger.info("⚠️ 스트리밍 실패로 기본 LLM 모드로 전환")
+                        self.streaming = False
             
-            mode_info = "Dify 하이브리드" if self.use_dify else "Ollama 단독"
-            logger.info(f"AI 어드바이저 에이전트 초기화 완료 - 모델: {self.model_name} ({mode_info})")
+            # 초기화 상태 확인
+            if not self.llm_client and not self.streaming_llm_client:
+                raise AIAdvisorException("모든 LLM 클라이언트 초기화에 실패했습니다.")
+            
+            mode_info = "Ollama 단독 모드"
+            streaming_status = "활성화" if self.streaming and self.streaming_llm_client else "비활성화"
+            
+            logger.info(f"🎉 AI 어드바이저 에이전트 초기화 완료")
+            logger.info(f"   - 모델: {self.model_name}")
+            logger.info(f"   - 모드: {mode_info}")
+            logger.info(f"   - 스트리밍: {streaming_status}")
+            logger.info(f"   - 기본 LLM: {'✅' if self.llm_client else '❌'}")
+            logger.info(f"   - 스트리밍 LLM: {'✅' if self.streaming_llm_client else '❌'}")
             
         except Exception as e:
-            logger.error(f"어드바이저 에이전트 초기화 오류: {str(e)}")
+            logger.error(f"❌ 어드바이저 에이전트 초기화 오류: {str(e)}")
             raise AIAdvisorException(f"어드바이저 에이전트 초기화 실패: {str(e)}")
     
     # 메인 실행 메서드들
     async def query(self, user_query: str, conversation_id: str = None) -> Dict[str, Any]:
-        """사용자 질의 처리 (하이브리드 모드)"""
+        """사용자 질의 처리 (Ollama 모드)"""
         try:
             # 공통: 관련 문서 검색 (강화된 처리)
             search_results = []
@@ -144,18 +157,9 @@ class AdvisorAgent:
                 logger.warning(f"문서 검색 중 오류 (무시하고 계속): {str(search_error)}")
                 search_results = []
             
-            # Dify 모드 vs Ollama 모드 분기
-            if self.use_dify and self.dify_client:
-                logger.info("🤖 Dify 하이브리드 모드로 응답 생성")
-                return await self.dify_client.generate_response(
-                    user_query=user_query,
-                    search_results=search_results,
-                    conversation_id=conversation_id
-                )
-            
-            # 기존 Ollama 모드
-            elif self.llm_client:
-                logger.info("🤖 Ollama 단독 모드로 응답 생성")
+            # Ollama 모드로 응답 생성
+            if self.llm_client:
+                logger.info("🤖 Ollama 모드로 응답 생성")
                 
                 # 컨텍스트 구성
                 context_parts = []
@@ -198,7 +202,7 @@ class AdvisorAgent:
                 return {
                     "query": user_query,
                     "response": response_text,
-                    "mode": "direct_llm",
+                    "mode": "ollama",
                     "search_results": search_results,
                     "timestamp": datetime.now().isoformat()
                 }
@@ -217,15 +221,28 @@ class AdvisorAgent:
     async def stream_response(self, user_query: str, conversation_id: str = None) -> AsyncGenerator[str, None]:
         """스트리밍 응답 생성 (하이브리드 모드)"""
         try:
+            logger.info(f"🚀 스트리밍 응답 시작 - 질문: {user_query[:50]}...")
+            
+            # 스트리밍 LLM 클라이언트 초기화 상태 확인
+            if not self.streaming_llm_client:
+                logger.warning("스트리밍 LLM 클라이언트가 초기화되지 않음. 재초기화 시도...")
+                try:
+                    await self._initialize_async_components()
+                except Exception as init_error:
+                    logger.error(f"스트리밍 LLM 클라이언트 재초기화 실패: {str(init_error)}")
+                    yield f"스트리밍 응답을 위한 LLM 클라이언트 초기화에 실패했습니다: {str(init_error)}"
+                    return
+            
+            logger.info(f"✅ 스트리밍 LLM 클라이언트 상태: {type(self.streaming_llm_client)}")
             
             # 컨텍스트 수집 (강화된 처리)
             search_results = []
             try:
                 await self.embedding_manager.ensure_initialized()
                 search_results = await self.embedding_manager.search_similar_documents(user_query, k=5)
-                logger.info(f"스트리밍 - 문서 검색 결과: {len(search_results)}개")
+                logger.info(f"🔍 스트리밍 - 문서 검색 결과: {len(search_results)}개")
             except Exception as search_error:
-                logger.warning(f"스트리밍 - 문서 검색 중 오류 (무시하고 계속): {str(search_error)}")
+                logger.warning(f"⚠️ 스트리밍 - 문서 검색 중 오류 (무시하고 계속): {str(search_error)}")
                 search_results = []
             
             context_parts = []
@@ -252,12 +269,76 @@ class AdvisorAgent:
             전문적이고 실용적인 답변을 제공해주세요.
             """
             
+            logger.info(f"📝 스트리밍 응답 생성 시작 - 프롬프트 길이: {len(streaming_prompt)}")
+            logger.info(f"🤖 사용 모델: {self.model_name}")
+            
             # 스트리밍 응답 생성
-            async for chunk in self.streaming_llm_client.generate_stream(streaming_prompt):
-                yield chunk
+            chunk_count = 0
+            total_content = ""
+            try:
+                logger.info("🔄 LLM 스트리밍 시작...")
+                async for chunk in self.streaming_llm_client.generate_stream(streaming_prompt):
+                    chunk_count += 1
+                    total_content += chunk
                     
+                    if chunk_count % 10 == 0:  # 10개 청크마다 로그
+                        logger.debug(f"📊 스트리밍 청크 {chunk_count} 생성됨 (누적 길이: {len(total_content)})")
+                    
+                    # 청크 내용 로깅 (디버깅용)
+                    if chunk_count <= 3:  # 처음 3개 청크만 상세 로깅
+                        logger.debug(f"청크 {chunk_count}: '{chunk}'")
+                    
+                    yield chunk
+                
+                # 참고 문서 정보를 마지막에 사람이 읽을 수 있는 형식으로 추가 (SSE 프레임 미포함)
+                # 항상 출처 정보 블록 출력 (검색 결과가 없으면 안내 문구)
+                filename_to_pages = {}
+                for result in (search_results[:5] if search_results else []):
+                    source_info = result.get("source_info", {})
+                    metadata = result.get("metadata", {})
+                    page_info = result.get("page_info", {})
+
+                    filename = (
+                        source_info.get("filename")
+                        or metadata.get("original_filename")
+                        or metadata.get("filename")
+                        or "알 수 없는 파일"
+                    )
+                    pages = page_info.get("page_numbers") or metadata.get("page_numbers") or []
+                    if filename not in filename_to_pages:
+                        filename_to_pages[filename] = set()
+                    for p in pages:
+                        try:
+                            filename_to_pages[filename].add(int(p))
+                        except Exception:
+                            pass
+
+                lines = ["\n\n--- 출처 정보 ---"]
+                if filename_to_pages:
+                    for fname, pages in filename_to_pages.items():
+                        if pages:
+                            sorted_pages = sorted(list(pages))
+                            page_str = ", ".join([f"{p}페이지" for p in sorted_pages])
+                            lines.append(f"{fname} {page_str}")
+                        else:
+                            lines.append(f"{fname}")
+                else:
+                    lines.append("(검색 결과 없음)")
+                yield "\n".join(lines)
+                
+                logger.info(f"✅ 스트리밍 응답 완료 - 총 {chunk_count}개 청크 생성")
+                logger.info(f"📏 최종 응답 길이: {len(total_content)} 문자")
+                logger.info(f"📄 응답 미리보기: {total_content[:100]}...")
+                    
+            except Exception as stream_error:
+                logger.error(f"❌ 스트리밍 응답 생성 중 오류: {str(stream_error)}")
+                logger.error(f"🔍 오류 상세: {type(stream_error).__name__}: {str(stream_error)}")
+                yield f"\n\n스트리밍 응답 생성 중 오류가 발생했습니다: {str(stream_error)}"
+                
         except Exception as e:
-            yield f"스트리밍 응답 생성 중 오류 발생: {str(e)}"
+            logger.error(f"❌ 스트리밍 응답 전체 처리 오류: {str(e)}")
+            logger.error(f"🔍 오류 상세: {type(e).__name__}: {str(e)}")
+            yield f"스트리밍 응답 처리 중 오류 발생: {str(e)}"
 
 
 class AdvisorAgentManager:
@@ -275,6 +356,8 @@ class AdvisorAgentManager:
                           **kwargs) -> AdvisorAgent:
         """새로운 에이전트 인스턴스 생성"""
         try:
+            logger.info(f"에이전트 생성 시작: {agent_id} (모델: {model_name}, 스트리밍: {streaming})")
+            
             agent = AdvisorAgent(
                 config=self.config,
                 model_name=model_name,
@@ -282,16 +365,28 @@ class AdvisorAgentManager:
                 **kwargs
             )
             
-            # 비동기 초기화 대기
-            await agent._initialize_async_components()
+            # 비동기 초기화 대기 (타임아웃 설정)
+            try:
+                await asyncio.wait_for(agent._initialize_async_components(), timeout=30.0)
+                logger.info(f"✅ 에이전트 {agent_id} 초기화 완료")
+            except asyncio.TimeoutError:
+                logger.error(f"❌ 에이전트 {agent_id} 초기화 타임아웃 (30초)")
+                raise AIAdvisorException(f"에이전트 초기화 타임아웃: {agent_id}")
+            except Exception as init_error:
+                logger.error(f"❌ 에이전트 {agent_id} 초기화 실패: {str(init_error)}")
+                raise AIAdvisorException(f"에이전트 초기화 실패: {str(init_error)}")
+            
+            # 초기화 상태 검증
+            if not agent.llm_client and not agent.streaming_llm_client:
+                raise AIAdvisorException(f"에이전트 {agent_id}의 LLM 클라이언트가 모두 초기화되지 않았습니다.")
             
             self.agents[agent_id] = agent
-            logger.info(f"에이전트 생성됨: {agent_id}")
+            logger.info(f"🎉 에이전트 생성 완료: {agent_id}")
             
             return agent
             
         except Exception as e:
-            logger.error(f"에이전트 생성 오류 - {agent_id}: {str(e)}")
+            logger.error(f"❌ 에이전트 생성 오류 - {agent_id}: {str(e)}")
             raise AIAdvisorException(f"에이전트 생성 실패: {str(e)}")
     
     async def get_agent(self, agent_id: str = None) -> Optional[AdvisorAgent]:
@@ -299,13 +394,33 @@ class AdvisorAgentManager:
         agent_id = agent_id or self.default_agent_id
         
         if agent_id not in self.agents:
+            logger.info(f"에이전트 {agent_id}가 존재하지 않음. 자동 생성 시도...")
             # 기본 에이전트 자동 생성
             if agent_id == self.default_agent_id:
-                return await self.create_agent(agent_id)
+                try:
+                    return await self.create_agent(agent_id)
+                except Exception as create_error:
+                    logger.error(f"❌ 기본 에이전트 자동 생성 실패: {str(create_error)}")
+                    return None
             else:
+                logger.warning(f"에이전트 {agent_id}를 찾을 수 없고 자동 생성 대상이 아님")
                 return None
         
-        return self.agents[agent_id]
+        agent = self.agents[agent_id]
+        
+        # 에이전트 상태 확인 및 복구
+        if not agent.llm_client and not agent.streaming_llm_client:
+            logger.warning(f"에이전트 {agent_id}의 LLM 클라이언트가 모두 비활성 상태. 재초기화 시도...")
+            try:
+                await agent._initialize_async_components()
+                logger.info(f"✅ 에이전트 {agent_id} 재초기화 성공")
+            except Exception as reinit_error:
+                logger.error(f"❌ 에이전트 {agent_id} 재초기화 실패: {str(reinit_error)}")
+                # 재초기화 실패 시 에이전트 제거
+                del self.agents[agent_id]
+                return None
+        
+        return agent
 
     async def get_default_agent(self) -> AdvisorAgent:
         """기본 에이전트 인스턴스 조회"""

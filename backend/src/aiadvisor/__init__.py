@@ -7,7 +7,8 @@ DX-AI Advisor - AI 어드바이저 모듈
 
 from .document_processor import DocumentProcessor, DocumentParser, InformationExtractor
 from .ontology import OntologyGenerator, OntologyManager
-from .embedding import EmbeddingManager, VectorSearchEngine
+from .embedding import EmbeddingManager
+from .search_engine import VectorSearchEngine
 from .agent import AdvisorAgent, AdvisorAgentManager
 from .source_tracker import SourceTracker, StreamingSourceTracker
 

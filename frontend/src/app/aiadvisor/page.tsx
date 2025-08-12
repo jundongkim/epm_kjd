@@ -19,12 +19,9 @@ export default function AIAdvisorPage() {
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [systemStatus, setSystemStatus] = useState<any>(null)
-  const [reportTypes, setReportTypes] = useState<any[]>([])
   const [agents, setAgents] = useState<any[]>([])
-  const [selectedAgent, setSelectedAgent] = useState<string>('')
+  const [selectedAgent, setSelectedAgent] = useState<string>('default')
   const [activeTab, setActiveTab] = useState<'chat' | 'documents' | 'settings'>('chat')
-  // AI 모드는 Ollama로 고정
-  const currentAIMode = 'ollama'
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -47,11 +44,6 @@ export default function AIAdvisorPage() {
       const status = await aiAdvisorService.getSystemStatus()
       console.log('System status:', status)
       setSystemStatus(status)
-
-      // 리포트 타입 가져오기
-      const types = await aiAdvisorService.getReportTypes()
-      console.log('Report types:', types)
-      setReportTypes(types)
 
       // 에이전트 목록 가져오기
       const agentList = await aiAdvisorService.listAgents()
@@ -104,8 +96,8 @@ export default function AIAdvisorPage() {
     setMessages(prev => [...prev, assistantMessage])
 
     try {
-      // 하이브리드 모드 스트리밍 응답 받기
-      const response = await fetch('/api/v1/aiadvisor/hybrid/stream', {
+      // 고급 스트리밍 응답 받기
+      const response = await fetch('/api/v1/aiadvisor/advanced/stream', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,8 +105,10 @@ export default function AIAdvisorPage() {
         body: JSON.stringify({
           query: currentInput,
           agent_id: selectedAgent || 'default',
-          use_dify: currentAIMode === 'dify',
-          conversation_id: undefined
+          use_workflow: true,
+          k: 5,
+          include_metadata: true,
+          stream_format: 'json'
         })
       })
       
@@ -166,8 +160,15 @@ export default function AIAdvisorPage() {
                   // JSON 파싱 시도
                   const parsed = JSON.parse(data)
                   if (parsed.done) {
-                    // 스트리밍 완료
-                    break
+                    // If 'done' is true, it might also contain sources
+                    if (parsed.sources) {
+                      setMessages(prev => prev.map(msg => 
+                        msg.id === assistantMessageId 
+                          ? { ...msg, sources: parsed.sources }
+                          : msg
+                      ))
+                    }
+                    break // Stop streaming
                   } else if (parsed.chunk) {
                     // 백엔드에서 보내는 chunk 형태
                     accumulatedContent += parsed.chunk
@@ -200,6 +201,8 @@ export default function AIAdvisorPage() {
             ? { ...msg, content: accumulatedContent }
             : msg
         ))
+        
+        // 참고 문서 정보는 이미 스트리밍 중에 처리됨
       }
     } catch (error) {
       console.error('Error sending message:', error)
@@ -273,6 +276,8 @@ export default function AIAdvisorPage() {
       setMessages(prev => [...prev, errorMessage])
     }
   }
+
+
 
   return (
     <div className="h-full flex flex-col bg-background">
@@ -373,10 +378,27 @@ export default function AIAdvisorPage() {
                       {message.sources && message.sources.length > 0 && (
                         <div className="mt-3 pt-3 border-t border-border/20">
                           <p className="text-xs text-muted-foreground mb-2">참고 문서:</p>
-                          <div className="space-y-1">
+                          <div className="space-y-2">
                             {message.sources.slice(0, 3).map((source: any, index: number) => (
-                              <div key={`${message.id}-source-${index}`} className="text-xs bg-muted/50 px-2 py-1 rounded">
-                                {source.metadata?.filename || `문서 ${index + 1}`}
+                              <div key={`${message.id}-source-${index}`} className="text-xs bg-muted/50 px-3 py-2 rounded">
+                                <div className="font-medium text-foreground">
+                                  {source.source_info?.title || source.source_info?.filename || `문서 ${index + 1}`}
+                                </div>
+                                {source.page_info && (source.page_info.page_numbers?.length > 0 || source.page_info.slide_numbers?.length > 0) && (
+                                  <div className="text-muted-foreground mt-1">
+                                    {source.page_info.page_numbers?.length > 0 && (
+                                      <span>페이지: {source.page_info.page_ranges?.join(', ') || source.page_info.page_numbers?.join(', ')}</span>
+                                    )}
+                                    {source.page_info.slide_numbers?.length > 0 && (
+                                      <span className="ml-2">슬라이드: {source.page_info.slide_ranges?.join(', ') || source.page_info.slide_numbers?.join(', ')}</span>
+                                    )}
+                                  </div>
+                                )}
+                                {source.source_info?.author && (
+                                  <div className="text-muted-foreground text-xs mt-1">
+                                    작성자: {source.source_info.author}
+                                  </div>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -578,18 +600,7 @@ export default function AIAdvisorPage() {
             </div>
 
             {/* Report Types */}
-            {reportTypes.length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold text-foreground mb-3">리포트 타입</h3>
-                <div className="space-y-2">
-                  {reportTypes.map((type) => (
-                    <div key={type.type} className="p-2 bg-muted/50 rounded-lg">
-                      <p className="text-sm font-medium text-foreground">{type.name}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* This section is removed as per the edit hint */}
 
             {/* Statistics */}
             <div>
@@ -604,10 +615,7 @@ export default function AIAdvisorPage() {
                   <span className="text-sm font-medium text-foreground">{agents.length}</span>
                 </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">리포트 타입</span>
-                  <span className="text-sm font-medium text-foreground">{reportTypes.length}</span>
-                </div>
+                {/* This section is removed as per the edit hint */}
               </div>
             </div>
           </div>

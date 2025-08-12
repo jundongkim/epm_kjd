@@ -24,19 +24,10 @@ from src.aiadvisor import (
     AdvisorAgent, AdvisorAgentManager,
     AIAdvisorConfig, get_config, AIAdvisorException
 )
-from src.aiadvisor.agent_hybrid import HybridAdvisorAgent, HybridAdvisorAgentManager
+from .aiadvisor_documents import router as documents_router
+from .aiadvisor_advanced import router as advanced_router
 
 logger = logging.getLogger(__name__)
-
-# 하이브리드 에이전트 매니저 (Dify + Ollama)
-_hybrid_agent_manager: Optional[HybridAdvisorAgentManager] = None
-
-def get_hybrid_agent_manager() -> HybridAdvisorAgentManager:
-    """하이브리드 에이전트 매니저 인스턴스 반환"""
-    global _hybrid_agent_manager
-    if _hybrid_agent_manager is None:
-        _hybrid_agent_manager = HybridAdvisorAgentManager()
-    return _hybrid_agent_manager
 
 # 라우터 생성
 router = APIRouter(
@@ -44,6 +35,8 @@ router = APIRouter(
     tags=["AI Advisor"],
     responses={404: {"description": "Not found"}},
 )
+router.include_router(documents_router)
+router.include_router(advanced_router)
 
 # Pydantic 모델들
 class DocumentProcessRequest(BaseModel):
@@ -585,16 +578,6 @@ async def list_agents(
         logger.error(f"에이전트 목록 조회 오류: {str(e)}")
         raise HTTPException(status_code=500, detail=f"에이전트 목록 조회 실패: {str(e)}")
 
-# 보고서 생성 관련 API 제거됨
-
-# 보고서 타입 API 제거됨
-
-# 보고서 섹션 API 제거됨
-
-# 보고서 다운로드 API 제거됨
-
-
-
 # 시스템 관리
 @router.get("/system/status")
 async def get_system_status():
@@ -1053,536 +1036,162 @@ async def search_ontology(query: str = Form(...), ontology_manager: OntologyMana
 
 
 # =============================================================================
-# 하이브리드 AI 에이전트 엔드포인트 (Dify + Ollama)
+# 고급 스트리밍 엔드포인트
 # =============================================================================
 
-@router.post("/hybrid/query")
-async def hybrid_query(
+@router.post("/advanced/stream")
+async def advanced_stream_query(
     request: dict,
-    hybrid_manager: HybridAdvisorAgentManager = Depends(get_hybrid_agent_manager)
+    agent_manager: AdvisorAgentManager = Depends(get_agent_manager),
+    embedding_manager: EmbeddingManager = Depends(get_embedding_manager),
+    ontology_manager: OntologyManager = Depends(get_ontology_manager)
 ):
-    """하이브리드 AI 에이전트 질의 (Dify 또는 Ollama)"""
+    """고급 스트리밍 질의 (컨텍스트 강화 + 실시간 피드백)"""
     try:
         user_query = request.get("query", "")
-        use_dify = request.get("use_dify", False)
-        conversation_id = request.get("conversation_id")
-        agent_id = request.get("agent_id", "default")
+        agent_id = request.get("agent_id")
+        use_workflow = request.get("use_workflow", True)
+        k = request.get("k", 5)
+        include_metadata = request.get("include_metadata", True)
+        stream_format = request.get("stream_format", "text")  # text, json, sse
         
         if not user_query:
             raise HTTPException(status_code=400, detail="질의 내용이 없습니다.")
         
-        # 에이전트 가져오기 또는 생성
-        agent = await hybrid_manager.get_agent(agent_id)
-        if not agent:
-            agent = await hybrid_manager.create_agent(
-                agent_id=agent_id, 
-                use_dify=use_dify
-            )
+        # 문서 검색을 통한 컨텍스트 추가
+        search_results = []
+        try:
+            search_results = await embedding_manager.search_documents(user_query, k=k)
+        except Exception as search_error:
+            logger.warning(f"문서 검색 실패: {str(search_error)}")
         
-        # 모드 전환 (필요한 경우)
-        if agent.use_dify != use_dify:
-            await agent.switch_mode(use_dify)
+        # 온톨로지에서 관련 정보 검색
+        ontology_context = {}
+        try:
+            ontology_context = await ontology_manager.search_entities(user_query)
+        except Exception as ont_error:
+            logger.warning(f"온톨로지 검색 실패: {str(ont_error)}")
         
-        # 질의 처리
-        result = await agent.query(user_query, conversation_id)
-        
-        return {
-            "status": "success",
-            "result": result,
-            "agent_mode": agent.get_current_mode()
-        }
-        
-    except Exception as e:
-        logger.error(f"하이브리드 질의 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"질의 처리 실패: {str(e)}")
+        # 컨텍스트를 포함한 질문 구성
+        enhanced_query = f"""
+질문: {user_query}
 
-@router.post("/hybrid/stream")
-async def hybrid_stream_query(
-    request: dict,
-    hybrid_manager: HybridAdvisorAgentManager = Depends(get_hybrid_agent_manager)
-):
-    """하이브리드 AI 에이전트 스트리밍 질의"""
-    try:
-        user_query = request.get("query", "")
-        use_dify = request.get("use_dify", False)
-        conversation_id = request.get("conversation_id")
-        agent_id = request.get("agent_id", "default")
+관련 문서 정보:
+{json.dumps(search_results, ensure_ascii=False, indent=2) if search_results else "관련 문서가 없습니다."}
+
+온톨로지 정보:
+{json.dumps(ontology_context, ensure_ascii=False, indent=2) if ontology_context else "관련 온톨로지 정보가 없습니다."}
+
+위 정보를 참고하여 질문에 답변해주세요.
+"""
         
-        if not user_query:
-            raise HTTPException(status_code=400, detail="질의 내용이 없습니다.")
-        
-        # 에이전트 가져오기 또는 생성
-        agent = await hybrid_manager.get_agent(agent_id)
-        if not agent:
-            agent = await hybrid_manager.create_agent(
-                agent_id=agent_id, 
-                use_dify=use_dify,
-                streaming=True
-            )
-        
-        # 모드 전환 (필요한 경우)
-        if agent.use_dify != use_dify:
-            await agent.switch_mode(use_dify)
+        # 에이전트 가져오기
+        if agent_id:
+            agent = await agent_manager.get_agent(agent_id)
+            if not agent:
+                raise HTTPException(status_code=404, detail="지정된 에이전트를 찾을 수 없습니다.")
+        else:
+            agent = await agent_manager.get_default_agent()
         
         # 스트리밍 응답 생성
-        async def generate_response():
-            async for chunk in agent.stream_response(user_query, conversation_id):
-                yield f"data: {json.dumps({'chunk': chunk, 'done': False})}\n\n"
-            yield f"data: {json.dumps({'done': True})}\n\n"
-        
-        return StreamingResponse(
-            generate_response(), 
-            media_type="text/event-stream",
-            headers={
-                "Cache-Control": "no-cache", 
-                "Connection": "keep-alive",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Cache-Control"
-            }
-        )
-        
-    except Exception as e:
-        logger.error(f"하이브리드 스트리밍 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"스트리밍 처리 실패: {str(e)}")
-
-@router.get("/hybrid/modes")
-async def get_hybrid_modes(
-    hybrid_manager: HybridAdvisorAgentManager = Depends(get_hybrid_agent_manager)
-):
-    """하이브리드 에이전트 모드 상태 조회"""
-    try:
-        agents = hybrid_manager.list_agents()
-        return {
-            "status": "success",
-            "agents": agents,
-            "available_modes": [
-                {"mode": "ollama", "name": "Ollama 단독 모드", "description": "로컬 Ollama LLM 사용"},
-                {"mode": "dify", "name": "Dify 하이브리드 모드", "description": "Dify 플랫폼과 연동한 고도화된 AI"}
-            ]
-        }
-    except Exception as e:
-        logger.error(f"모드 조회 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"모드 조회 실패: {str(e)}")
-
-@router.post("/hybrid/switch-mode")
-async def switch_hybrid_mode(
-    request: dict,
-    hybrid_manager: HybridAdvisorAgentManager = Depends(get_hybrid_agent_manager)
-):
-    """하이브리드 에이전트 모드 전환"""
-    try:
-        agent_id = request.get("agent_id", "default")
-        use_dify = request.get("use_dify", False)
-        
-        success = await hybrid_manager.switch_agent_mode(agent_id, use_dify)
-        
-        if success:
-            agent = await hybrid_manager.get_agent(agent_id)
-            return {
-                "status": "success",
-                "message": f"{'Dify' if use_dify else 'Ollama'} 모드로 전환 성공",
-                "agent_mode": agent.get_current_mode() if agent else None
-            }
-        else:
-            raise HTTPException(status_code=500, detail="모드 전환 실패")
-            
-    except Exception as e:
-        logger.error(f"모드 전환 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"모드 전환 실패: {str(e)}")
-
-@router.get("/hybrid/status")
-async def get_hybrid_status():
-    """하이브리드 시스템 상태 확인"""
-    try:
-        # Dify 연결 상태 확인
-        dify_available = False
-        dify_error = None
-        try:
-            from src.aiadvisor.dify_client import DifyAIAdvisorClient
-            dify_client = DifyAIAdvisorClient()
-            if await dify_client._test_connection():
-                dify_available = True
-            await dify_client.close()
-        except Exception as e:
-            dify_error = str(e)
-        
-        # Ollama 연결 상태 확인
-        ollama_available = False
-        ollama_error = None
-        try:
-            from src.ai.core.llm_client import create_ollama_client
-            ollama_client = create_ollama_client()
-            if ollama_client:
-                ollama_available = True
-        except Exception as e:
-            ollama_error = str(e)
-        
-        return {
-            "status": "success",
-            "dify": {
-                "available": dify_available,
-                "error": dify_error
-            },
-            "ollama": {
-                "available": ollama_available,
-                "error": ollama_error
-            },
-            "hybrid_ready": dify_available or ollama_available
-        }
-        
-    except Exception as e:
-        logger.error(f"상태 확인 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"상태 확인 실패: {str(e)}")
-
-
-# =============================================================================
-# n8n 워크플로우 통합 엔드포인트
-# =============================================================================
-
-from src.aiadvisor.n8n_document_processor import N8NDocumentProcessor
-
-# n8n 문서 처리기 인스턴스
-_n8n_processor: Optional[N8NDocumentProcessor] = None
-
-def get_n8n_processor() -> N8NDocumentProcessor:
-    """전역 n8n 문서 처리기 인스턴스 반환"""
-    global _n8n_processor
-    if _n8n_processor is None:
-        _n8n_processor = N8NDocumentProcessor()
-    return _n8n_processor
-
-@router.post("/documents/upload-async")
-async def upload_document_async(
-    file: UploadFile = File(...),
-    category: str = Form("general"),
-    description: str = Form(""),
-    use_n8n: bool = Form(True),
-    n8n_processor: N8NDocumentProcessor = Depends(get_n8n_processor),
-    document_processor: DocumentProcessor = Depends(get_document_processor)
-):
-    """비동기 문서 업로드 (n8n 워크플로우 사용)"""
-    try:
-        # 파일 크기 및 형식 검증
-        if file.size > 100 * 1024 * 1024:  # 100MB
-            raise HTTPException(status_code=400, detail="파일 크기가 너무 튽니다. (100MB 이하)")
-        
-        file_extension = file.filename.split('.')[-1].lower() if '.' in file.filename else ''
-        if file_extension not in ['pdf', 'docx', 'pptx', 'txt', 'md']:
-            raise HTTPException(status_code=400, detail="지원되지 않는 파일 형식입니다.")
-        
-        # 파일 임시 저장
-        config = get_config()
-        config.uploads_dir.mkdir(parents=True, exist_ok=True)
-        
-        file_path = config.uploads_dir / file.filename
-        with open(file_path, "wb") as buffer:
-            content = await file.read()
-            buffer.write(content)
-        
-        # n8n 워크플로우 사용 여부 확인
-        if use_n8n:
-            # n8n 초기화 확인
-            if not await n8n_processor.initialize():
-                logger.warning("n8n 초기화 실패, 기존 방식으로 처리")
-                use_n8n = False
-        
-        if use_n8n:
-            # n8n 비동기 처리
-            result = await n8n_processor.process_document_async(
-                file_path=file_path,
-                category=category,
-                description=description
-            )
-            
-            return {
-                "status": "success",
-                "message": "n8n 워크플로우로 비동기 처리 시작",
-                "processing_mode": "n8n_async",
-                "result": result
-            }
-        else:
-            # 기존 동기식 처리
-            result = await document_processor.process_document(
-                file_path=file_path,
-                category=category,
-                description=description
-            )
-            
-            return {
-                "status": "success",
-                "message": "기존 방식으로 동기 처리 완료",
-                "processing_mode": "sync",
-                "result": result
-            }
-        
-    except Exception as e:
-        logger.error(f"비동기 문서 업로드 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"문서 업로드 실패: {str(e)}")
-
-@router.get("/documents/{document_id}/status")
-async def get_document_processing_status(
-    document_id: str,
-    n8n_processor: N8NDocumentProcessor = Depends(get_n8n_processor)
-):
-    """문서 처리 상태 조회 (n8n 워크플로우)"""
-    try:
-        status = await n8n_processor.get_processing_status(document_id)
-        return {
-            "status": "success",
-            "document_status": status
-        }
-    except Exception as e:
-        logger.error(f"상태 조회 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"상태 조회 실패: {str(e)}")
-
-@router.post("/documents/{document_id}/processing-complete")
-async def handle_processing_complete(
-    document_id: str,
-    result_data: dict,
-    n8n_processor: N8NDocumentProcessor = Depends(get_n8n_processor)
-):
-    """n8n 워크플로우 완료 콜백 처리"""
-    try:
-        await n8n_processor.handle_processing_complete(result_data)
-        return {
-            "status": "success",
-            "message": f"문서 {document_id} 처리 완료 콜백 처리 성공"
-        }
-    except Exception as e:
-        logger.error(f"콜백 처리 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"콜백 처리 실패: {str(e)}")
-
-@router.get("/n8n/workflows")
-async def list_n8n_workflows(
-    n8n_processor: N8NDocumentProcessor = Depends(get_n8n_processor)
-):
-    """AI Advisor 관련 n8n 워크플로우 목록 조회"""
-    try:
-        workflows = await n8n_processor.list_workflows()
-        return {
-            "status": "success",
-            "workflows": workflows
-        }
-    except Exception as e:
-        logger.error(f"워크플로우 목록 조회 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"워크플로우 목록 조회 실패: {str(e)}")
-
-@router.get("/n8n/status")
-async def get_n8n_status(
-    n8n_processor: N8NDocumentProcessor = Depends(get_n8n_processor)
-):
-    """n8n 연결 상태 확인"""
-    try:
-        # n8n 초기화 테스트
-        n8n_available = await n8n_processor.initialize()
-        
-        return {
-            "status": "success",
-            "n8n_available": n8n_available,
-            "workflow_ids": n8n_processor.workflow_ids,
-            "api_url": n8n_processor.n8n_api_url,
-            "webhook_url": n8n_processor.n8n_webhook_url
-        }
-    except Exception as e:
-        logger.error(f"n8n 상태 확인 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"n8n 상태 확인 실패: {str(e)}")
-
-
-# =============================================================================
-# 성능 모니터링 엔드포인트
-# =============================================================================
-
-@router.get("/performance/summary")
-async def get_performance_summary():
-    """전체 시스템 성능 요약"""
-    try:
-        # 각 모드보달 성능 매트릭 수집
-        performance_data = {
-            "timestamp": datetime.now().isoformat(),
-            "modes": {
-                "ollama": {
-                    "name": "Ollama 단독 모드",
-                    "average_response_time": "2.3초",
-                    "success_rate": "98.5%",
-                    "document_processing_time": "15-30초",
-                    "advantages": [
-                        "빠른 응답 속도",
-                        "오프라인 사용 가능",
-                        "데이터 보안성",
-                        "로컬 리소스 활용"
-                    ],
-                    "limitations": [
-                        "단순한 응답 생성",
-                        "제한적인 모델 옵션",
-                        "수동 프롬프트 최적화"
-                    ]
-                },
-                "dify": {
-                    "name": "Dify 하이브리드 모드",
-                    "average_response_time": "3.8초",
-                    "success_rate": "99.2%",
-                    "document_processing_time": "10-20초",
-                    "advantages": [
-                        "고급 추론 능력",
-                        "멀티 모델 지원",
-                        "GUI 프롬프트 편집",
-                        "자동 대화 기록 관리",
-                        "고도화된 컨텍스트 처리"
-                    ],
-                    "limitations": [
-                        "느린 응답 속도",
-                        "외부 서비스 의존성",
-                        "네트워크 연결 필요"
-                    ]
-                },
-                "n8n_workflow": {
-                    "name": "n8n 워크플로우 모드",
-                    "average_processing_time": "5-10분",
-                    "success_rate": "96.8%",
-                    "parallel_processing": True,
-                    "advantages": [
-                        "비동기 백그라운드 처리",
-                        "시각적 워크플로우 편집",
-                        "복잡한 자동화 로직",
-                        "오류 처리 및 재시도"
-                    ],
-                    "limitations": [
-                        "늘린 초기 설정",
-                        "디버깅 복잡성",
-                        "외부 서비스 의존성"
-                    ]
+        async def generate_advanced_response():
+            try:
+                # 메타데이터 스트리밍 (선택사항)
+                if include_metadata:
+                    metadata_chunk = {
+                        "type": "metadata",
+                        "query": user_query,
+                        "search_results_count": len(search_results),
+                        "ontology_entities_count": len(ontology_context),
+                        "timestamp": datetime.now().isoformat()
+                    }
+                    if stream_format == "json":
+                        yield f"data: {json.dumps(metadata_chunk, ensure_ascii=False)}\n\n"
+                    else:
+                        yield f"metadata: {json.dumps(metadata_chunk, ensure_ascii=False)}\n"
+                
+                # 컨텍스트 정보 스트리밍 (선택사항)
+                if include_metadata and search_results:
+                    context_chunk = {
+                        "type": "context",
+                        "search_results": search_results[:2],  # 처음 2개만
+                        "ontology_context": ontology_context
+                    }
+                    if stream_format == "json":
+                        yield f"data: {json.dumps(context_chunk, ensure_ascii=False)}\n\n"
+                    else:
+                        yield f"context: {json.dumps(context_chunk, ensure_ascii=False)}\n"
+                
+                # 메인 응답 스트리밍
+                response_started = False
+                async for chunk in agent.stream_response(enhanced_query):
+                    if not response_started:
+                        response_started = True
+                        # 응답 시작 신호
+                        start_chunk = {
+                            "type": "response_start",
+                            "timestamp": datetime.now().isoformat()
+                        }
+                        if stream_format == "json":
+                            yield f"data: {json.dumps(start_chunk, ensure_ascii=False)}\n\n"
+                        else:
+                            yield f"start: {json.dumps(start_chunk, ensure_ascii=False)}\n"
+                    
+                    # 실제 응답 내용
+                    if stream_format == "json":
+                        response_chunk = {
+                            "type": "response_chunk",
+                            "content": chunk,
+                            "timestamp": datetime.now().isoformat()
+                        }
+                        yield f"data: {json.dumps(response_chunk, ensure_ascii=False)}\n\n"
+                    else:
+                        yield f"chunk: {chunk}\n"
+                
+                # 응답 완료 신호
+                end_chunk = {
+                    "type": "response_end",
+                    "timestamp": datetime.now().isoformat(),
+                    "total_chunks": "completed"
                 }
-            },
-            "recommendations": {
-                "fast_queries": "Ollama 모드 추천 - 빠른 일반적인 질의에 적합",
-                "complex_analysis": "Dify 모드 추천 - 복잡한 분석과 고급 추론 필요 시",
-                "batch_processing": "n8n 워크플로우 추천 - 대량 문서 처리 시",
-                "production_use": "하이브리드 접근법 추천 - 상황에 따른 유연한 전환"
-            }
-        }
+                if stream_format == "json":
+                    yield f"data: {json.dumps(end_chunk, ensure_ascii=False)}\n\n"
+                else:
+                    yield f"end: {json.dumps(end_chunk, ensure_ascii=False)}\n"
+                    
+            except Exception as e:
+                error_chunk = {
+                    "type": "error",
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat()
+                }
+                if stream_format == "json":
+                    yield f"data: {json.dumps(error_chunk, ensure_ascii=False)}\n\n"
+                else:
+                    yield f"error: {json.dumps(error_chunk, ensure_ascii=False)}\n"
         
-        return {
-            "status": "success",
-            "performance_data": performance_data
-        }
-        
-    except Exception as e:
-        logger.error(f"성능 요약 조회 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"성능 요약 조회 실패: {str(e)}")
-
-@router.get("/integration/test")
-async def test_integration():
-    """통합 시스템 전체 테스트"""
-    try:
-        test_results = {
-            "timestamp": datetime.now().isoformat(),
-            "tests": []
-        }
-        
-        # 1. AI Advisor 기본 기능 테스트
-        try:
-            from src.aiadvisor import get_config
-            config = get_config()
-            test_results["tests"].append({
-                "name": "AI Advisor 기본 기능",
-                "status": "pass",
-                "message": "기본 설정 로드 성공"
-            })
-        except Exception as e:
-            test_results["tests"].append({
-                "name": "AI Advisor 기본 기능",
-                "status": "fail",
-                "message": f"오류: {str(e)}"
-            })
-        
-        # 2. Dify 연결 테스트
-        try:
-            from src.aiadvisor.dify_client import DifyAIAdvisorClient
-            dify_client = DifyAIAdvisorClient()
-            if await dify_client._test_connection():
-                test_results["tests"].append({
-                    "name": "Dify 플랫폼 연결",
-                    "status": "pass",
-                    "message": "Dify API 연결 성공"
-                })
-            else:
-                test_results["tests"].append({
-                    "name": "Dify 플랫폼 연결",
-                    "status": "fail",
-                    "message": "Dify API 연결 실패"
-                })
-            await dify_client.close()
-        except Exception as e:
-            test_results["tests"].append({
-                "name": "Dify 플랫폼 연결",
-                "status": "fail",
-                "message": f"오류: {str(e)}"
-            })
-        
-        # 3. n8n 연결 테스트
-        try:
-            from src.aiadvisor.n8n_document_processor import N8NDocumentProcessor
-            n8n_processor = N8NDocumentProcessor()
-            if await n8n_processor._test_n8n_connection():
-                test_results["tests"].append({
-                    "name": "n8n 워크플로우 연결",
-                    "status": "pass",
-                    "message": "n8n API 연결 성공"
-                })
-            else:
-                test_results["tests"].append({
-                    "name": "n8n 워크플로우 연결",
-                    "status": "fail",
-                    "message": "n8n API 연결 실패"
-                })
-            await n8n_processor.close()
-        except Exception as e:
-            test_results["tests"].append({
-                "name": "n8n 워크플로우 연결",
-                "status": "fail",
-                "message": f"오류: {str(e)}"
-            })
-        
-        # 4. Ollama 연결 테스트
-        try:
-            from ..ai.core.llm_client import create_ollama_client
-            ollama_client = create_ollama_client()
-            if ollama_client:
-                test_results["tests"].append({
-                    "name": "Ollama LLM 연결",
-                    "status": "pass",
-                    "message": "Ollama 클라이언트 생성 성공"
-                })
-            else:
-                test_results["tests"].append({
-                    "name": "Ollama LLM 연결",
-                    "status": "fail",
-                    "message": "Ollama 클라이언트 생성 실패"
-                })
-        except Exception as e:
-            test_results["tests"].append({
-                "name": "Ollama LLM 연결",
-                "status": "fail",
-                "message": f"오류: {str(e)}"
-            })
-        
-        # 전체 결과 요약
-        total_tests = len(test_results["tests"])
-        passed_tests = len([t for t in test_results["tests"] if t["status"] == "pass"])
-        
-        test_results["summary"] = {
-            "total": total_tests,
-            "passed": passed_tests,
-            "failed": total_tests - passed_tests,
-            "success_rate": f"{(passed_tests / total_tests * 100):.1f}%" if total_tests > 0 else "0%",
-            "overall_status": "healthy" if passed_tests >= total_tests * 0.75 else "degraded"
-        }
-        
-        return {
-            "status": "success",
-            "test_results": test_results
-        }
+        # 스트리밍 응답 반환
+        if stream_format == "sse":
+            return StreamingResponse(
+                generate_advanced_response(),
+                media_type="text/event-stream",
+                headers={
+                    "Cache-Control": "no-cache",
+                    "Connection": "keep-alive",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Cache-Control"
+                }
+            )
+        else:
+            return StreamingResponse(
+                generate_advanced_response(),
+                media_type="text/plain",
+                headers={
+                    "Cache-Control": "no-cache",
+                    "Connection": "keep-alive"
+                }
+            )
         
     except Exception as e:
-        logger.error(f"통합 테스트 오류: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"통합 테스트 실패: {str(e)}")
+        logger.error(f"고급 스트리밍 질의 오류: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"고급 스트리밍 처리 실패: {str(e)}")

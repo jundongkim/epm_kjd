@@ -19,10 +19,6 @@ class AIAdvisorException(Exception):
 class DocumentType(str, Enum):
     """지원되는 문서 타입"""
     PDF = "pdf"
-    DOCX = "docx"
-    PPTX = "pptx"
-    TXT = "txt"
-    MD = "md"
 
 
 class ProcessingStatus(str, Enum):
@@ -43,7 +39,6 @@ class AIAdvisorConfig(BaseModel):
     documents_dir: Path = Field(default_factory=lambda: Path("data/aiadvisor/documents"))
     vector_db_dir: Path = Field(default_factory=lambda: Path("data/aiadvisor/vector_db"))
     ontology_dir: Path = Field(default_factory=lambda: Path("data/aiadvisor/ontology"))
-    reports_dir: Path = Field(default_factory=lambda: Path("data/aiadvisor/reports"))
     
     # LLM 설정
     default_llm_model: str = "gemma3:4b-it-qat"
@@ -88,16 +83,6 @@ class AIAdvisorConfig(BaseModel):
         "maintained_by", "replaced_by", "calibrated_by"
     ])
     
-    # 보고서 설정
-    default_report_sections: List[str] = Field(default_factory=lambda: [
-        "executive_summary",
-        "situation_analysis", 
-        "root_cause_analysis",
-        "improvement_recommendations",
-        "implementation_plan",
-        "risk_assessment"
-    ])
-    
     def __init__(self, **data):
         super().__init__(**data)
         self._ensure_directories()
@@ -110,8 +95,7 @@ class AIAdvisorConfig(BaseModel):
             self.processed_dir,
             self.documents_dir,
             self.vector_db_dir,
-            self.ontology_dir,
-            self.reports_dir
+            self.ontology_dir
         ]
         
         for directory in directories:
@@ -123,7 +107,38 @@ class AIAdvisorConfig(BaseModel):
 
 def get_config() -> AIAdvisorConfig:
     """AI Advisor 설정 인스턴스를 반환합니다."""
-    return AIAdvisorConfig()
+    try:
+        # 환경변수에서 설정 가져오기
+        config_data = {}
+        
+        # LLM 모델 설정
+        if os.getenv("AIADVISOR_LLM_MODEL"):
+            config_data["default_llm_model"] = os.getenv("AIADVISOR_LLM_MODEL")
+        
+        # Ollama URL 설정
+        if os.getenv("OLLAMA_BASE_URL"):
+            config_data["ollama_base_url"] = os.getenv("OLLAMA_BASE_URL")
+        
+        # 온도 설정
+        if os.getenv("AIADVISOR_TEMPERATURE"):
+            try:
+                config_data["llm_temperature"] = float(os.getenv("AIADVISOR_TEMPERATURE"))
+            except ValueError:
+                pass
+        
+        # 기본 설정으로 인스턴스 생성
+        config = AIAdvisorConfig(**config_data)
+        
+        # 설정 검증
+        if not config.default_llm_model:
+            config.default_llm_model = "gemma3:4b-it-qat"
+        
+        return config
+        
+    except Exception as e:
+        # 오류 발생 시 기본 설정으로 폴백
+        print(f"설정 로딩 오류, 기본값 사용: {e}")
+        return AIAdvisorConfig()
 
 
 def validate_file_type(filename: str, supported_types: List[str] = None) -> bool:
